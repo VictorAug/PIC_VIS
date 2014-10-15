@@ -13,6 +13,6 @@
 	<classpathentry exported="true" kind="lib" path="/media/4DA9FCFA3942390F/Pacotes/jfreechart-1.0.19/lib/orsonpdf-1.6-eval.jar"/>
 	<classpathentry exported="true" kind="lib" path="/media/4DA9FCFA3942390F/Pacotes/jfreechart-1.0.19/lib/servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="/media/4DA9FCFA3942390F/Pacotes/jfreechart-1.0.19/lib/swtgraphics2d.jar"/>
-	<classpathentry exported="true" kind="lib" path="/root/Desktop/miglayout-swing-4.2.jar"/>
+	<classpathentry kind="lib" path="/root/Desktop/miglayout-4.0-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
