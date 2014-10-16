@@ -18,7 +18,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-import net.miginfocom.swing.MigLayout;
+
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -35,6 +36,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.panel.SpecPanel;
@@ -46,7 +48,7 @@ public class BaseFrame {
 	private JPanel calibPanel = new JPanel();
 	private JPanel degreePanel = new JPanel();
 	private JPanel coefPanel = new JPanel();
-	private JPanel specPanel = new JPanel();
+	//private JPanel specPanel = new JPanel();
 	private JPanel contentPane;
 
 	private JLabel lblVis = new JLabel("VIS");
@@ -109,12 +111,14 @@ public class BaseFrame {
 		}
 		{
 			panel_2.setBackground(new Color(65, 105, 225));
+			ButtonGroup groupP1 = new ButtonGroup();
 			calibPanel.add(panel_2, "cell 0 8 12 1,growx, aligny center");
 			{
 				JRadioButton rdbtnSim = new JRadioButton("Sim");
 				rdbtnSim.setFont(new Font("Dialog", Font.BOLD, 12));
 				rdbtnSim.setBackground(new Color(0, 0, 0));
 				rdbtnSim.setForeground(new Color(248, 248, 255));
+				groupP1.add(rdbtnSim);
 				rdbtnSim.addActionListener(new ActionListener() {
 
 					@Override
@@ -132,6 +136,16 @@ public class BaseFrame {
 				rdbtnNo.setForeground(new Color(248, 248, 255));
 				rdbtnNo.setBackground(Color.BLACK);
 				panel_2.add(rdbtnNo);
+				
+				groupP1.add(rdbtnNo);
+				rdbtnNo.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent event) {
+						if (event.getSource() == rdbtnNo)
+							setSpecPanel();
+					}
+				});
 			}
 		}
 	}
@@ -659,11 +673,53 @@ public class BaseFrame {
 		txtpnOpes.setEditable(false);
 		txtpnOpes.setText("Op\u00E7\u00F5es");
 		panel_4.add(txtpnOpes);
-
+		
+		///////////////////////////////
+		///////Minhas Alterações///////
+		///////////////////////////////
+		SpecPanel specPanel = new SpecPanel();
+		Thread t1 = new Thread(specPanel);
+		specPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+		specPanel.setPreferredSize(new Dimension(630, 300));
+		contentPane.add(specPanel, BorderLayout.CENTER);
+		
 		JButton btnParar = new JButton("Parar");
 		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		this.specPanel.add(btnParar, "cell 0 2,growx");
-
+		panel.add(btnParar, "cell 0 2,growx");
+		btnParar.setActionCommand("disable");
+		btnParar.setEnabled(false);
+		btnParar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("disable".equals(event.getActionCommand())) {
+			        btnAdquirir.setEnabled(true);
+			        btnParar.setEnabled(false);
+			        specPanel.stop = true;
+			    } else {
+			        btnAdquirir.setEnabled(false);
+			        btnParar.setEnabled(true);
+			    }
+			}
+		});
+		
+		btnAdquirir.setActionCommand("enable");
+		btnAdquirir.setToolTipText("Começar a adquirir leituras");
+		btnAdquirir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("enable".equals(event.getActionCommand())) {
+			        btnAdquirir.setEnabled(false);
+			        btnParar.setEnabled(true);
+			        t1.start();
+			    } else {
+			        btnAdquirir.setEnabled(true);
+			        btnParar.setEnabled(false);
+			    }
+			}
+		});
+		
+		/////////////////////////////
+		///////Terminam aqui/////////
+		/////////////////////////////		
+		
 		JTextPane txtpnModoDeOperao = new JTextPane();
 		txtpnModoDeOperao.setPreferredSize(new Dimension(6, 24));
 		txtpnModoDeOperao.setMargin(new Insets(5, 5, 5, 5));
@@ -674,7 +730,8 @@ public class BaseFrame {
 		txtpnModoDeOperao.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnModoDeOperao.setText("Modo de Opera\u00E7\u00E3o");
 		panel.add(txtpnModoDeOperao, "cell 0 5,grow");
-
+		ButtonGroup groupSpec1 = new ButtonGroup();
+		
 		JRadioButton rdbtnDiscreto = new JRadioButton("Discreto");
 		rdbtnDiscreto.setFocusPainted(false);
 		rdbtnDiscreto.setBackground(new Color(0, 0, 51));
@@ -682,14 +739,17 @@ public class BaseFrame {
 		rdbtnDiscreto.setForeground(Color.LIGHT_GRAY);
 		panel.add(rdbtnDiscreto,
 				"flowx,cell 0 6,alignx center,aligny top");
-
+		groupSpec1.add(rdbtnDiscreto);
+		
 		JRadioButton rdbtnContnuo = new JRadioButton("Cont\u00EDnuo");
 		rdbtnContnuo.setFocusPainted(false);
 		rdbtnContnuo.setBackground(new Color(0, 0, 51));
 		rdbtnContnuo.setOpaque(false);
 		rdbtnContnuo.setForeground(Color.LIGHT_GRAY);
+		rdbtnContnuo.setSelected(true);
 		panel.add(rdbtnContnuo, "cell 0 6,alignx center,aligny top");
-
+		groupSpec1.add(rdbtnContnuo);
+		
 		JTextPane txtpnUnidade = new JTextPane();
 		txtpnUnidade.setPreferredSize(new Dimension(6, 24));
 		txtpnUnidade.setMargin(new Insets(5, 5, 5, 5));
@@ -700,7 +760,8 @@ public class BaseFrame {
 		txtpnUnidade.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnUnidade.setText("Unidade");
 		panel.add(txtpnUnidade, "cell 0 7,grow");
-
+		ButtonGroup groupSpec2 = new ButtonGroup();
+		
 		JRadioButton rdbtnCounts = new JRadioButton("Counts");
 		rdbtnCounts.setFocusPainted(false);
 		rdbtnCounts.setBackground(new Color(0, 0, 51));
@@ -708,13 +769,16 @@ public class BaseFrame {
 		rdbtnCounts.setForeground(Color.LIGHT_GRAY);
 		panel.add(rdbtnCounts,
 				"flowx,cell 0 8,alignx center,aligny top");
-
+		groupSpec2.add(rdbtnCounts);
+		rdbtnCounts.setSelected(true);
+		
 		JRadioButton rdbtnMv = new JRadioButton("mV");
 		rdbtnMv.setFocusPainted(false);
 		rdbtnMv.setBackground(new Color(0, 0, 51));
 		rdbtnMv.setOpaque(false);
 		rdbtnMv.setForeground(Color.LIGHT_GRAY);
 		panel.add(rdbtnMv, "cell 0 8,alignx center,aligny top");
+		groupSpec2.add(rdbtnMv);
 
 		JTextPane txtpnFaixaEspectral = new JTextPane();
 		txtpnFaixaEspectral.setPreferredSize(new Dimension(6, 24));
@@ -802,10 +866,6 @@ public class BaseFrame {
 		panel_5.setBackground(new Color(0, 0, 51));
 		panel.add(panel_5, "cell 0 15,grow");
 
-		SpecPanel specPanel = new SpecPanel(); 
-		contentPane.add(specPanel, BorderLayout.CENTER);
-		specPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-		specPanel.setPreferredSize(new Dimension(630, 300));
 	}
 
 	private JMenuBar getMenuBar() {

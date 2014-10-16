@@ -13,50 +13,90 @@ import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class SpecPanel extends JPanel {
-
+public class SpecPanel extends JPanel implements Runnable{
+	//JPanel graphic;
 	/**
 	 * Spec Panel
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public SpecPanel() {
+	//public SpecPanel(){
+		//graphic = new JPanel();
+	//}
+//	public SpecPanel() {
+//		//init();
+//		SpecPanel SpecDis = new SpecPanel();
+//		Thread t1 = new Thread(SpecDis);
+//		t1.start();
+//	}
+	public SpecPanel(){
+		
 		init();
 	}
 	
+	
+	XYSeries series;
+	XYSeriesCollection dataset;
+	JFreeChart chart;
+	ChartPanel panel;
+	SpecGenerator Gen;
+	public Boolean stop = false;
+	
 	public void init() {
-		
-		XYSeries series = new XYSeries("Espectro A");
-		series.add(375, 220);
-		series.add(400, 280);
-		series.add(416, 342);
-		series.add(425, 500);
-		series.add(450, 2736);
-		series.add(475, 340);
-		series.add(500, 1026);
-		series.add(525, 3800);
-		series.add(550, 1520);
-		series.add(575, 1150);
-		series.add(600, 342);
-		series.add(625, 338);
-		series.add(650, 337);
-		series.add(675, 336);
-		series.add(700, 336);
-		series.add(725, 336);
-		series.add(750, 336);
-		series.add(775, 336);
-		series.add(800, 336);
-		series.add(825, 336);
-		XYSeriesCollection dataset = new XYSeriesCollection();
+		this.removeAll();
+		System.out.println("Update in Progress");
+		series = new XYSeries("Espectro A");
+		int x = 0;
+		while(x<5){
+			series.add(Math.random()*101, Math.random()*1001);
+			series.add(Math.random()*101, Math.random()*1001);
+			x++;
+		}
+		dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
-		JFreeChart chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", "Counts", dataset, 
+		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", "Counts", dataset, 
 				PlotOrientation.VERTICAL,true,true,false);
 		chart.getXYPlot().setRenderer(new XYSplineRenderer());
-		ChartPanel panel = new ChartPanel(chart);
+		//chart.setBackgroundPaint(new Color(255,255,255,50));
+		panel = new ChartPanel(chart);
 		panel.setPreferredSize(new Dimension(600, 300));
+		
 		this.setLayout(new BorderLayout());
 		this.add(panel, BorderLayout.CENTER);
-		
+		this.revalidate();
 	}
+
+	@Override
+	public void run() {
+		stop = false;
+		while(true){
+			init();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if(stop)
+				return;
+		}
+	}
+//	public void update(){
+//
+//		System.out.println("Update in progress");
+//		series = new XYSeries("Espectro A");
+//		Gen = new SpecGenerator();
+//		Thread t1 = new Thread(Gen);
+//		t1.start();
+//
+//
+//		dataset = new XYSeriesCollection();
+//		dataset.addSeries(series);
+//		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", "Counts", dataset, 
+//				PlotOrientation.VERTICAL,true,true,false);
+//		chart.getXYPlot().setRenderer(new XYSplineRenderer());
+//		panel = new ChartPanel(chart);
+//		panel.setPreferredSize(new Dimension(600, 300));
+//		this.setLayout(new BorderLayout());
+//		this.add(panel, BorderLayout.CENTER);
+//	}
 
 }
