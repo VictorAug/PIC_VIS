@@ -686,6 +686,7 @@ public class BaseFrame {
 		JButton btnParar = new JButton("Parar");
 		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panel.add(btnParar, "cell 0 2,growx");
+				
 		btnParar.setActionCommand("disable");
 		btnParar.setEnabled(false);
 		btnParar.addActionListener(new ActionListener() {
@@ -700,7 +701,7 @@ public class BaseFrame {
 			    }
 			}
 		});
-		
+
 		btnAdquirir.setActionCommand("enable");
 		btnAdquirir.setToolTipText("Começar a adquirir leituras");
 		btnAdquirir.addActionListener(new ActionListener() {
