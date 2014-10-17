@@ -686,7 +686,6 @@ public class BaseFrame {
 		JButton btnParar = new JButton("Parar");
 		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panel.add(btnParar, "cell 0 2,growx");
-				
 		btnParar.setActionCommand("disable");
 		btnParar.setEnabled(false);
 		btnParar.addActionListener(new ActionListener() {
