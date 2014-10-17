@@ -34,12 +34,12 @@ public class SpecPanel extends JPanel implements Runnable{
 	}
 	
 	
-	XYSeries series;
-	XYSeriesCollection dataset;
-	JFreeChart chart;
-	ChartPanel panel;
-	SpecGenerator Gen;
-	public Boolean stop = false;
+	/*protected*/private XYSeries series;
+	/*protected*/private XYSeriesCollection dataset;
+	/*protected*/private JFreeChart chart;
+	/*protected*/private ChartPanel panel;
+	/*protected*/private SpecGenerator Gen;
+	/*protected*/private Boolean stop = false;
 	
 	public void init() {
 		this.removeAll();
