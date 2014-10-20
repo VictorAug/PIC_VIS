@@ -3,7 +3,6 @@ package br.iesb.VIS2048.panel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
 
 import javax.swing.JPanel;
 
@@ -11,8 +10,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -22,36 +19,26 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class SpecPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
-<<<<<<< HEAD
-	boolean get = false;
-	Thread RSpec = new Thread(new updateChart(), "Spectrometer");
-	XYSeries series;
-	XYSeriesCollection dataset;
-	JFreeChart chart;
-	ChartPanel panel;
-=======
-	//public SpecPanel(){
-		//graphic = new JPanel();
-	//}
-//	public SpecPanel() {
-//		//init();
-//		SpecPanel SpecDis = new SpecPanel();
-//		Thread t1 = new Thread(SpecDis);
-//		t1.start();
-//	}
-	public SpecPanel(){
+	private boolean get = false;
+	private boolean readOnce = false;
+	private Thread RSpec = new Thread(new updateChart(), "Spectrometer");
+	private XYSeries series;
+	private XYSeriesCollection dataset;
+	private JFreeChart chart;
+	private ChartPanel panel;
+	private String Image = "Counts";
+	
+	public void reloadTitle(){
 		
-		init();
 	}
 	
+	public void setImage(String Image){
+		this.Image = Image;
+	}
 	
-	/*protected*/private XYSeries series;
-	/*protected*/private XYSeriesCollection dataset;
-	/*protected*/private JFreeChart chart;
-	/*protected*/private ChartPanel panel;
-	/*protected*/private SpecGenerator Gen;
-	/*protected*/private Boolean stop = false;
->>>>>>> c5e247280a9fe7a4c1803ffaf674706305d1c6bb
+	public boolean isReadOnce(){
+		return this.readOnce;
+	}
 	
 	public SpecPanel(){
 		RSpec.setDaemon(true);
@@ -67,20 +54,25 @@ public class SpecPanel extends JPanel {
 		if(this.get) notifyAll();
 	}
 	
+	public void toggleReadOnce(boolean readOnce){
+		this.readOnce = readOnce;
+	}
+	
 	private class updateChart implements Runnable{
-		@Override
 		public void run() {
 			try {
 				while(true){
 					checkIfGet();
 					//getSpecData();
 					reChart();
+					if(readOnce) getSpec(false);
 				}
 			} catch (InterruptedException e) {
 				System.out.println("Coleta de dados interrompida");
 				e.printStackTrace();
 			}
 		}
+		
 	}
 	
 	public void reChart() throws InterruptedException{
@@ -89,7 +81,7 @@ public class SpecPanel extends JPanel {
 		instDataset();
 		//fillDataset();
 		sampleDataset();
-		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", "Counts", dataset, 
+		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", Image, dataset, 
 				PlotOrientation.VERTICAL,true,true,false);
 		chart.getXYPlot().setRenderer(new XYSplineRenderer());
 		
@@ -112,7 +104,7 @@ public class SpecPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		this.add(panel, BorderLayout.CENTER);
 		this.revalidate();
-		Thread.sleep(100);
+		Thread.sleep(50);
 	}
 	public void instDataset(){
 		series = new XYSeries("Espectro A");
@@ -129,7 +121,7 @@ public class SpecPanel extends JPanel {
 		series.add(500, 1026+(Math.random()-0.5)*300);
 		series.add(525, 3800+(Math.random()-0.5)*300);
 		series.add(550, 1520+(Math.random()-0.5)*300);
-		series.add(575, 1150+(Math.random()-0.5)*600);
+		series.add(575, 1150+(Math.random()-0.5)*300);
 		series.add(600, 342+(Math.random()-0.5)*300);
 		series.add(625, 338+(Math.random()-0.5)*300);
 		series.add(650, 337+(Math.random()-0.5)*300);
@@ -143,15 +135,15 @@ public class SpecPanel extends JPanel {
 		dataset.addSeries(series);
 	}
 	
-	private void fillDataset(){
-		int x = 0;
-		while(x<5){
-			series.add(Math.random()*101, Math.random()*1001);
-			series.add(Math.random()*101, Math.random()*1001);
-			x++;
-		}
-		dataset.addSeries(series);
-	}
+//	private void fillDataset(){
+//		int x = 0;
+//		while(x<5){
+//			series.add(Math.random()*101, Math.random()*1001);
+//			series.add(Math.random()*101, Math.random()*1001);
+//			x++;
+//		}
+//		dataset.addSeries(series);
+//	}
 //	dataset.getSeries("Espectro A").clear();
 //	dataset.removeSeries(0);
 //	dataset.getSeries(0).clear();

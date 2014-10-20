@@ -234,7 +234,7 @@ public class BaseFrame {
 						Integer code = event.getExtendedKeyCode();
 						if (code == 8)
 							this.code = beforeCode;
-						if (code > 48 && code < 52) {
+						if (code > 48 && code < 52) { //0 a 3
 							beforeCode = new Integer(code.toString());
 							if (this.code == null)
 								this.code = code;
@@ -244,7 +244,7 @@ public class BaseFrame {
 							this.code = beforeCode;
 						}
 						if (afterCode == code && this.code != null
-								&& afterCode != null && this.code < 52
+								&& afterCode != null && this.code < 52 //0 a 3
 								&& this.code > 48)
 							setCoefPanel(this.code);
 					}
@@ -707,9 +707,14 @@ public class BaseFrame {
 		btnAdquirir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
-			        btnAdquirir.setEnabled(false);
-			        btnParar.setEnabled(true);
 			        specPanel.getSpec(true);
+			        if(specPanel.isReadOnce())
+			        	btnParar.setEnabled(false);
+			        else{
+			        	btnParar.setEnabled(true);
+			        	btnAdquirir.setEnabled(false);
+			        }
+			        
 			    } else {
 			        btnAdquirir.setEnabled(true);
 			        btnParar.setEnabled(false);
@@ -733,7 +738,7 @@ public class BaseFrame {
 		panel.add(txtpnModoDeOperao, "cell 0 5,grow");
 		ButtonGroup groupSpec1 = new ButtonGroup();
 		
-		JRadioButton rdbtnDiscreto = new JRadioButton("Discreto");
+		JRadioButton rdbtnDiscreto = new JRadioButton("Único");
 		rdbtnDiscreto.setFocusPainted(false);
 		rdbtnDiscreto.setBackground(new Color(0, 0, 51));
 		rdbtnDiscreto.setOpaque(false);
@@ -741,6 +746,20 @@ public class BaseFrame {
 		panel.add(rdbtnDiscreto,
 				"flowx,cell 0 6,alignx center,aligny top");
 		groupSpec1.add(rdbtnDiscreto);
+		rdbtnDiscreto.setActionCommand("once");
+		rdbtnDiscreto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("once".equals(event.getActionCommand())) {
+			        btnParar.setEnabled(false);
+			        specPanel.toggleReadOnce(true);
+			        btnParar.setEnabled(false);
+			        btnAdquirir.setEnabled(true);
+			    } else {
+			        btnParar.setEnabled(false);
+			        specPanel.toggleReadOnce(false);
+			    }
+			}
+		});
 		
 		JRadioButton rdbtnContnuo = new JRadioButton("Cont\u00EDnuo");
 		rdbtnContnuo.setFocusPainted(false);
@@ -748,6 +767,19 @@ public class BaseFrame {
 		rdbtnContnuo.setOpaque(false);
 		rdbtnContnuo.setForeground(Color.LIGHT_GRAY);
 		rdbtnContnuo.setSelected(true);
+		rdbtnContnuo.setActionCommand("cont");
+		rdbtnContnuo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("cont".equals(event.getActionCommand())) {
+			        btnParar.setEnabled(true);
+			        specPanel.toggleReadOnce(false);
+			        btnParar.setEnabled(true);
+			    } else {
+			        btnParar.setEnabled(false);
+			        specPanel.toggleReadOnce(true);
+			    }
+			}
+		});
 		panel.add(rdbtnContnuo, "cell 0 6,alignx center,aligny top");
 		groupSpec1.add(rdbtnContnuo);
 		
@@ -772,6 +804,18 @@ public class BaseFrame {
 				"flowx,cell 0 8,alignx center,aligny top");
 		groupSpec2.add(rdbtnCounts);
 		rdbtnCounts.setSelected(true);
+		rdbtnCounts.setActionCommand("Counts");
+		rdbtnCounts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("Counts".equals(event.getActionCommand())) {
+			        specPanel.setImage("Counts");
+			        specPanel.reloadTitle();
+			    } else {
+			    	specPanel.setImage("mV");
+			    	specPanel.reloadTitle();
+			    }
+			}
+		});
 		
 		JRadioButton rdbtnMv = new JRadioButton("mV");
 		rdbtnMv.setFocusPainted(false);
@@ -780,6 +824,18 @@ public class BaseFrame {
 		rdbtnMv.setForeground(Color.LIGHT_GRAY);
 		panel.add(rdbtnMv, "cell 0 8,alignx center,aligny top");
 		groupSpec2.add(rdbtnMv);
+		rdbtnMv.setActionCommand("mV");
+		rdbtnMv.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				if ("mV".equals(event.getActionCommand())) {
+			        specPanel.setImage("mV");
+			        specPanel.reloadTitle();
+			    } else {
+			    	specPanel.setImage("Counts");
+			    	specPanel.reloadTitle();
+			    }
+			}
+		});
 
 		JTextPane txtpnFaixaEspectral = new JTextPane();
 		txtpnFaixaEspectral.setPreferredSize(new Dimension(6, 24));
