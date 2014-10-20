@@ -678,7 +678,7 @@ public class BaseFrame {
 		///////Minhas Alterações///////
 		///////////////////////////////
 		SpecPanel specPanel = new SpecPanel();
-		Thread t1 = new Thread(specPanel);
+		specPanel.setBackground(new Color(0, 0, 51, 0));
 		specPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		specPanel.setPreferredSize(new Dimension(630, 300));
 		contentPane.add(specPanel, BorderLayout.CENTER);
@@ -693,7 +693,8 @@ public class BaseFrame {
 				if ("disable".equals(event.getActionCommand())) {
 			        btnAdquirir.setEnabled(true);
 			        btnParar.setEnabled(false);
-			        specPanel.stop = true;
+			        //specPanel.stop = true;
+			        specPanel.getSpec(false);
 			    } else {
 			        btnAdquirir.setEnabled(false);
 			        btnParar.setEnabled(true);
@@ -708,7 +709,7 @@ public class BaseFrame {
 				if ("enable".equals(event.getActionCommand())) {
 			        btnAdquirir.setEnabled(false);
 			        btnParar.setEnabled(true);
-			        t1.start();
+			        specPanel.getSpec(true);
 			    } else {
 			        btnAdquirir.setEnabled(true);
 			        btnParar.setEnabled(false);
