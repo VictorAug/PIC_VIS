@@ -22,12 +22,36 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class SpecPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
 	boolean get = false;
 	Thread RSpec = new Thread(new updateChart(), "Spectrometer");
 	XYSeries series;
 	XYSeriesCollection dataset;
 	JFreeChart chart;
 	ChartPanel panel;
+=======
+	//public SpecPanel(){
+		//graphic = new JPanel();
+	//}
+//	public SpecPanel() {
+//		//init();
+//		SpecPanel SpecDis = new SpecPanel();
+//		Thread t1 = new Thread(SpecDis);
+//		t1.start();
+//	}
+	public SpecPanel(){
+		
+		init();
+	}
+	
+	
+	/*protected*/private XYSeries series;
+	/*protected*/private XYSeriesCollection dataset;
+	/*protected*/private JFreeChart chart;
+	/*protected*/private ChartPanel panel;
+	/*protected*/private SpecGenerator Gen;
+	/*protected*/private Boolean stop = false;
+>>>>>>> c5e247280a9fe7a4c1803ffaf674706305d1c6bb
 	
 	public SpecPanel(){
 		RSpec.setDaemon(true);
