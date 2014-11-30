@@ -48,7 +48,6 @@ public class BaseFrame {
 	private JPanel calibPanel = new JPanel();
 	private JPanel degreePanel = new JPanel();
 	private JPanel coefPanel = new JPanel();
-	//private JPanel specPanel = new JPanel();
 	private JPanel contentPane;
 
 	private JLabel lblVis = new JLabel("VIS");
@@ -685,7 +684,7 @@ public class BaseFrame {
 		panel_2.add(txtpnEspectro);
 
 		JButton btnAdquirir = new JButton("Adquirir");
-		btnAdiquirir.requestFocus();
+		btnAdquirir.requestFocus();
 		panel.add(btnAdquirir, "flowx,cell 0 2,growx");
 		panel.transferFocus();
 
