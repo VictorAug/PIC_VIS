@@ -61,22 +61,16 @@ public class BaseFrame {
 	private List<Integer> coeficients = new ArrayList<Integer>();
 
 	public BaseFrame() {
-		initialize();
-	}
-
-	public void initialize() {
 		frame.getContentPane().setBackground(new Color(65, 105, 225));
 		frame.setBounds(100, 100, 865, 500);
 		frame.setBackground(new Color(65, 105, 225));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 		frame.setJMenuBar(getMenuBar());
-
 		setCalibPanel();
 	}
 
 	public void setCalibPanel() {
-
 		calibPanel.setForeground(new Color(0, 0, 0));
 		calibPanel.setBackground(new Color(65, 105, 225));
 		frame.setContentPane(calibPanel);
@@ -127,7 +121,6 @@ public class BaseFrame {
 							setDegreePanel();
 					}
 				});
-
 				panel_2.add(rdbtnSim);
 			}
 			{
@@ -179,6 +172,7 @@ public class BaseFrame {
 				lblNewLabel_1.setForeground(new Color(248, 248, 255));
 				panel_1.add(lblNewLabel_1, BorderLayout.NORTH);
 			}
+			panel_1.transferFocus();
 		}
 		{
 			panel_2 = new JPanel();
@@ -189,68 +183,68 @@ public class BaseFrame {
 				textField.setSelectedTextColor(new Color(0, 0, 0));
 				textField.setHorizontalAlignment(SwingConstants.CENTER);
 				textField.setFont(new Font("Dialog", Font.BOLD, 12));
-				textField.setBorder(new BevelBorder(BevelBorder.RAISED,
-						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
-								0), new Color(0, 0, 0)));
+				textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0)));
 				textField.setMargin(new Insets(5, 5, 5, 5));
 				textField.setForeground(new Color(0, 0, 0));
 				panel_2.add(textField);
+				textField.requestFocus();
 				textField.setColumns(10);
-				textField.addMouseListener(new MouseListener() {
-
-					@Override
-					public void mouseReleased(MouseEvent e) {
-					}
-
-					@Override
-					public void mousePressed(MouseEvent e) {
-					}
-
-					@Override
-					public void mouseExited(MouseEvent e) {
-					}
-
-					@Override
-					public void mouseEntered(MouseEvent e) {
-					}
-
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						textField.selectAll();
-					}
-				});
 				textField.addKeyListener(new KeyListener() {
 
 					private Integer beforeCode;
 					private Integer code;
-					private Integer afterCode;
-
+					private boolean enterCode = false;
+					
 					@Override
 					public void keyTyped(KeyEvent event) {
+						if(textField.getText().length() >= 1)
+							event.setKeyChar((char) KeyEvent.VK_CLEAR);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent event) {
 						Integer code = event.getExtendedKeyCode();
-						if (code == 8)
-							this.code = beforeCode;
-						if (code > 48 && code < 52) { //0 a 3
-							beforeCode = new Integer(code.toString());
-							if (this.code == null)
-								this.code = code;
+						if(code > 48 && code < 52 && this.code == null) {
+							this.code = code;
+							this.beforeCode = new Integer(this.code.intValue());
+						} if(code != 10 && code != 8 && code != 17 && code != 27) {
+							if(code == 48 || code >= 52 && code < 58)
+								if(this.beforeCode == null)
+									this.beforeCode = code;
+							if(this.beforeCode == null)
+								this.beforeCode = code;
+						} if(this.enterCode) {
+							if(this.beforeCode == null) {
+								if(code == 10)
+									JOptionPane.showMessageDialog(textField, "Campo de Preenchimento Obrigatório!");
+							} else {
+								if(this.beforeCode > 48 && this.beforeCode < 52) {
+									setCoefPanel(this.code);
+								} else if(this.beforeCode == 48 || this.beforeCode >= 52 && this.beforeCode < 58) {
+									JOptionPane.showMessageDialog(textField, "Coeficiente inválido!");
+								} else {
+									JOptionPane.showMessageDialog(textField, "Caractere inválido!");
+								}
+							}
 						}
-						if (code == 10) {
-							afterCode = event.getExtendedKeyCode();
-							this.code = beforeCode;
-						}
-						if (afterCode == code && this.code != null
-								&& afterCode != null && this.code < 52 //0 a 3
-								&& this.code > 48)
-							setCoefPanel(this.code);
+						this.enterCode = false;
+						System.out.println("this.code = "+this.code);
+						System.out.println("code = "+code);
+						System.out.println("enterCode = "+this.enterCode);
+						System.out.println("beforeCode = "+this.beforeCode);
+						System.out.println("=========================================");
 					}
 
 					@Override
 					public void keyPressed(KeyEvent event) {
+						Integer code = event.getExtendedKeyCode();
+						if(code == 8 | code == 17) {
+							this.code = null;
+							this.beforeCode = null;
+							this.enterCode = false;
+						} else if(code == 10) {
+							this.enterCode = true;
+						}
 					}
 				});
 			}
@@ -279,43 +273,46 @@ public class BaseFrame {
 			coefPanel.add(panel_1, "cell 0 7 12 1,alignx center,aligny bottom");
 			panel_1.setLayout(new BorderLayout(0, 0));
 			{
-				JLabel lblNewLabel_1 = new JLabel(
-						"Insira os coeficientes de regressão");
+				JLabel lblNewLabel_1 = new JLabel("Insira os coeficientes de regressão");
 				lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 22));
 				lblNewLabel_1.setForeground(new Color(248, 248, 255));
 				lblNewLabel_1.setBorder(new EmptyBorder(5, 15, 5, 15));
 				panel_1.add(lblNewLabel_1, BorderLayout.NORTH);
 			}
+			panel_1.transferFocus();
 		}
 		{
 			panel_2 = new JPanel();
 			coefPanel.add(panel_2, "cell 0 8 12 1,alignx center,aligny top");
 			panel_2.setBackground(new Color(65, 105, 225));
-			panel_2.setLayout(new MigLayout("",
-					"[][][30][30][30][30][30][30][30][30][][30px]", "[][]"));
+			panel_2.setLayout(new MigLayout("", "[][][30][30][30][30][30][30][30][30][][30px]", "[][]"));
 			switch (integer) {
 			case 49: {
 				JTextField textField_1 = new JTextField();
 				textField_1.setForeground(new Color(0, 0, 0));
-				textField_1.setBorder(new BevelBorder(BevelBorder.RAISED,
-						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
-								0), new Color(0, 0, 0)));
+				textField_1.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,0), new Color(0, 0, 0)));
 				textField_1.setColumns(10);
+				textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
+				textField_1.setHorizontalAlignment(0);
+				textField_1.requestFocus();
 				textField_1.addKeyListener(new KeyListener() {
-
+					
+					private Integer beforeCode;
+					
 					@Override
 					public void keyTyped(KeyEvent e) {
+						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if (code != null)
-							if (code != 10 && code != 8)
+						if(code != 8 && code != 10)
+							if(code >= 48 && code < 58) {
 								coeficients.add(code);
-							else if (code == 8)
-								coeficients.remove(coeficients
-										.lastIndexOf(code));
+								beforeCode = code;
+							}
 					}
 
 					@Override
@@ -323,6 +320,7 @@ public class BaseFrame {
 					}
 				});
 				panel_2.add(textField_1, "cell 5 1,growx");
+				panel_2.transferFocus();
 			}
 				{
 					JLabel lblNewLabel_2 = new JLabel("X +");
@@ -331,26 +329,29 @@ public class BaseFrame {
 				}
 				{
 					JTextField textField = new JTextField();
+					textField.requestFocus();
 					textField.setForeground(new Color(0, 0, 0));
-					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField.setHorizontalAlignment(0);
+					textField.setFont(new Font("Dialog", Font.BOLD, 12));
+					textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
-
+						
+						private Integer beforeCode;
+						
 						@Override
 						public void keyTyped(KeyEvent e) {
+							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if (code != null)
-								if (code != 10 && code != 8)
+							if(code != 8 && code != 10)
+								if(code >= 48 && code < 58) {
 									coeficients.add(code);
-								else if (code == 8)
-									coeficients.remove(coeficients
-											.lastIndexOf(code));
-								else if (code == 10)
+									beforeCode = code;
+								} if (code == 10)
 									setSpecPanel();
 						}
 
@@ -366,22 +367,30 @@ public class BaseFrame {
 				JTextField textField_2 = new JTextField();
 				textField_2.setForeground(Color.BLACK);
 				textField_2.setColumns(10);
+				textField_2.requestFocus();
+				textField_2.setHorizontalAlignment(0);
+				textField_2.setFont(new Font("Dialog", Font.BOLD, 12));
 				textField_2.setBorder(new BevelBorder(BevelBorder.RAISED,
 						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
 								0), new Color(0, 0, 0)));
 				textField_2.addKeyListener(new KeyListener() {
 
+					private Integer beforeCode;
+					
 					@Override
 					public void keyTyped(KeyEvent e) {
+						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if (code != 10 && code != 8)
-							coeficients.add(code);
-						else if (code == 8)
-							coeficients.remove(coeficients.lastIndexOf(code));
+						if(code != 8 && code != 10)
+							if(code >= 48 && code < 58) {
+								coeficients.add(code);
+								beforeCode = code;
+							}
 					}
 
 					@Override
@@ -389,6 +398,7 @@ public class BaseFrame {
 					}
 				});
 				panel_2.add(textField_2, "cell 4 1,growx");
+				panel_2.transferFocus();
 			}
 				{
 					JLabel lblX = new JLabel("X² +");
@@ -399,23 +409,30 @@ public class BaseFrame {
 					JTextField textField_1 = new JTextField();
 					textField_1.setForeground(new Color(0, 0, 0));
 					textField_1.setColumns(10);
+					textField_1.requestFocus();
+					textField_1.setHorizontalAlignment(0);
+					textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
 					textField_1.addKeyListener(new KeyListener() {
-
+						
+						private Integer beforeCode;
+						
 						@Override
 						public void keyTyped(KeyEvent e) {
+							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if (code != 10 && code != 8)
-								coeficients.add(code);
-							else if (code == 8)
-								coeficients.remove(coeficients
-										.lastIndexOf(code));
+							if(code != 8 && code != 10)
+								if(code >= 48 && code < 58) {
+									coeficients.add(code);
+									beforeCode = code;
+								}
 						}
 
 						@Override
@@ -432,25 +449,31 @@ public class BaseFrame {
 				{
 					JTextField textField = new JTextField();
 					textField.setForeground(new Color(0, 0, 0));
+					textField.requestFocus();
+					textField.setHorizontalAlignment(0);
+					textField.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
 
+						private Integer beforeCode;
+						
 						@Override
 						public void keyTyped(KeyEvent e) {
+							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if (code != 10 && code != 8)
-								coeficients.add(code);
-							else if (code == 8)
-								coeficients.remove(coeficients
-										.lastIndexOf(code));
-							else
-								setSpecPanel();
+							if(code != 8 && code != 10)
+								if(code >= 48 && code < 58) {
+									coeficients.add(code);
+									beforeCode = code;
+								} if (code == 10)
+									setSpecPanel();
 						}
 
 						@Override
@@ -465,22 +488,30 @@ public class BaseFrame {
 				JTextField textField_3 = new JTextField();
 				textField_3.setForeground(Color.BLACK);
 				textField_3.setColumns(10);
+				textField_3.requestFocus();
+				textField_3.setFont(new Font("Dialog", Font.BOLD, 12));
+				textField_3.setHorizontalAlignment(0);
 				textField_3.setBorder(new BevelBorder(BevelBorder.RAISED,
 						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
 								0), new Color(0, 0, 0)));
 				textField_3.addKeyListener(new KeyListener() {
-
+					
+					private Integer beforeCode;
+					
 					@Override
 					public void keyTyped(KeyEvent e) {
+						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if (code != 10 && code != 8)
-							coeficients.add(code);
-						else if (code == 8)
-							coeficients.remove(coeficients.lastIndexOf(code));
+						if(code != 8 && code != 10)
+							if(code >= 48 && code < 58) {
+								coeficients.add(code);
+								beforeCode = code;
+							}
 					}
 
 					@Override
@@ -488,6 +519,7 @@ public class BaseFrame {
 					}
 				});
 				panel_2.add(textField_3, "cell 3 1,alignx center");
+				panel_2.transferFocus();
 			}
 				{
 					JLabel lblX_1 = new JLabel("X³ +");
@@ -497,6 +529,9 @@ public class BaseFrame {
 				{
 					JTextField textField_2 = new JTextField();
 					textField_2.setForeground(Color.BLACK);
+					textField_2.setFont(new Font("Dialog", Font.BOLD, 12));
+					textField_2.requestFocus();
+					textField_2.setHorizontalAlignment(0);
 					textField_2.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
@@ -510,25 +545,32 @@ public class BaseFrame {
 				}
 				{
 					JTextField textField_1 = new JTextField();
+					textField_1.requestFocus();
+					textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField_1.setForeground(new Color(0, 0, 0));
+					textField_1.setHorizontalAlignment(0);
 					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
 					textField_1.setColumns(10);
 					textField_1.addKeyListener(new KeyListener() {
 
+						private Integer beforeCode;
+						
 						@Override
 						public void keyTyped(KeyEvent e) {
+							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if (code != 10 && code != 8)
-								coeficients.add(code);
-							else if (code == 8)
-								coeficients.remove(coeficients
-										.lastIndexOf(code));
+							if(code != 8 && code != 10)
+								if(code >= 48 && code < 58) {
+									coeficients.add(code);
+									beforeCode = code;
+								}
 						}
 
 						@Override
@@ -536,6 +578,7 @@ public class BaseFrame {
 						}
 					});
 					panel_2.add(textField_1, "cell 7 1,alignx center");
+					panel_2.transferFocus();
 				}
 				{
 					JLabel lblNewLabel_2 = new JLabel("X +");
@@ -547,25 +590,31 @@ public class BaseFrame {
 					textField.setForeground(new Color(0, 0, 0));
 					panel_2.add(textField, "cell 9 1,alignx center");
 					textField.setColumns(10);
+					textField.setHorizontalAlignment(0);
+					textField.setFont(new Font("Dialog", Font.BOLD, 12));
+					textField.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
-
+						
+						private Integer beforeCode;
+						
 						@Override
 						public void keyTyped(KeyEvent e) {
+							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent event) {
 							Integer code = event.getExtendedKeyCode();
-							if (code != 10 && code != 8)
-								coeficients.add(code);
-							else if (code == 8)
-								coeficients.remove(coeficients
-										.lastIndexOf(code));
-							else
-								setSpecPanel();
+							if(code != 8 && code != 10)
+								if(code >= 48 && code < 58) {
+									coeficients.add(code);
+									beforeCode = code;
+								} if (code == 10)
+									setSpecPanel();
 						}
 
 						@Override
@@ -577,7 +626,7 @@ public class BaseFrame {
 			}
 		}
 	}
-
+	
 	private void setSpecPanel() {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 0, 51));
@@ -636,7 +685,9 @@ public class BaseFrame {
 		panel_2.add(txtpnEspectro);
 
 		JButton btnAdquirir = new JButton("Adquirir");
+		btnAdiquirir.requestFocus();
 		panel.add(btnAdquirir, "flowx,cell 0 2,growx");
+		panel.transferFocus();
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 0, 51));
@@ -698,6 +749,7 @@ public class BaseFrame {
 			    } else {
 			        btnAdquirir.setEnabled(false);
 			        btnParar.setEnabled(true);
+			        btnParar.requestFocus();
 			    }
 			}
 		});
@@ -742,9 +794,11 @@ public class BaseFrame {
 		rdbtnDiscreto.setFocusPainted(false);
 		rdbtnDiscreto.setBackground(new Color(0, 0, 51));
 		rdbtnDiscreto.setOpaque(false);
+		rdbtnDiscreto.requestFocus();
 		rdbtnDiscreto.setForeground(Color.LIGHT_GRAY);
 		panel.add(rdbtnDiscreto,
 				"flowx,cell 0 6,alignx center,aligny top");
+		panel.transferFocus();
 		groupSpec1.add(rdbtnDiscreto);
 		rdbtnDiscreto.setActionCommand("once");
 		rdbtnDiscreto.addActionListener(new ActionListener() {
@@ -752,7 +806,6 @@ public class BaseFrame {
 				if ("once".equals(event.getActionCommand())) {
 			        btnParar.setEnabled(false);
 			        specPanel.toggleReadOnce(true);
-			        btnParar.setEnabled(false);
 			        btnAdquirir.setEnabled(true);
 			    } else {
 			        btnParar.setEnabled(false);
@@ -767,6 +820,7 @@ public class BaseFrame {
 		rdbtnContnuo.setOpaque(false);
 		rdbtnContnuo.setForeground(Color.LIGHT_GRAY);
 		rdbtnContnuo.setSelected(true);
+		rdbtnContnuo.requestFocus();
 		rdbtnContnuo.setActionCommand("cont");
 		rdbtnContnuo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
@@ -800,6 +854,7 @@ public class BaseFrame {
 		rdbtnCounts.setBackground(new Color(0, 0, 51));
 		rdbtnCounts.setOpaque(false);
 		rdbtnCounts.setForeground(Color.LIGHT_GRAY);
+		rdbtnCounts.requestFocus();
 		panel.add(rdbtnCounts,
 				"flowx,cell 0 8,alignx center,aligny top");
 		groupSpec2.add(rdbtnCounts);
@@ -825,6 +880,7 @@ public class BaseFrame {
 		panel.add(rdbtnMv, "cell 0 8,alignx center,aligny top");
 		groupSpec2.add(rdbtnMv);
 		rdbtnMv.setActionCommand("mV");
+		rdbtnMv.requestFocus();
 		rdbtnMv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if ("mV".equals(event.getActionCommand())) {
@@ -860,11 +916,14 @@ public class BaseFrame {
 		textPane.setOpaque(false);
 		textPane.setForeground(Color.LIGHT_GRAY);
 		textPane.setText("-");
+		textPane.transferFocus();
 		panel.add(textPane, "cell 0 10");
 
 		JTextField textField_1 = new JTextField();
 		textField_1.setForeground(Color.LIGHT_GRAY);
 		textField_1.setOpaque(false);
+		textField_1.requestFocus();
+		
 		panel.add(textField_1, "cell 0 10");
 		textField_1.setColumns(10);
 
@@ -890,6 +949,7 @@ public class BaseFrame {
 		JTextField textField_2 = new JTextField();
 		textField_2.setForeground(Color.LIGHT_GRAY);
 		textField_2.setOpaque(false);
+		textField_2.requestFocus();
 		panel.add(textField_2, "flowx,cell 0 12,growx");
 		textField_2.setColumns(10);
 
@@ -916,6 +976,7 @@ public class BaseFrame {
 		JTextField textField_3 = new JTextField();
 		textField_3.setForeground(Color.LIGHT_GRAY);
 		textField_3.setOpaque(false);
+		textField_3.requestFocus();
 		panel.add(textField_3, "cell 0 14,growx");
 		textField_3.setColumns(10);
 
