@@ -16,5 +16,6 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/Leone/Desktop/PIC_VIS/lib/orsonpdf-1.6-eval.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Leone/Desktop/PIC_VIS/lib/servlet.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Leone/Desktop/PIC_VIS/lib/swtgraphics2d.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Leone/Desktop/PIC_VIS/third-party/commapi/comm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
