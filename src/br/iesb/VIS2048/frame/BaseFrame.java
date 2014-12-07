@@ -1,4 +1,4 @@
-package br.iesb.VIS2048.frame;
+package br.iesb.vis.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,17 +10,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -37,9 +37,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
-import br.iesb.VIS2048.action.AbrirAction;
-import br.iesb.VIS2048.action.SalvarAction;
-import br.iesb.VIS2048.panel.SpecPanel;
+import br.iesb.vis.action.AbrirAction;
+import br.iesb.vis.action.SalvarAction;
+import br.iesb.vis.database.FileDataBase;
+import br.iesb.vis.panel.SpecPanel;
 
 public class BaseFrame {
 
@@ -49,6 +50,7 @@ public class BaseFrame {
 	private JPanel degreePanel = new JPanel();
 	private JPanel coefPanel = new JPanel();
 	private JPanel contentPane;
+	private SpecPanel specPanel;
 
 	private JLabel lblVis = new JLabel("VIS");
 	private JLabel lblEspectrmetro = new JLabel(
@@ -134,8 +136,10 @@ public class BaseFrame {
 
 					@Override
 					public void actionPerformed(ActionEvent event) {
-						if (event.getSource() == rdbtnNo)
+						if (event.getSource() == rdbtnNo) {
 							setSpecPanel();
+							rdbtnNo.transferFocus();
+						}
 					}
 				});
 			}
@@ -591,7 +595,6 @@ public class BaseFrame {
 					textField.setColumns(10);
 					textField.setHorizontalAlignment(0);
 					textField.setFont(new Font("Dialog", Font.BOLD, 12));
-					textField.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
 							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
 									0, 0, 0), new Color(0, 0, 0)));
@@ -675,16 +678,25 @@ public class BaseFrame {
 
 		JTextPane txtpnEspectro = new JTextPane();
 		txtpnEspectro.setMargin(new Insets(0, 0, 0, 0));
-		txtpnEspectro.setEditable(false);
 		txtpnEspectro.setCaretColor(new Color(0, 0, 0));
 		txtpnEspectro.setForeground(new Color(0, 0, 0));
 		txtpnEspectro.setSelectedTextColor(Color.LIGHT_GRAY);
+		txtpnEspectro.setFocusable(false);
+		txtpnEspectro.setEditable(false);
 		txtpnEspectro.setOpaque(false);
 		txtpnEspectro.setText("Espectro");
 		panel_2.add(txtpnEspectro);
 
 		JButton btnAdquirir = new JButton("Adquirir");
 		btnAdquirir.requestFocus();
+		btnAdquirir.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e != null)
+					new FileDataBase();
+			}
+		});
 		panel.add(btnAdquirir, "flowx,cell 0 2,growx");
 		panel.transferFocus();
 
@@ -721,13 +733,15 @@ public class BaseFrame {
 		txtpnOpes.setCaretColor(Color.BLACK);
 		txtpnOpes.setOpaque(false);
 		txtpnOpes.setEditable(false);
+		txtpnOpes.setFocusable(false);
 		txtpnOpes.setText("Op\u00E7\u00F5es");
 		panel_4.add(txtpnOpes);
+		panel_4.transferFocus();
 		
 		///////////////////////////////
 		///////Minhas Alterações///////
 		///////////////////////////////
-		SpecPanel specPanel = new SpecPanel();
+		specPanel = new SpecPanel();
 		specPanel.setBackground(new Color(0, 0, 51, 0));
 		specPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		specPanel.setPreferredSize(new Dimension(630, 300));
@@ -738,17 +752,20 @@ public class BaseFrame {
 		panel.add(btnParar, "cell 0 2,growx");
 		btnParar.setActionCommand("disable");
 		btnParar.setEnabled(false);
+		btnParar.requestFocus();
 		btnParar.addActionListener(new ActionListener() {
+			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("disable".equals(event.getActionCommand())) {
 			        btnAdquirir.setEnabled(true);
 			        btnParar.setEnabled(false);
-			        //specPanel.stop = true;
+			        btnParar.setFocusable(false);
 			        specPanel.getSpec(false);
 			    } else {
 			        btnAdquirir.setEnabled(false);
 			        btnParar.setEnabled(true);
-			        btnParar.requestFocus();
+			        btnParar.setFocusable(true);
 			    }
 			}
 		});
@@ -756,6 +773,8 @@ public class BaseFrame {
 		btnAdquirir.setActionCommand("enable");
 		btnAdquirir.setToolTipText("Começar a adquirir leituras");
 		btnAdquirir.addActionListener(new ActionListener() {
+			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
 			        specPanel.getSpec(true);
@@ -784,23 +803,24 @@ public class BaseFrame {
 		txtpnModoDeOperao.setForeground(Color.LIGHT_GRAY);
 		txtpnModoDeOperao.setBackground(new Color(25, 25, 112));
 		txtpnModoDeOperao.setEditable(false);
+		txtpnModoDeOperao.setFocusable(false);
 		txtpnModoDeOperao.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnModoDeOperao.setText("Modo de Opera\u00E7\u00E3o");
 		panel.add(txtpnModoDeOperao, "cell 0 5,grow");
 		ButtonGroup groupSpec1 = new ButtonGroup();
 		
 		JRadioButton rdbtnDiscreto = new JRadioButton("Único");
-		rdbtnDiscreto.setFocusPainted(false);
 		rdbtnDiscreto.setBackground(new Color(0, 0, 51));
+		rdbtnDiscreto.setFocusPainted(false);
 		rdbtnDiscreto.setOpaque(false);
 		rdbtnDiscreto.requestFocus();
 		rdbtnDiscreto.setForeground(Color.LIGHT_GRAY);
-		panel.add(rdbtnDiscreto,
-				"flowx,cell 0 6,alignx center,aligny top");
-		panel.transferFocus();
+		panel.add(rdbtnDiscreto, "flowx,cell 0 6,alignx center,aligny top");
 		groupSpec1.add(rdbtnDiscreto);
 		rdbtnDiscreto.setActionCommand("once");
 		rdbtnDiscreto.addActionListener(new ActionListener() {
+			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("once".equals(event.getActionCommand())) {
 			        btnParar.setEnabled(false);
@@ -843,6 +863,7 @@ public class BaseFrame {
 		txtpnUnidade.setForeground(Color.LIGHT_GRAY);
 		txtpnUnidade.setBackground(new Color(25, 25, 112));
 		txtpnUnidade.setEditable(false);
+		txtpnUnidade.setFocusable(false);
 		txtpnUnidade.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnUnidade.setText("Unidade");
 		panel.add(txtpnUnidade, "cell 0 7,grow");
@@ -854,12 +875,13 @@ public class BaseFrame {
 		rdbtnCounts.setOpaque(false);
 		rdbtnCounts.setForeground(Color.LIGHT_GRAY);
 		rdbtnCounts.requestFocus();
-		panel.add(rdbtnCounts,
-				"flowx,cell 0 8,alignx center,aligny top");
+		panel.add(rdbtnCounts, "flowx,cell 0 8,alignx center,aligny top");
 		groupSpec2.add(rdbtnCounts);
 		rdbtnCounts.setSelected(true);
 		rdbtnCounts.setActionCommand("Counts");
 		rdbtnCounts.addActionListener(new ActionListener() {
+			
+			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("Counts".equals(event.getActionCommand())) {
 			        specPanel.setImage("Counts");
@@ -899,29 +921,37 @@ public class BaseFrame {
 		txtpnFaixaEspectral.setForeground(Color.LIGHT_GRAY);
 		txtpnFaixaEspectral.setBackground(new Color(25, 25, 112));
 		txtpnFaixaEspectral.setEditable(false);
+		txtpnFaixaEspectral.setFocusable(false);
 		txtpnFaixaEspectral.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnFaixaEspectral.setText("Faixa Espectral");
 		panel.add(txtpnFaixaEspectral, "cell 0 9,grow");
 
 		JTextField textField = new JTextField();
 		textField.setForeground(Color.LIGHT_GRAY);
-		textField.setOpaque(false);
+		textField.setBackground(SystemColor.activeCaption);
+		textField.requestFocus();
+		textField.setCaretColor(Color.BLACK);
+		textField.setFont(new Font("Dialog", Font.BOLD, 12));
+		textField.setHorizontalAlignment(JTextField.CENTER);
 		panel.add(textField, "flowx,cell 0 10,growx");
 		textField.setColumns(10);
 
 		JTextPane textPane = new JTextPane();
-		textPane.setEditable(false);
 		textPane.setBackground(new Color(0, 0, 51));
-		textPane.setOpaque(false);
 		textPane.setForeground(Color.LIGHT_GRAY);
 		textPane.setText("-");
-		textPane.transferFocus();
+		textPane.setEditable(false);
+		textPane.setOpaque(false);
+		textPane.setFocusable(false);
 		panel.add(textPane, "cell 0 10");
 
 		JTextField textField_1 = new JTextField();
 		textField_1.setForeground(Color.LIGHT_GRAY);
-		textField_1.setOpaque(false);
+		textField_1.setBackground(SystemColor.activeCaption);
+		textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
 		textField_1.requestFocus();
+		textField_1.setCaretColor(Color.BLACK);
+		textField_1.setHorizontalAlignment(JTextField.CENTER);
 		
 		panel.add(textField_1, "cell 0 10");
 		textField_1.setColumns(10);
@@ -930,6 +960,7 @@ public class BaseFrame {
 		txtpnNm.setEditable(false);
 		txtpnNm.setBackground(new Color(0, 0, 51));
 		txtpnNm.setOpaque(false);
+		txtpnNm.setFocusable(false);
 		txtpnNm.setForeground(Color.LIGHT_GRAY);
 		txtpnNm.setText("nm");
 		panel.add(txtpnNm, "cell 0 10");
@@ -941,20 +972,25 @@ public class BaseFrame {
 		txtpnTempoDeIntegrao.setForeground(Color.LIGHT_GRAY);
 		txtpnTempoDeIntegrao.setBackground(new Color(25, 25, 112));
 		txtpnTempoDeIntegrao.setEditable(false);
+		txtpnTempoDeIntegrao.setFocusable(false);
 		txtpnTempoDeIntegrao.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnTempoDeIntegrao.setText("Tempo de Integra\u00E7\u00E3o");
 		panel.add(txtpnTempoDeIntegrao, "cell 0 11,grow");
 
 		JTextField textField_2 = new JTextField();
 		textField_2.setForeground(Color.LIGHT_GRAY);
-		textField_2.setOpaque(false);
 		textField_2.requestFocus();
+		textField_2.setBackground(SystemColor.activeCaption);
+		textField_2.setHorizontalAlignment(JTextField.CENTER);
+		textField_2.setCaretColor(Color.BLACK);
+		textField_2.setFont(new Font("Dialog", Font.BOLD, 12));
 		panel.add(textField_2, "flowx,cell 0 12,growx");
 		textField_2.setColumns(10);
 
 		JTextPane txtpnTms = new JTextPane();
-		txtpnTms.setEditable(false);
 		txtpnTms.setBackground(new Color(0, 0, 51));
+		txtpnTms.setEditable(false);
+		txtpnTms.setFocusable(false);
 		txtpnTms.setOpaque(false);
 		txtpnTms.setForeground(Color.LIGHT_GRAY);
 		txtpnTms.setText("t (ms)");
@@ -967,15 +1003,18 @@ public class BaseFrame {
 		txtpnAmostrasParaPromediao.setForeground(Color.LIGHT_GRAY);
 		txtpnAmostrasParaPromediao.setBackground(new Color(25, 25, 112));
 		txtpnAmostrasParaPromediao.setEditable(false);
+		txtpnAmostrasParaPromediao.setFocusable(false);
 		txtpnAmostrasParaPromediao.setDisabledTextColor(new Color(0, 0, 0));
-		txtpnAmostrasParaPromediao
-				.setText("Amostras para Promedia\u00E7\u00E3o");
+		txtpnAmostrasParaPromediao.setText("Amostras para Promedia\u00E7\u00E3o");
 		panel.add(txtpnAmostrasParaPromediao, "cell 0 13,grow");
 
 		JTextField textField_3 = new JTextField();
+		textField_3.setBackground(SystemColor.activeCaption);
 		textField_3.setForeground(Color.LIGHT_GRAY);
-		textField_3.setOpaque(false);
+		textField_3.setCaretColor(Color.BLACK);
 		textField_3.requestFocus();
+		textField_3.setFont(new Font("Dialog", Font.BOLD, 12));
+		textField_3.setHorizontalAlignment(JTextField.CENTER);
 		panel.add(textField_3, "cell 0 14,growx");
 		textField_3.setColumns(10);
 
@@ -1085,9 +1124,7 @@ public class BaseFrame {
 		JMenuItem fundoItem = new JMenuItem("- Fundo (cor)");
 		fundoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este é o submenu 'fundo'", "- Fundo (cor)",
-						JOptionPane.PLAIN_MESSAGE);
+				specPanel.getChart().setBackgroundPaint(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo", Color.black));
 			}
 		});
 		return fundoItem;
