@@ -40,27 +40,51 @@ import net.miginfocom.swing.MigLayout;
 import br.iesb.vis.action.AbrirAction;
 import br.iesb.vis.action.SalvarAction;
 import br.iesb.vis.database.FileDataBase;
+import br.iesb.vis.database.Zipper;
 import br.iesb.vis.panel.SpecPanel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BaseFrame.
+ */
 public class BaseFrame {
 
+	/** The frame. */
 	private JFrame frame = new JFrame("VIS2048 - espectrômetro de emissão");
-	private JPanel panel = new JPanel();
+
+	/** The calib panel. */
 	private JPanel calibPanel = new JPanel();
+
+	/** The degree panel. */
 	private JPanel degreePanel = new JPanel();
+
+	/** The coef panel. */
 	private JPanel coefPanel = new JPanel();
+
+	/** The content pane. */
 	private JPanel contentPane;
+
+	/** The spec panel. */
 	private SpecPanel specPanel;
 
+	/** The label vis. */
 	private JLabel lblVis = new JLabel("VIS");
-	private JLabel lblEspectrmetro = new JLabel(
-			"2048 - espectrômetro de emissão");
 
+	/** The label espectrmetro. */
+	private JLabel lblEspectrmetro = new JLabel("2048 - espectrômetro de emissão");
+
+	/** The panel_1. */
 	private JPanel panel_1 = new JPanel();
+
+	/** The panel_2. */
 	private JPanel panel_2 = new JPanel();
 
+	/** The coeficients. */
 	private List<Integer> coeficients = new ArrayList<Integer>();
 
+	/**
+	 * Instantiates a new base frame.
+	 */
 	public BaseFrame() {
 		frame.getContentPane().setBackground(new Color(65, 105, 225));
 		frame.setBounds(100, 100, 865, 500);
@@ -71,13 +95,15 @@ public class BaseFrame {
 		setCalibPanel();
 	}
 
+	/**
+	 * Sets the calib panel.
+	 */
 	public void setCalibPanel() {
 		calibPanel.setForeground(new Color(0, 0, 0));
 		calibPanel.setBackground(new Color(65, 105, 225));
 		frame.setContentPane(calibPanel);
 
-		calibPanel.setLayout(new MigLayout("",
-				"[grow][][][][grow][][][][][][][][][][][]",
+		calibPanel.setLayout(new MigLayout("", "[grow][][][][grow][][][][][][][][][][][]",
 				"[][][][][][][grow][grow][grow][grow]"));
 
 		lblVis.setForeground(new Color(0, 0, 0));
@@ -92,8 +118,7 @@ public class BaseFrame {
 			panel_1.setFont(new Font("Dialog", Font.BOLD, 22));
 			panel_1.setBackground(new Color(0, 0, 0));
 
-			calibPanel
-					.add(panel_1, "cell 0 7 12 1,alignx center,aligny bottom");
+			calibPanel.add(panel_1, "cell 0 7 12 1,alignx center,aligny bottom");
 
 			panel_1.setLayout(new BorderLayout(0, 0));
 			{
@@ -130,7 +155,7 @@ public class BaseFrame {
 				rdbtnNo.setForeground(new Color(248, 248, 255));
 				rdbtnNo.setBackground(Color.BLACK);
 				panel_2.add(rdbtnNo);
-				
+
 				groupP1.add(rdbtnNo);
 				rdbtnNo.addActionListener(new ActionListener() {
 
@@ -146,6 +171,9 @@ public class BaseFrame {
 		}
 	}
 
+	/**
+	 * Sets the degree panel.
+	 */
 	public void setDegreePanel() {
 		degreePanel.setForeground(new Color(0, 0, 0));
 		degreePanel.setBackground(new Color(65, 105, 225));
@@ -154,8 +182,7 @@ public class BaseFrame {
 		frame.setContentPane(degreePanel);
 		frame.getContentPane().setVisible(true);
 
-		degreePanel.setLayout(new MigLayout("",
-				"[grow][][][][grow][][][][][][][][][][][]",
+		degreePanel.setLayout(new MigLayout("", "[grow][][][][grow][][][][][][][][][][][]",
 				"[][][][][][][grow][grow][grow][grow]"));
 
 		degreePanel.add(lblVis, "cell 3 6");
@@ -165,8 +192,7 @@ public class BaseFrame {
 			panel_1.setForeground(new Color(248, 248, 255));
 			panel_1.setFont(new Font("Dialog", Font.BOLD, 22));
 			panel_1.setBackground(new Color(0, 0, 0));
-			degreePanel.add(panel_1,
-					"cell 0 7 12 1,alignx center,aligny bottom");
+			degreePanel.add(panel_1, "cell 0 7 12 1,alignx center,aligny bottom");
 			panel_1.setLayout(new BorderLayout(0, 0));
 			{
 				JLabel lblNewLabel_1 = new JLabel("Insira o grau do polinômio");
@@ -186,7 +212,8 @@ public class BaseFrame {
 				textField.setSelectedTextColor(new Color(0, 0, 0));
 				textField.setHorizontalAlignment(SwingConstants.CENTER);
 				textField.setFont(new Font("Dialog", Font.BOLD, 12));
-				textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0)));
+				textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+						new Color(0, 0, 0), new Color(0, 0, 0)));
 				textField.setMargin(new Insets(5, 5, 5, 5));
 				textField.setForeground(new Color(0, 0, 0));
 				panel_2.add(textField);
@@ -197,33 +224,35 @@ public class BaseFrame {
 					private Integer beforeCode;
 					private Integer code;
 					private boolean enterCode = false;
-					
+
 					@Override
 					public void keyTyped(KeyEvent event) {
-						if(textField.getText().length() >= 1)
+						if (textField.getText().length() >= 1)
 							event.setKeyChar((char) KeyEvent.VK_CLEAR);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent event) {
 						Integer code = event.getExtendedKeyCode();
-						if(code > 48 && code < 52 && this.code == null) {
+						if (code > 48 && code < 52 && this.code == null) {
 							this.code = code;
 							this.beforeCode = new Integer(this.code.intValue());
-						} if(code != 10 && code != 8 && code != 17 && code != 27) {
-							if(code == 48 || code >= 52 && code < 58)
-								if(this.beforeCode == null)
+						}
+						if (code != 10 && code != 8 && code != 17 && code != 27) {
+							if (code == 48 || code >= 52 && code < 58)
+								if (this.beforeCode == null)
 									this.beforeCode = code;
-							if(this.beforeCode == null)
+							if (this.beforeCode == null)
 								this.beforeCode = code;
-						} if(this.enterCode) {
-							if(this.beforeCode == null) {
-								if(code == 10)
+						}
+						if (this.enterCode) {
+							if (this.beforeCode == null) {
+								if (code == 10)
 									JOptionPane.showMessageDialog(textField, "Campo de Preenchimento Obrigatório!");
 							} else {
-								if(this.beforeCode > 48 && this.beforeCode < 52) {
+								if (this.beforeCode > 48 && this.beforeCode < 52) {
 									setCoefPanel(this.code);
-								} else if(this.beforeCode == 48 || this.beforeCode >= 52 && this.beforeCode < 58) {
+								} else if (this.beforeCode == 48 || this.beforeCode >= 52 && this.beforeCode < 58) {
 									JOptionPane.showMessageDialog(textField, "Coeficiente inválido!");
 								} else {
 									JOptionPane.showMessageDialog(textField, "Caractere inválido!");
@@ -231,21 +260,21 @@ public class BaseFrame {
 							}
 						}
 						this.enterCode = false;
-						System.out.println("this.code = "+this.code);
-						System.out.println("code = "+code);
-						System.out.println("enterCode = "+this.enterCode);
-						System.out.println("beforeCode = "+this.beforeCode);
+						System.out.println("this.code = " + this.code);
+						System.out.println("code = " + code);
+						System.out.println("enterCode = " + this.enterCode);
+						System.out.println("beforeCode = " + this.beforeCode);
 						System.out.println("=========================================");
 					}
 
 					@Override
 					public void keyPressed(KeyEvent event) {
 						Integer code = event.getExtendedKeyCode();
-						if(code == 8 | code == 17) {
+						if (code == 8 | code == 17) {
 							this.code = null;
 							this.beforeCode = null;
 							this.enterCode = false;
-						} else if(code == 10) {
+						} else if (code == 10) {
 							this.enterCode = true;
 						}
 					}
@@ -254,6 +283,12 @@ public class BaseFrame {
 		}
 	}
 
+	/**
+	 * Sets the coef panel.
+	 *
+	 * @param integer
+	 *            the new coef panel
+	 */
 	private void setCoefPanel(Integer integer) {
 		coefPanel.setForeground(new Color(0, 0, 0));
 		coefPanel.setBackground(new Color(65, 105, 225));
@@ -262,8 +297,7 @@ public class BaseFrame {
 		frame.setContentPane(coefPanel);
 		frame.getContentPane().setVisible(true);
 
-		coefPanel.setLayout(new MigLayout("",
-				"[grow][][][][grow][][][][][][][][][][][]",
+		coefPanel.setLayout(new MigLayout("", "[grow][][][][grow][][][][][][][][][][][]",
 				"[][][][][][][grow][grow][grow][grow]"));
 
 		coefPanel.add(lblVis, "cell 3 6");
@@ -293,26 +327,27 @@ public class BaseFrame {
 			case 49: {
 				JTextField textField_1 = new JTextField();
 				textField_1.setForeground(new Color(0, 0, 0));
-				textField_1.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,0), new Color(0, 0, 0)));
+				textField_1.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+						new Color(0, 0, 0), new Color(0, 0, 0)));
 				textField_1.setColumns(10);
 				textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
 				textField_1.setHorizontalAlignment(0);
 				textField_1.requestFocus();
 				textField_1.addKeyListener(new KeyListener() {
-					
+
 					private Integer beforeCode;
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
-						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+						if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if(code != 8 && code != 10)
-							if(code >= 48 && code < 58) {
+						if (code != 8 && code != 10)
+							if (code >= 48 && code < 58) {
 								coeficients.add(code);
 								beforeCode = code;
 							}
@@ -336,26 +371,28 @@ public class BaseFrame {
 					textField.setForeground(new Color(0, 0, 0));
 					textField.setHorizontalAlignment(0);
 					textField.setFont(new Font("Dialog", Font.BOLD, 12));
-					textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0, 0)));
+					textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
-						
+
 						private Integer beforeCode;
-						
+
 						@Override
 						public void keyTyped(KeyEvent e) {
-							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if(code != 8 && code != 10)
-								if(code >= 48 && code < 58) {
+							if (code != 8 && code != 10)
+								if (code >= 48 && code < 58) {
 									coeficients.add(code);
 									beforeCode = code;
-								} if (code == 10)
-									setSpecPanel();
+								}
+							if (code == 10)
+								setSpecPanel();
 						}
 
 						@Override
@@ -373,24 +410,23 @@ public class BaseFrame {
 				textField_2.requestFocus();
 				textField_2.setHorizontalAlignment(0);
 				textField_2.setFont(new Font("Dialog", Font.BOLD, 12));
-				textField_2.setBorder(new BevelBorder(BevelBorder.RAISED,
-						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
-								0), new Color(0, 0, 0)));
+				textField_2.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+						new Color(0, 0, 0), new Color(0, 0, 0)));
 				textField_2.addKeyListener(new KeyListener() {
 
 					private Integer beforeCode;
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
-						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+						if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if(code != 8 && code != 10)
-							if(code >= 48 && code < 58) {
+						if (code != 8 && code != 10)
+							if (code >= 48 && code < 58) {
 								coeficients.add(code);
 								beforeCode = code;
 							}
@@ -415,24 +451,23 @@ public class BaseFrame {
 					textField_1.requestFocus();
 					textField_1.setHorizontalAlignment(0);
 					textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
-					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField_1.addKeyListener(new KeyListener() {
-						
+
 						private Integer beforeCode;
-						
+
 						@Override
 						public void keyTyped(KeyEvent e) {
-							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if(code != 8 && code != 10)
-								if(code >= 48 && code < 58) {
+							if (code != 8 && code != 10)
+								if (code >= 48 && code < 58) {
 									coeficients.add(code);
 									beforeCode = code;
 								}
@@ -455,28 +490,28 @@ public class BaseFrame {
 					textField.requestFocus();
 					textField.setHorizontalAlignment(0);
 					textField.setFont(new Font("Dialog", Font.BOLD, 12));
-					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
 
 						private Integer beforeCode;
-						
+
 						@Override
 						public void keyTyped(KeyEvent e) {
-							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if(code != 8 && code != 10)
-								if(code >= 48 && code < 58) {
+							if (code != 8 && code != 10)
+								if (code >= 48 && code < 58) {
 									coeficients.add(code);
 									beforeCode = code;
-								} if (code == 10)
-									setSpecPanel();
+								}
+							if (code == 10)
+								setSpecPanel();
 						}
 
 						@Override
@@ -494,24 +529,23 @@ public class BaseFrame {
 				textField_3.requestFocus();
 				textField_3.setFont(new Font("Dialog", Font.BOLD, 12));
 				textField_3.setHorizontalAlignment(0);
-				textField_3.setBorder(new BevelBorder(BevelBorder.RAISED,
-						new Color(0, 0, 0), new Color(0, 0, 0), new Color(0, 0,
-								0), new Color(0, 0, 0)));
+				textField_3.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+						new Color(0, 0, 0), new Color(0, 0, 0)));
 				textField_3.addKeyListener(new KeyListener() {
-					
+
 					private Integer beforeCode;
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
-						if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+						if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 							coeficients.remove(beforeCode);
 					}
 
 					@Override
 					public void keyReleased(KeyEvent e) {
 						Integer code = e.getExtendedKeyCode();
-						if(code != 8 && code != 10)
-							if(code >= 48 && code < 58) {
+						if (code != 8 && code != 10)
+							if (code >= 48 && code < 58) {
 								coeficients.add(code);
 								beforeCode = code;
 							}
@@ -535,9 +569,8 @@ public class BaseFrame {
 					textField_2.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField_2.requestFocus();
 					textField_2.setHorizontalAlignment(0);
-					textField_2.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField_2.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField_2.setColumns(10);
 					panel_2.add(textField_2, "cell 5 1,alignx center");
 				}
@@ -552,25 +585,24 @@ public class BaseFrame {
 					textField_1.setFont(new Font("Dialog", Font.BOLD, 12));
 					textField_1.setForeground(new Color(0, 0, 0));
 					textField_1.setHorizontalAlignment(0);
-					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField_1.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField_1.setColumns(10);
 					textField_1.addKeyListener(new KeyListener() {
 
 						private Integer beforeCode;
-						
+
 						@Override
 						public void keyTyped(KeyEvent e) {
-							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent e) {
 							Integer code = e.getExtendedKeyCode();
-							if(code != 8 && code != 10)
-								if(code >= 48 && code < 58) {
+							if (code != 8 && code != 10)
+								if (code >= 48 && code < 58) {
 									coeficients.add(code);
 									beforeCode = code;
 								}
@@ -595,28 +627,28 @@ public class BaseFrame {
 					textField.setColumns(10);
 					textField.setHorizontalAlignment(0);
 					textField.setFont(new Font("Dialog", Font.BOLD, 12));
-					textField.setBorder(new BevelBorder(BevelBorder.RAISED,
-							new Color(0, 0, 0), new Color(0, 0, 0), new Color(
-									0, 0, 0), new Color(0, 0, 0)));
+					textField.setBorder(new BevelBorder(BevelBorder.RAISED, new Color(0, 0, 0), new Color(0, 0, 0),
+							new Color(0, 0, 0), new Color(0, 0, 0)));
 					textField.addKeyListener(new KeyListener() {
-						
+
 						private Integer beforeCode;
-						
+
 						@Override
 						public void keyTyped(KeyEvent e) {
-							if(e.getExtendedKeyCode() == 8 && beforeCode != null)
+							if (e.getExtendedKeyCode() == 8 && beforeCode != null)
 								coeficients.remove(beforeCode);
 						}
 
 						@Override
 						public void keyReleased(KeyEvent event) {
 							Integer code = event.getExtendedKeyCode();
-							if(code != 8 && code != 10)
-								if(code >= 48 && code < 58) {
+							if (code != 8 && code != 10)
+								if (code >= 48 && code < 58) {
 									coeficients.add(code);
 									beforeCode = code;
-								} if (code == 10)
-									setSpecPanel();
+								}
+							if (code == 10)
+								setSpecPanel();
 						}
 
 						@Override
@@ -628,18 +660,21 @@ public class BaseFrame {
 			}
 		}
 	}
-	
+
+	/**
+	 * Sets the spec panel.
+	 */
 	private void setSpecPanel() {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(0, 0, 51));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel = new JPanel();
 		panel.setOpaque(false);
 		panel.setBackground(new Color(0, 0, 51));
 		contentPane.add(panel, BorderLayout.WEST);
-		
+
 		frame.getContentPane().setVisible(false);
 		frame.setContentPane(contentPane);
 		frame.getContentPane().setVisible(true);
@@ -650,8 +685,7 @@ public class BaseFrame {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-						RenderingHints.VALUE_RENDER_QUALITY);
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 				int w = getWidth();
 				int h = getHeight();
 				Color color1 = Color.DARK_GRAY;
@@ -666,11 +700,9 @@ public class BaseFrame {
 		panel_2.setPreferredSize(new Dimension(160, 28));
 		panel_2.setMinimumSize(new Dimension(80, 20));
 		panel_2.setBackground(Color.DARK_GRAY);
-		panel.setLayout(new MigLayout(
-						"",
-						"[180px,grow][grow]",
-						"[grow][33px][][grow][33px][20px,fill][][20px,fill][][20px,fill][][20px,fill][][20px,fill][][grow]"));
-		
+		panel.setLayout(new MigLayout("", "[180px,grow][grow]",
+				"[grow][33px][][grow][33px][20px,fill][][20px,fill][][20px,fill][][20px,fill][][20px,fill][][grow]"));
+
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(0, 0, 51));
 		panel.add(panel_3, "cell 0 0,grow");
@@ -690,10 +722,9 @@ public class BaseFrame {
 		JButton btnAdquirir = new JButton("Adquirir");
 		btnAdquirir.requestFocus();
 		btnAdquirir.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e != null)
+				if (e != null)
 					new FileDataBase();
 			}
 		});
@@ -710,8 +741,7 @@ public class BaseFrame {
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-						RenderingHints.VALUE_RENDER_QUALITY);
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 				int w = getWidth();
 				int h = getHeight();
 				Color color1 = Color.DARK_GRAY;
@@ -737,16 +767,16 @@ public class BaseFrame {
 		txtpnOpes.setText("Op\u00E7\u00F5es");
 		panel_4.add(txtpnOpes);
 		panel_4.transferFocus();
-		
-		///////////////////////////////
-		///////Minhas Alterações///////
-		///////////////////////////////
+
+		// /////////////////////////////
+		// /////Minhas Alterações///////
+		// /////////////////////////////
 		specPanel = new SpecPanel();
 		specPanel.setBackground(new Color(0, 0, 51, 0));
 		specPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		specPanel.setPreferredSize(new Dimension(630, 300));
 		contentPane.add(specPanel, BorderLayout.CENTER);
-		
+
 		JButton btnParar = new JButton("Parar");
 		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panel.add(btnParar, "cell 0 2,growx");
@@ -754,48 +784,53 @@ public class BaseFrame {
 		btnParar.setEnabled(false);
 		btnParar.requestFocus();
 		btnParar.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("disable".equals(event.getActionCommand())) {
-			        btnAdquirir.setEnabled(true);
-			        btnParar.setEnabled(false);
-			        btnParar.setFocusable(false);
-			        specPanel.getSpec(false);
-			    } else {
-			        btnAdquirir.setEnabled(false);
-			        btnParar.setEnabled(true);
-			        btnParar.setFocusable(true);
-			    }
+					Zipper zipper = new Zipper();
+					zipper.generateFileList(null);
+					zipper.zipIt(null);
+
+					btnAdquirir.setEnabled(true);
+					btnParar.setEnabled(false);
+					btnParar.setFocusable(false);
+					specPanel.getSpec(false);
+				} else {
+					btnAdquirir.setEnabled(false);
+					btnParar.setEnabled(true);
+					btnParar.setFocusable(true);
+					specPanel.getDB().reloadTitle();
+				}
 			}
 		});
 
 		btnAdquirir.setActionCommand("enable");
 		btnAdquirir.setToolTipText("Começar a adquirir leituras");
 		btnAdquirir.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
-			        specPanel.getSpec(true);
-			        if(specPanel.isReadOnce())
-			        	btnParar.setEnabled(false);
-			        else{
-			        	btnParar.setEnabled(true);
-			        	btnAdquirir.setEnabled(false);
-			        }
-			        
-			    } else {
-			        btnAdquirir.setEnabled(true);
-			        btnParar.setEnabled(false);
-			    }
+					specPanel.getSpec(true);
+					if (specPanel.isReadOnce())
+						btnParar.setEnabled(false);
+					else {
+						btnParar.setEnabled(true);
+						btnAdquirir.setEnabled(false);
+					}
+
+				} else {
+					btnAdquirir.setEnabled(true);
+					btnParar.setEnabled(false);
+				}
 			}
 		});
-		
-		/////////////////////////////
-		///////Terminam aqui/////////
-		/////////////////////////////		
-		
+
+		// ///////////////////////////
+		// /////Terminam aqui/////////
+		// ///////////////////////////
+
 		JTextPane txtpnModoDeOperao = new JTextPane();
 		txtpnModoDeOperao.setPreferredSize(new Dimension(6, 24));
 		txtpnModoDeOperao.setMargin(new Insets(5, 5, 5, 5));
@@ -808,7 +843,7 @@ public class BaseFrame {
 		txtpnModoDeOperao.setText("Modo de Opera\u00E7\u00E3o");
 		panel.add(txtpnModoDeOperao, "cell 0 5,grow");
 		ButtonGroup groupSpec1 = new ButtonGroup();
-		
+
 		JRadioButton rdbtnDiscreto = new JRadioButton("Único");
 		rdbtnDiscreto.setBackground(new Color(0, 0, 51));
 		rdbtnDiscreto.setFocusPainted(false);
@@ -819,20 +854,20 @@ public class BaseFrame {
 		groupSpec1.add(rdbtnDiscreto);
 		rdbtnDiscreto.setActionCommand("once");
 		rdbtnDiscreto.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("once".equals(event.getActionCommand())) {
-			        btnParar.setEnabled(false);
-			        specPanel.toggleReadOnce(true);
-			        btnAdquirir.setEnabled(true);
-			    } else {
-			        btnParar.setEnabled(false);
-			        specPanel.toggleReadOnce(false);
-			    }
+					btnParar.setEnabled(false);
+					specPanel.toggleReadOnce(true);
+					btnAdquirir.setEnabled(true);
+				} else {
+					btnParar.setEnabled(false);
+					specPanel.toggleReadOnce(false);
+				}
 			}
 		});
-		
+
 		JRadioButton rdbtnContnuo = new JRadioButton("Cont\u00EDnuo");
 		rdbtnContnuo.setFocusPainted(false);
 		rdbtnContnuo.setBackground(new Color(0, 0, 51));
@@ -844,18 +879,18 @@ public class BaseFrame {
 		rdbtnContnuo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if ("cont".equals(event.getActionCommand())) {
-			        btnParar.setEnabled(true);
-			        specPanel.toggleReadOnce(false);
-			        btnParar.setEnabled(true);
-			    } else {
-			        btnParar.setEnabled(false);
-			        specPanel.toggleReadOnce(true);
-			    }
+					btnParar.setEnabled(true);
+					specPanel.toggleReadOnce(false);
+					btnParar.setEnabled(true);
+				} else {
+					btnParar.setEnabled(false);
+					specPanel.toggleReadOnce(true);
+				}
 			}
 		});
 		panel.add(rdbtnContnuo, "cell 0 6,alignx center,aligny top");
 		groupSpec1.add(rdbtnContnuo);
-		
+
 		JTextPane txtpnUnidade = new JTextPane();
 		txtpnUnidade.setPreferredSize(new Dimension(6, 24));
 		txtpnUnidade.setMargin(new Insets(5, 5, 5, 5));
@@ -868,7 +903,7 @@ public class BaseFrame {
 		txtpnUnidade.setText("Unidade");
 		panel.add(txtpnUnidade, "cell 0 7,grow");
 		ButtonGroup groupSpec2 = new ButtonGroup();
-		
+
 		JRadioButton rdbtnCounts = new JRadioButton("Counts");
 		rdbtnCounts.setFocusPainted(false);
 		rdbtnCounts.setBackground(new Color(0, 0, 51));
@@ -880,19 +915,19 @@ public class BaseFrame {
 		rdbtnCounts.setSelected(true);
 		rdbtnCounts.setActionCommand("Counts");
 		rdbtnCounts.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("Counts".equals(event.getActionCommand())) {
-			        specPanel.setImage("Counts");
-			        specPanel.reloadTitle();
-			    } else {
-			    	specPanel.setImage("mV");
-			    	specPanel.reloadTitle();
-			    }
+					specPanel.setImage("Counts");
+					specPanel.reloadTitle();
+				} else {
+					specPanel.setImage("mV");
+					specPanel.reloadTitle();
+				}
 			}
 		});
-		
+
 		JRadioButton rdbtnMv = new JRadioButton("mV");
 		rdbtnMv.setFocusPainted(false);
 		rdbtnMv.setBackground(new Color(0, 0, 51));
@@ -905,12 +940,12 @@ public class BaseFrame {
 		rdbtnMv.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if ("mV".equals(event.getActionCommand())) {
-			        specPanel.setImage("mV");
-			        specPanel.reloadTitle();
-			    } else {
-			    	specPanel.setImage("Counts");
-			    	specPanel.reloadTitle();
-			    }
+					specPanel.setImage("mV");
+					specPanel.reloadTitle();
+				} else {
+					specPanel.setImage("Counts");
+					specPanel.reloadTitle();
+				}
 			}
 		});
 
@@ -952,7 +987,7 @@ public class BaseFrame {
 		textField_1.requestFocus();
 		textField_1.setCaretColor(Color.BLACK);
 		textField_1.setHorizontalAlignment(JTextField.CENTER);
-		
+
 		panel.add(textField_1, "cell 0 10");
 		textField_1.setColumns(10);
 
@@ -1024,6 +1059,11 @@ public class BaseFrame {
 
 	}
 
+	/**
+	 * Gets the menu bar.
+	 *
+	 * @return the menu bar
+	 */
 	private JMenuBar getMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(getArquivoMenu());
@@ -1032,6 +1072,11 @@ public class BaseFrame {
 		return menuBar;
 	}
 
+	/**
+	 * Gets the arquivo menu.
+	 *
+	 * @return the arquivo menu
+	 */
 	private JMenu getArquivoMenu() {
 		JMenu arquivoMenu = new JMenu("Arquivo");
 		arquivoMenu.setForeground(Color.BLACK);
@@ -1044,6 +1089,11 @@ public class BaseFrame {
 		return arquivoMenu;
 	}
 
+	/**
+	 * Abrir item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem abrirItem() {
 		JMenuItem abrirItem = new JMenuItem("Abrir... (Alt+a)");
 		abrirItem.setMnemonic('a');
@@ -1051,46 +1101,59 @@ public class BaseFrame {
 		return abrirItem;
 	}
 
+	/**
+	 * Salvar item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem salvarItem() {
 		JMenuItem salvarItem = new JMenuItem("Salvar... (Alt+s)");
 		salvarItem.setMnemonic('s');
-		salvarItem.addActionListener(new SalvarAction(getFrame()));
+		salvarItem.addActionListener(new SalvarAction(frame));
 		return salvarItem;
 	}
 
+	/**
+	 * Exportar item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem exportarItem() {
 		JMenuItem exportarItem = new JMenuItem("Exportar (csv)... (Alt+s)");
 		exportarItem.setMnemonic('e');
 		exportarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane
-						.showMessageDialog(
-								getFrame(),
-								"Este é o submenu 'Exportar...'. Em breve voc� poder� exportar arquivos csv.",
-								"Exportar...	(Alt+e)",
-								JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame,
+						"Este é o submenu 'Exportar...'. Em breve voc� poder� exportar arquivos csv.",
+						"Exportar...	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return exportarItem;
 	}
 
+	/**
+	 * Exportar imagem item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem exportarImagemItem() {
-		JMenuItem exportarImagemItem = new JMenuItem(
-				"Exportar imagem (jpeg, PNG)... (Alt+i)");
+		JMenuItem exportarImagemItem = new JMenuItem("Exportar imagem (jpeg, PNG)... (Alt+i)");
 		exportarImagemItem.setMnemonic('i');
 		exportarImagemItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane
-						.showMessageDialog(
-								getFrame(),
-								"Este é o submenu 'Exportar imagem...'. Em breve voc� poder� exportar arquivos jpeg, PNG.",
-								"Exportar...	(Alt+e)",
-								JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame,
+						"Este é o submenu 'Exportar imagem...'. Em breve voc� poder� exportar arquivos jpeg, PNG.",
+						"Exportar...	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return exportarImagemItem;
 	}
 
+	/**
+	 * Sair item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem sairItem() {
 		JMenuItem sairItem = new JMenuItem("Sair");
 		sairItem.addActionListener(new ActionListener() {
@@ -1101,6 +1164,11 @@ public class BaseFrame {
 		return sairItem;
 	}
 
+	/**
+	 * Gets the preferencias menu.
+	 *
+	 * @return the preferencias menu
+	 */
 	private JMenu getPreferenciasMenu() {
 		JMenu preferenciasMenu = new JMenu("Preferências");
 		preferenciasMenu.setForeground(new Color(0, 0, 0));
@@ -1110,6 +1178,11 @@ public class BaseFrame {
 		return preferenciasMenu;
 	}
 
+	/**
+	 * Grafico menu.
+	 *
+	 * @return the j menu
+	 */
 	private JMenu graficoMenu() {
 		JMenu graficoMenu = new JMenu("Gráficos (Alt+g)");
 		graficoMenu.setMnemonic('g');
@@ -1120,57 +1193,79 @@ public class BaseFrame {
 		return graficoMenu;
 	}
 
+	/**
+	 * Fundo item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem fundoItem() {
 		JMenuItem fundoItem = new JMenuItem("- Fundo (cor)");
 		fundoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				specPanel.getChart().setBackgroundPaint(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo", Color.black));
+				specPanel.setBackgroundPaint(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo",
+						Color.black));
 			}
 		});
 		return fundoItem;
 	}
 
+	/**
+	 * Curva item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem curvaItem() {
 		JMenuItem curvaItem = new JMenuItem("- Curva (cor)");
 		curvaItem.setMnemonic('c');
 
 		curvaItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'Curva'.", "- Curva (cor)",
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'Curva'.", "- Curva (cor)",
 						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return curvaItem;
 	}
 
+	/**
+	 * Grid item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem gridItem() {
 		JMenuItem gridItem = new JMenuItem("- Grid");
 		gridItem.setMnemonic('g');
 		gridItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'Grid'.", "- Grid",
-						JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'Grid'.", "- Grid", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return gridItem;
 	}
 
+	/**
+	 * Auto escalar item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem autoEscalarItem() {
 		JMenuItem autoEscalarItem = new JMenuItem("- Autoescalar");
 		autoEscalarItem.setMnemonic('a');
 
 		autoEscalarItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'Autoescalar'.", "- Autoescalar",
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'Autoescalar'.", "- Autoescalar",
 						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return autoEscalarItem;
 	}
 
+	/**
+	 * Idioma menu.
+	 *
+	 * @return the j menu
+	 */
 	private JMenu idiomaMenu() {
 		JMenu idiomaMenu = new JMenu("Idioma (Alt+i)");
 		idiomaMenu.setMnemonic('i');
@@ -1179,31 +1274,44 @@ public class BaseFrame {
 		return idiomaMenu;
 	}
 
+	/**
+	 * Portugues item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem portuguesItem() {
 		JMenuItem portuguesItem = new JMenuItem("- Portugu�s");
 		portuguesItem.setMnemonic('p');
 		portuguesItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'portugues'", "- Portugu�s",
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'portugues'", "- Portugu�s",
 						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return portuguesItem;
 	}
 
+	/**
+	 * English item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem englishItem() {
 		JMenuItem englishItem = new JMenuItem("- English");
 		englishItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'english'.", "- English",
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'english'.", "- English",
 						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return englishItem;
 	}
 
+	/**
+	 * Gets the ajuda menu.
+	 *
+	 * @return the ajuda menu
+	 */
 	private JMenu getAjudaMenu() {
 		JMenu ajudaMenu = new JMenu("Ajuda");
 		ajudaMenu.setForeground(Color.BLACK);
@@ -1213,64 +1321,44 @@ public class BaseFrame {
 		return ajudaMenu;
 	}
 
+	/**
+	 * Instrucoes item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem instrucoesItem() {
 		JMenuItem instrucoesItem = new JMenuItem("Instru��es de uso");
 		instrucoesItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'instru��es de uso'",
-						"Instru��es de uso", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'instru��es de uso'", "Instru��es de uso",
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return instrucoesItem;
 	}
 
+	/**
+	 * Versao item.
+	 *
+	 * @return the j menu item
+	 */
 	private JMenuItem versaoItem() {
 		JMenuItem versaoItem = new JMenuItem("Vers�o");
 		versaoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				JOptionPane.showMessageDialog(getFrame(),
-						"Este � o submenu 'vers�o'.", "Vers�o",
-						JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(frame, "Este � o submenu 'vers�o'.", "Vers�o", JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 		return versaoItem;
 	}
 
-	public JPanel getDegreePanel() {
-		return degreePanel;
-	}
-
-	public void setDegreePanel(JPanel degreePanel) {
-		this.degreePanel = degreePanel;
-	}
-
-	public JPanel getCoefPanel() {
-		return coefPanel;
-	}
-
-	public JPanel getCalibPanel() {
-		return calibPanel;
-	}
-
-	public void setCalibPanel(JPanel calibPanel) {
-		this.calibPanel = calibPanel;
-	}
-
+	/**
+	 * Gets the frame.
+	 *
+	 * @return the frame
+	 */
 	public JFrame getFrame() {
 		return frame;
-	}
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
-
-	public JPanel getPanel() {
-		return panel;
-	}
-
-	public void setPanel(JPanel panel) {
-		this.panel = panel;
 	}
 
 }
