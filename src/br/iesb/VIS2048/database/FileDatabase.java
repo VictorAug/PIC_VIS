@@ -1,4 +1,4 @@
-package br.iesb.VIS2048.database;
+package br.iesb.vis.database;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,128 +6,135 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.zip.ZipException;
 
+/**
+ * The Class FileDataBase.
+ */
 public class FileDataBase {
+
+	/** The app path string. */
+	private final String appPathString = "./data";
 	
-	private String appPathString = "./data";
-	private String DBPathString = appPathString+"/DB";
+	/** The DB path string. */
+	private final String DBPathString = appPathString + "/DB";
+	
+	/** The DB file. */
 	private String DBFile = DBPathString + "/DB1.txt";
 	
-	public FileDataBase() {
-		if(createDirectory(appPathString)) System.out.println("Podemos continuar");
-		if(createDirectory(DBPathString)) System.out.println("Podemos continuar");
-		if(createFile(DBFile)) System.out.println("Podemos continuar");
-//		int vetSize = 20;
-
-//		double vet[] = fillRandomVector(new double[vetSize], vetSize); 
-//		System.out.println(System.currentTimeMillis());
-//		//for(double i = 0; i<1000; i++)
-//		logVector(System.currentTimeMillis(), vet);
-//		//readFromFile();
-//		//System.out.println(System.currentTimeMillis() / 1000L);
-//		
-//		try(BufferedReader br = new BufferedReader(new FileReader(DBFile))) {
-//			String[] dados = new String[vetSize];
-//			double lineNumber = 1;
-//			String line;
-//			Pattern pattern = Pattern.compile("^\\d+");
-//			Matcher matcher;
-//			while((line = br.readLine()) != null) {
-//				matcher = pattern.matcher(line);
-//				while (matcher.find()) {
-//					Date date = new Date( Long.parseLong(matcher.group(), 10) );
-//					SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa",Locale.getDefault());
-//					System.out.println("Linha: "+lineNumber + " - Data: " + format.format(date));
-//				}
-//				Pattern replace = Pattern.compile("^\\d+,");
-//				Matcher matcher2 = replace.matcher(line);
-//				System.out.println("Dados: " + matcher2.replaceAll(""));
-//				
-//				dados = matcher2.replaceAll("").split(",");
-//				for(String a : dados)
-//					System.out.println(Double.parseDouble(a));
-//				System.out.println();
-//				lineNumber++;
-//			}
-//			// line is not visible here.
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
+	/** The file. */
+	private File file;
 	
-	private boolean createDirectory(String path) {
-		if(Files.exists(Paths.get(path))) {
-			System.out.println("Diretório já existe!");
-			return true;
-		} else {
-			File dir = new File(path); 
-			if(dir.mkdir()) {
-				System.out.println("Diretório criado com sucesso");
-				return true;
-			} else {
-				System.out.println("Diretório não pôde ser criado");
-				return false;
-			}
+	/** To count files created. */
+	private Integer count;
+
+	/**
+	 * Instantiates a new file data base.
+	 */
+	public FileDataBase() {
+		createDirectory(appPathString);
+		createDirectory(DBPathString);
+		try {
+			if (createFile(DBFile))
+				System.out.println("DBFile: " + DBFile);
+		} catch (ZipException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private boolean createFile(String path) {
-		File f = new File(path);
-		if(f.isFile()) { 
-			System.out.println("Arquivo já existe!");
-			return true;
+	/**
+	 * Reload title for DBFile name.
+	 */
+	public void reloadTitle() {
+		DBFile.concat("/DB"+(count++)+".txt");
+	}
+	
+	/**
+	 * Reset count for DBFile name.
+	 */
+	public void resetCount() {
+		count = 0;
+	}
+
+	/**
+	 * Creates the directory.
+	 *
+	 * @param path the path
+	 * @return true, if successful
+	 */
+	private boolean createDirectory(String path) {
+		if (Files.exists(Paths.get(path)))
+			return true;// Diretório já existe
+		else {
+			File dir = new File(path);
+			if (dir.mkdir())
+				return true;// Diretório criado com sucesso
+			else
+				return false;// Diretório não pôde ser criado
+		}
+	}
+
+	/**
+	 * Creates the file.
+	 *
+	 * @param path the path
+	 * @return true, if successful
+	 * @throws ZipException the zip exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	private boolean createFile(String path) throws ZipException, IOException {
+		file = new File(path);
+		if (file.isFile()) {
+			return true;// Arquivo já existe
 		} else {
-			System.out.println("Arquivo não existe");
 			try {
-				if(f.createNewFile()) { 
-					System.out.println("Arquivo criado");
-					return true;
+				if (file.createNewFile()) {
+					return true;// Arquivo criado
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
-				return false;
 			}
-			
 		}
 		return false;
 	}
 
-//	private boolean readFromFile(){
-//		FileInputStream in = null;
-//		try {
-//			in = new FileInputStream(DBFile);
-//			int c; 
-//			while( (c=in.read()) != -1 )
-//				System.out.print((char) c);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally{
-//			if(in != null){
-//				try {
-//					in.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		return false;
-//	}
-	
+	/**
+	 * Fill random vector.
+	 *
+	 * @param vet the vet
+	 * @param size the size
+	 * @return the double[]
+	 */
 	public double[] fillRandomVector(double[] vet, int size) {
 		vet = new double[size];
 		for (int i = 0; i < size; i++)
 			vet[i] = Math.random() * 1000;
 		return vet;
 	}
-	
-	public boolean logVector(long timestamp, double[] vet) {
-		String text = String.valueOf(timestamp);
-		for (int i = 0; i < 10; i++)
-			text = text + ',' + String.valueOf(vet[i]);
+
+	/**
+	 * Log vector.
+	 *
+	 * @param vet the vet
+	 * @return true, if successful
+	 */
+	public boolean logVector(double[] vet) {
+		String text = String.valueOf(Calendar.getInstance().getTime());
+		for (int i = 0; i < 2048; i++)
+			text += ", " + String.valueOf(vet[i]);
 		writeToFile(text);
 		return true;
 	}
-	
+
+	/**
+	 * Write to file.
+	 *
+	 * @param text the text
+	 * @return true, if successful
+	 */
 	private boolean writeToFile(String text) {
 		try {
 			File f = new File(DBFile);
@@ -139,8 +146,8 @@ public class FileDataBase {
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 		return false;
 	}
-	
+
 }
