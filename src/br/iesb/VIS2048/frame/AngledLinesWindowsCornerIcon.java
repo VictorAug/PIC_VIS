@@ -1,4 +1,7 @@
-package br.iesb.VIS2048.frame;
+/*
+ * 
+ */
+package br.iesb.vis.frame;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -6,24 +9,43 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AngledLinesWindowsCornerIcon.
+ */
 public class AngledLinesWindowsCornerIcon implements Icon {
 
+	/** The Constant WHITE_LINE_COLOR. */
 	private static final Color WHITE_LINE_COLOR = new Color(255, 255, 255);
+	
+	/** The Constant GRAY_LINE_COLOR. */
 	private static final Color GRAY_LINE_COLOR = new Color(172, 168, 153);
 	
+	/** The Constant WIDTH. */
 	private static final int WIDTH = 13;
+	
+	/** The Constant HEIGHT. */
 	private static final int HEIGHT = 13;
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.Icon#getIconWidth()
+	 */
 	@Override
 	public int getIconWidth() {
 		return WIDTH;
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.Icon#getIconHeight()
+	 */
 	@Override
 	public int getIconHeight() {
 		return HEIGHT;
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
+	 */
 	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		g.setColor(WHITE_LINE_COLOR);
