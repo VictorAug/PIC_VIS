@@ -1,4 +1,4 @@
-package br.iesb.VIS2048.frame;
+package br.iesb.vis.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,14 +10,22 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.EtchedBorder;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class StatusBar.
+ */
 public class StatusBar extends JPanel implements Runnable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The msg. */
 	private JLabel msg = new JLabel();
+	
+	/** The progress. */
 	private JProgressBar progress = new JProgressBar();
+	
+	/** The status text. */
 	private String statusText;
 
 	/**
@@ -42,8 +50,9 @@ public class StatusBar extends JPanel implements Runnable {
 	}
 
 	/**
-	 * @param s
-	 *            the status string to show
+	 * Show status.
+	 *
+	 * @param s            the status string to show
 	 */
 	public void showStatus(String s) {
 		msg.setText(s);
@@ -51,26 +60,28 @@ public class StatusBar extends JPanel implements Runnable {
 	}
 
 	/**
-	 * @param percent
-	 *            the percentage of the progress bar to be shown
+	 * Show progress.
+	 *
+	 * @param percent            the percentage of the progress bar to be shown
 	 */
 	public void showProgress(int percent) {
 		progress.setValue(percent);
 	}
 
 	/**
-	 * @param delataPercent
-	 *            an increment for the progrss bar
+	 * Inc progress.
+	 *
+	 * @param delataPercent            an increment for the progrss bar
 	 */
 	public void incProgress(int delataPercent) {
 		progress.setValue(progress.getValue() + delataPercent);
 	}
 
 	/**
-	 * @param s
-	 *            the status bar text
-	 * @param work
-	 *            the work that has to be done, i.e. the maximum value for the
+	 * Do fake progress.
+	 *
+	 * @param s            the status bar text
+	 * @param work            the work that has to be done, i.e. the maximum value for the
 	 *            progress
 	 */
 	public synchronized void doFakeProgress(String s, int work) {
@@ -83,6 +94,8 @@ public class StatusBar extends JPanel implements Runnable {
 	}
 
 	/**
+	 * Run.
+	 *
 	 * @see java.lang.Runnable#run()
 	 */
 	public synchronized void run() {
@@ -107,48 +120,5 @@ public class StatusBar extends JPanel implements Runnable {
 		showStatus("");
 		repaint();
 	}
-
-	// public boolean isOptimizedDrawingEnabled() {
-	// return false;
-	// }
-	// public StatusBar() {
-	// setLayout(new BorderLayout());
-	// setPreferredSize(new Dimension(150, 23));
-	//
-	// JPanel rightPanel = new JPanel(new BorderLayout());
-	// rightPanel.add(new JLabel(new AngledLinesWindowsCornerIcon()),
-	// BorderLayout.SOUTH);
-	// rightPanel.setOpaque(false);
-	//
-	// add(rightPanel, BorderLayout.EAST);
-	// setBackground(SystemColor.control);
-	// }
-	//
-	// protected void paintComponent(Graphics g) {
-	// super.paintComponent(g);
-	//
-	// int y = 0;
-	// g.setColor(new Color(156, 154, 140));
-	// g.drawLine(0, y, getWidth(), y);
-	// y++;
-	// g.setColor(new Color(196, 194, 183));
-	// g.drawLine(0, y, getWidth(), y);
-	// y++;
-	// g.setColor(new Color(218, 215, 201));
-	// g.drawLine(0, y, getWidth(), y);
-	// y++;
-	// g.setColor(new Color(233, 231, 217));
-	// g.drawLine(0, y, getWidth(), y);
-	//
-	// y = getHeight() - 3;
-	// g.setColor(new Color(233, 232, 218));
-	// g.drawLine(0, y, getWidth(), y);
-	// y++;
-	// g.setColor(new Color(233, 231, 216));
-	// g.drawLine(0, y, getWidth(), y);
-	// y = getHeight() - 1;
-	// g.setColor(new Color(221, 221, 220));
-	// g.drawLine(0, y, getWidth(), y);
-	// }
 
 }
