@@ -67,13 +67,13 @@ public class FileDataBase {
 	 */
 	private boolean createDirectory(String path) {
 		if (Files.exists(Paths.get(path)))
-			return true;// Diret√≥rio j√° existe
+			return true;// DiretÛrio j· existe
 		else {
 			File dir = new File(path);
 			if (dir.mkdir())
-				return true;// Diret√≥rio criado com sucesso
+				return true;// DiretÛrio criado com sucesso
 			else
-				return false;// Diret√≥rio n√£o p√¥de ser criado
+				return false;// DiretÛrio n„o pÙde ser criado
 		}
 	}
 
@@ -88,7 +88,7 @@ public class FileDataBase {
 	private boolean createFile(String path) throws ZipException, IOException {
 		file = new File(path);
 		if (file.isFile()) {
-			return true;// Arquivo j√° existe
+			return true;// Arquivo j· existe
 		} else {
 			try {
 				if (file.createNewFile()) {

@@ -92,6 +92,7 @@ public class BaseFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 		frame.setJMenuBar(getMenuBar());
+//		setCalibPanel();
 		setCalibPanel();
 	}
 
@@ -700,8 +701,7 @@ public class BaseFrame {
 		panel_2.setPreferredSize(new Dimension(160, 28));
 		panel_2.setMinimumSize(new Dimension(80, 20));
 		panel_2.setBackground(Color.DARK_GRAY);
-		panel.setLayout(new MigLayout("", "[180px,grow][grow]",
-				"[grow][33px][][grow][33px][20px,fill][][20px,fill][][20px,fill][][20px,fill][][20px,fill][][grow]"));
+		panel.setLayout(new MigLayout("", "[180px,grow][grow]", "[grow][33px][][grow][33px][20px,fill][][20px,fill][][20px,fill][][20px,fill][][20px,fill][][grow][grow]"));
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(0, 0, 51));
@@ -800,7 +800,7 @@ public class BaseFrame {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);
 					btnParar.setFocusable(true);
-					//specPanel.getDB().reloadTitle();
+					specPanel.reloadTitle();
 				}
 			}
 		});
@@ -1052,10 +1052,21 @@ public class BaseFrame {
 		textField_3.setHorizontalAlignment(JTextField.CENTER);
 		panel.add(textField_3, "cell 0 14,growx");
 		textField_3.setColumns(10);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setBorder(new LineBorder(new Color(64, 64, 64)));
+		panel_6.setBackground(new Color(25, 25, 112));
+		panel.add(panel_6, "cell 0 15,grow");
+		
+		JLabel lblBarraDeStatus = new JLabel("Signal");
+		panel_6.add(lblBarraDeStatus);
+		lblBarraDeStatus.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblBarraDeStatus.setForeground(Color.LIGHT_GRAY);
 
 		JPanel panel_5 = new JPanel();
 		panel_5.setBackground(new Color(0, 0, 51));
-		panel.add(panel_5, "cell 0 15,grow");
+		panel_5.add(new StatusBar());
+		panel.add(panel_5, "cell 0 16,grow");
 
 	}
 
@@ -1202,8 +1213,8 @@ public class BaseFrame {
 		JMenuItem fundoItem = new JMenuItem("- Fundo (cor)");
 		fundoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				specPanel.setBackground(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo",
-						Color.black));
+				//specPanel.setBackgroundPaint(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo",
+				//		Color.black));
 			}
 		});
 		return fundoItem;

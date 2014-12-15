@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.TooManyListenersException;
@@ -22,7 +23,7 @@ public class SerialComm{
     public static OutputStream outputStream;
     static InputStream inputStream;
     Thread readThread;
-    SerialWrite reader=null;
+    public SerialWrite reader=null;
     public SerialComm(String port){
         portList = CommPortIdentifier.getPortIdentifiers();
 
@@ -35,24 +36,24 @@ public class SerialComm{
             }
         }
     }
+
     public boolean isDataReady(){
     	return reader.ready;
     }
     public void clearData(){
     	reader.ready = false;
-    }
-    public Double[] dados(){
-    	return reader.leitura;
+    	reader.clearReading();
     }
     public class SerialWrite implements SerialPortEventListener, Runnable {
     	public SerialWrite(){
+    		clearReading();
     		try {
 	            serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
 	            inputStream = serialPort.getInputStream();
 	            outputStream = serialPort.getOutputStream();
 	            serialPort.addEventListener(this);
 	            serialPort.notifyOnDataAvailable(true);
-	            serialPort.setSerialPortParams(9600,
+	            serialPort.setSerialPortParams(115200,
 	                SerialPort.DATABITS_8,
 	                SerialPort.STOPBITS_1,
 	                SerialPort.PARITY_NONE);
@@ -98,17 +99,32 @@ public class SerialComm{
 		        	System.out.println("OBR");
 		            break;
 		        case SerialPortEvent.DATA_AVAILABLE:
-		            byte[] readBuffer = new byte[2048];
+		            byte[] readBuffer = new byte[1];
 		
 		            try {
 		                while (inputStream.available() > 0) {
 		                    int numBytes = inputStream.read(readBuffer);
+		                    //int a = (int) readBuffer[0];
+		                    //System.out.println(a + ":" + (char) a);
+		                    if((int) readBuffer[0] != 10 && (int) readBuffer[0] != 13)reading[linePos][arrayPos] = readBuffer[0];
+		                    arrayPos++;
+		                    //System.out.println(new String(this.reading[linePos]));
+		                    if((int)readBuffer[0]==13){
+		                    	if(linePos == 2047) {
+		                    		linePos = 0;
+		                    		ready = true;
+		                    	}
+		                    	else linePos++;
+		                    	arrayPos = 0;
+		                    }
+		                    
 		                    //System.out.println(new String(readBuffer));
+		                    //System.out.println(pos);
 		                }
-		                
-		                if(pos == 2047){
-		                	pos = 0; ready = true; 
-		                }else pos++;
+		                //System.out.println(pos);
+		                //if(pos == 2047){
+		                //	pos = 0; ready = true; 
+		                //}else pos++;
 		                //System.out.println("posicao = "+pos);
 		                
 		            } catch (IOException e) {}
@@ -118,8 +134,27 @@ public class SerialComm{
 	    public boolean isReady(){
 	    	return ready;
 	    }
-	    Double[] leitura = new Double[2048];
-	    int pos = 0;
-	    boolean ready = false;
+	    public byte[][] reading(){
+	    	return reader.reading;
+	    }
+	    public Double[] parseReading(){
+	    	for(int i=0; i<2048; i++){
+	    		//this.dados[i] = new String(this.reading[i]); 
+	    		this.dados[i] = Double.parseDouble(new String(this.reading[i]));
+	    		//System.out.println(this.dados[i]);
+	    	}
+			return dados;
+	    }
+	    public boolean clearReading(){
+	    	ready = false;
+	    	for(int i=0; i<2048; i++)
+	    		for(int j=0; j<16; j++)
+	    			reading[i][j] = 0;
+			return true;
+	    }
+	    Double[] dados = new Double[2048];
+	    byte[][] reading = new byte[2048][16];
+	    int linePos = 0, arrayPos = 0;
+	    private boolean ready = false;
     }
 }

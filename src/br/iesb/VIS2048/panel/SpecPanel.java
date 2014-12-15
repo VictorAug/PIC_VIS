@@ -82,7 +82,7 @@ public class SpecPanel extends JPanel {
 	
 	public void reChart() throws InterruptedException{
 		this.removeAll();
-		//System.out.println("Update in Progress");
+		System.out.println("Update in Progress");
 		instDataset();
 		//fillDataset();
 		//sampleDataset();
@@ -91,9 +91,9 @@ public class SpecPanel extends JPanel {
 				PlotOrientation.VERTICAL,true,true,false);
 		chart.getXYPlot().setRenderer(new XYSplineRenderer());
 		
-		//Limite da Image. para limite do domínio, getDomainAxis
+		//Limite da Imagem. para limite do domínio, getDomainAxis
 		NumberAxis counts = (NumberAxis) ((XYPlot) chart.getPlot()).getRangeAxis();
-		counts.setRange(0, 4000);
+		//counts.setRange(0, 4000);
 	
 		//chart.setBackgroundPaint(new Color(255,255,255,50));
 		panel = new ChartPanel(chart);
@@ -148,9 +148,11 @@ public class SpecPanel extends JPanel {
 			e.printStackTrace();
 		}
 		while(!Device.isDataReady()) if(Device.isDataReady()) break;
-		Double[] leitura = Device.dados();
+		System.out.println("Done");
+		Double[] leitura = Device.reader.parseReading();
+		Device.reader.clearReading();
 		for(int i=0; i<2048; i++)
-			series.add(i, (double)leitura[i]);
+			series.add(i, leitura[i]);
 		dataset.addSeries(series);
 	}
 //	private void fillDataset(){
