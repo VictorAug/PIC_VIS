@@ -1,4 +1,4 @@
-package br.iesb.vis.frame;
+package br.iesb.VIS2048.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,12 +36,12 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import br.iesb.VIS2048.action.AbrirAction;
+import br.iesb.VIS2048.action.SalvarAction;
+import br.iesb.VIS2048.database.FileDataBase;
+import br.iesb.VIS2048.database.Zipper;
+import br.iesb.VIS2048.panel.SpecPanel;
 import net.miginfocom.swing.MigLayout;
-import br.iesb.vis.action.AbrirAction;
-import br.iesb.vis.action.SalvarAction;
-import br.iesb.vis.database.FileDataBase;
-import br.iesb.vis.database.Zipper;
-import br.iesb.vis.panel.SpecPanel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -800,7 +800,7 @@ public class BaseFrame {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);
 					btnParar.setFocusable(true);
-					specPanel.getDB().reloadTitle();
+					//specPanel.getDB().reloadTitle();
 				}
 			}
 		});
@@ -1202,7 +1202,7 @@ public class BaseFrame {
 		JMenuItem fundoItem = new JMenuItem("- Fundo (cor)");
 		fundoItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				specPanel.setBackgroundPaint(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo",
+				specPanel.setBackground(JColorChooser.showDialog(specPanel, "Escolha uma cor de fundo",
 						Color.black));
 			}
 		});

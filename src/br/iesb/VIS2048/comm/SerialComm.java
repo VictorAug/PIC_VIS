@@ -15,114 +15,111 @@ import javax.comm.SerialPortEvent;
 import javax.comm.SerialPortEventListener;
 import javax.comm.UnsupportedCommOperationException;
 
-public class SerialComm implements SerialPortEventListener, Runnable {
+public class SerialComm{
 	static Enumeration<?> portList;
     static CommPortIdentifier portId;
-    static String messageString = "Hello, world!\n";
     static SerialPort serialPort;
-    static OutputStream outputStream;
+    public static OutputStream outputStream;
     static InputStream inputStream;
     Thread readThread;
-    
-    static List<String> printSerialPorts(){
-    	List<String> ports = new ArrayList<String>();
-    	portList = CommPortIdentifier.getPortIdentifiers();
-    	while (portList.hasMoreElements()) {
-    		portId = (CommPortIdentifier) portList.nextElement();
-        	ports.add(portId.getName());
-    	}
-		return ports;
-    }
-    
-    static boolean sendData(String port, String Data){
-    	portList = CommPortIdentifier.getPortIdentifiers();
-    	while (portList.hasMoreElements()) {
-        	portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-            	if (portId.getName().equals(port)) {
-                    try {
-                        serialPort = (SerialPort) portId.open("SimpleWriteApp", 2000);
-                        outputStream = serialPort.getOutputStream();
-                        serialPort.setSerialPortParams(9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-                        outputStream.write(Data.getBytes());
-                        return true;
-                    } catch (PortInUseException | IOException | UnsupportedCommOperationException e) {
-                    	e.printStackTrace();
-                    	return false;
-                    }
-                }
-            }
-        }
-		return false;
-    }
-
-    public static void main(String[] args) {
+    SerialWrite reader=null;
+    public SerialComm(String port){
         portList = CommPortIdentifier.getPortIdentifiers();
 
         while (portList.hasMoreElements()) {
             portId = (CommPortIdentifier) portList.nextElement();
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals("COM1")) {
-                    SerialComm reader = new SerialComm();
+                if (portId.getName().equals(port)) {
+                    reader = new SerialWrite();
                 }
             }
         }
     }
-
-    public SerialComm() {
-        try {
-            serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
-            inputStream = serialPort.getInputStream();
-            serialPort.addEventListener(this);
-            serialPort.notifyOnDataAvailable(true);
-            serialPort.setSerialPortParams(9600,
-                SerialPort.DATABITS_8,
-                SerialPort.STOPBITS_1,
-                SerialPort.PARITY_NONE);
-            readThread = new Thread(this);
-            readThread.start();
-        } catch (PortInUseException | IOException | TooManyListenersException | UnsupportedCommOperationException e) {}
+    public boolean isDataReady(){
+    	return reader.ready;
     }
-
-    public void run() {
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {}
+    public void clearData(){
+    	reader.ready = false;
     }
-
-    public void serialEvent(SerialPortEvent event) {
-        switch(event.getEventType()) {
-        case SerialPortEvent.BI:
-        case SerialPortEvent.OE:
-        case SerialPortEvent.FE:
-        case SerialPortEvent.PE:
-        case SerialPortEvent.CD:
-        case SerialPortEvent.CTS:
-        case SerialPortEvent.DSR:
-        case SerialPortEvent.RI:
-        case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-            break;
-        case SerialPortEvent.DATA_AVAILABLE:
-            byte[] readBuffer = new byte[20];
-
-            try {
-                while (inputStream.available() > 0) {
-                    int numBytes = inputStream.read(readBuffer);
-                }
-                System.out.print(new String(readBuffer));
-            } catch (IOException e) {}
-            break;
-        }
+    public Double[] dados(){
+    	return reader.leitura;
     }
-    
-	public static void main1(String[] args) {
-		List<String> ports = printSerialPorts();
-		for(String port : ports) if(port.matches("COM\\d")) System.out.println(port);
+    public class SerialWrite implements SerialPortEventListener, Runnable {
+    	public SerialWrite(){
+    		try {
+	            serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
+	            inputStream = serialPort.getInputStream();
+	            outputStream = serialPort.getOutputStream();
+	            serialPort.addEventListener(this);
+	            serialPort.notifyOnDataAvailable(true);
+	            serialPort.setSerialPortParams(9600,
+	                SerialPort.DATABITS_8,
+	                SerialPort.STOPBITS_1,
+	                SerialPort.PARITY_NONE);
+	            readThread = new Thread(this);
+	            readThread.start();
+	        } catch (PortInUseException | IOException | TooManyListenersException | UnsupportedCommOperationException e) {
+	        	e.printStackTrace();
+	        }
+    	}
+    	public void run() {
+	        try {
+	            Thread.sleep(20000);
+	        } catch (InterruptedException e) {}
+	    }
+
+	    public void serialEvent(SerialPortEvent event) {
+	        switch(event.getEventType()) {
+		        case SerialPortEvent.BI:
+		        	System.out.println("BI");
+		        	break;
+		        case SerialPortEvent.OE:
+		        	System.out.println("OE");
+		        	break;
+		        case SerialPortEvent.FE:
+		        	System.out.println("FE");
+		        	break;
+		        case SerialPortEvent.PE:
+		        	System.out.println("PE");
+		        	break;
+		        case SerialPortEvent.CD:
+		        	System.out.println("CD");
+		        	break;
+		        case SerialPortEvent.CTS:
+		        	System.out.println("CTS");
+		        	break;
+		        case SerialPortEvent.DSR:
+		        	System.out.println("DSR");
+		        	break;
+		        case SerialPortEvent.RI:
+		        	System.out.println("RI");
+		        	break;
+		        case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
+		        	System.out.println("OBR");
+		            break;
+		        case SerialPortEvent.DATA_AVAILABLE:
+		            byte[] readBuffer = new byte[2048];
 		
-		if(sendData("COM1", "Hello, it's working!")) System.out.println("Data sent!");
-		else System.out.println("An error occurred");
-        
-		//readData("COM1");
-	}
-
+		            try {
+		                while (inputStream.available() > 0) {
+		                    int numBytes = inputStream.read(readBuffer);
+		                    //System.out.println(new String(readBuffer));
+		                }
+		                
+		                if(pos == 2047){
+		                	pos = 0; ready = true; 
+		                }else pos++;
+		                //System.out.println("posicao = "+pos);
+		                
+		            } catch (IOException e) {}
+		            break;
+	        }
+	    }
+	    public boolean isReady(){
+	    	return ready;
+	    }
+	    Double[] leitura = new Double[2048];
+	    int pos = 0;
+	    boolean ready = false;
+    }
 }

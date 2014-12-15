@@ -3,6 +3,7 @@ package br.iesb.VIS2048.panel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 
@@ -16,6 +17,8 @@ import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import br.iesb.VIS2048.comm.SerialComm;
+
 
 public class SpecPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -27,6 +30,7 @@ public class SpecPanel extends JPanel {
 	private JFreeChart chart;
 	private ChartPanel panel;
 	private String Image = "Counts";
+	SerialComm Device = null;
 	
 	public void reloadTitle(){
 		
@@ -43,6 +47,7 @@ public class SpecPanel extends JPanel {
 	public SpecPanel(){
 		RSpec.setDaemon(true);
 		RSpec.start();
+		Device = new SerialComm("COM3");
 	}
 	
 	private synchronized void checkIfGet() throws InterruptedException{
@@ -80,7 +85,8 @@ public class SpecPanel extends JPanel {
 		//System.out.println("Update in Progress");
 		instDataset();
 		//fillDataset();
-		sampleDataset();
+		//sampleDataset();
+		getDataset();
 		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", Image, dataset, 
 				PlotOrientation.VERTICAL,true,true,false);
 		chart.getXYPlot().setRenderer(new XYSplineRenderer());
@@ -134,7 +140,19 @@ public class SpecPanel extends JPanel {
 		series.add(825, 336+(Math.random()-0.5)*300);
 		dataset.addSeries(series);
 	}
-	
+	private void getDataset(){
+		//Device = new SerialComm("COM3");
+		try {
+			Device.outputStream.write("+".getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while(!Device.isDataReady()) if(Device.isDataReady()) break;
+		Double[] leitura = Device.dados();
+		for(int i=0; i<2048; i++)
+			series.add(i, (double)leitura[i]);
+		dataset.addSeries(series);
+	}
 //	private void fillDataset(){
 //		int x = 0;
 //		while(x<5){

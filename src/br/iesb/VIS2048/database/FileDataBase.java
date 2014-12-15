@@ -1,4 +1,4 @@
-package br.iesb.vis.database;
+package br.iesb.VIS2048.database;
 
 import java.io.File;
 import java.io.FileWriter;
