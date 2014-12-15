@@ -15,13 +15,13 @@ import java.util.zip.ZipException;
 public class FileDataBase {
 
 	/** The app path string. */
-	private final String appPathString = "./data";
+	private final static String appPathString = "./data";
 	
 	/** The DB path string. */
-	private final String DBPathString = appPathString + "/DB";
+	private final static String DBPathString = appPathString + "/DB";
 	
 	/** The DB file. */
-	private String DBFile = DBPathString + "/DB1.txt";
+	private static String DBFile = DBPathString + "/DB1.txt";
 	
 	/** The file. */
 	private File file;
@@ -118,13 +118,13 @@ public class FileDataBase {
 	/**
 	 * Log vector.
 	 *
-	 * @param vet the vet
+	 * @param leitura the vet
 	 * @return true, if successful
 	 */
-	public boolean logVector(double[] vet) {
+	public static boolean logVector(Double[] leitura) {
 		String text = String.valueOf(Calendar.getInstance().getTime());
 		for (int i = 0; i < 2048; i++)
-			text += ", " + String.valueOf(vet[i]);
+			text += ", " + String.valueOf(leitura[i]);
 		writeToFile(text);
 		return true;
 	}
@@ -135,7 +135,7 @@ public class FileDataBase {
 	 * @param text the text
 	 * @return true, if successful
 	 */
-	private boolean writeToFile(String text) {
+	private static boolean writeToFile(String text) {
 		try {
 			File f = new File(DBFile);
 			FileWriter fw = new FileWriter(f, true);

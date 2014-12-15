@@ -18,6 +18,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import br.iesb.VIS2048.comm.SerialComm;
+import br.iesb.VIS2048.database.FileDataBase;
 
 
 public class SpecPanel extends JPanel {
@@ -153,6 +154,7 @@ public class SpecPanel extends JPanel {
 		Device.reader.clearReading();
 		for(int i=0; i<2048; i++)
 			series.add(i, leitura[i]);
+		FileDataBase.logVector(leitura);
 		dataset.addSeries(series);
 	}
 //	private void fillDataset(){
