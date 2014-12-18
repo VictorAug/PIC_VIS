@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -36,12 +35,12 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.database.FileDataBase;
 import br.iesb.VIS2048.database.Zipper;
 import br.iesb.VIS2048.panel.SpecPanel;
-import net.miginfocom.swing.MigLayout;
 
 // TODO: Auto-generated Javadoc
 /**
