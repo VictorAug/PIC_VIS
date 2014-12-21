@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import javax.swing.JPanel;
 
@@ -32,6 +33,15 @@ public class SpecPanel extends JPanel {
 	private ChartPanel panel;
 	private String Image = "Counts";
 	SerialComm Device = null;
+	String portName;
+	static int baudRate = 115200;
+	static int dataBits = 8;
+	static int stopBits = 0;
+	static int parity = 0;
+	double time = System.nanoTime();
+	String str = "+";
+	String buffer = "";
+	public int dataSize = 2048;
 	
 	public void reloadTitle(){
 		
@@ -48,7 +58,15 @@ public class SpecPanel extends JPanel {
 	public SpecPanel(){
 		RSpec.setDaemon(true);
 		RSpec.start();
-		Device = new SerialComm("COM3");
+		Device = new SerialComm();
+		Device.openComm();
+		//if(Device.isOpen()) {
+			Device.updatePortSettings(Device.getPortName(), baudRate, dataBits, stopBits, parity);
+			Device.readyToWrite(true);
+		//}
+		//else{
+		//	System.out.println("No device found;");
+		//}
 	}
 	
 	private synchronized void checkIfGet() throws InterruptedException{
@@ -82,19 +100,26 @@ public class SpecPanel extends JPanel {
 	}
 	
 	public void reChart() throws InterruptedException{
+		//Device.listPorts();
+		//if(Device.portId.isCurrentlyOwned() == true) Device = new SerialComm("COM3");
+		//else System.out.println("Ok");
+		//if(Device.outputStream == null) return;
 		this.removeAll();
 		System.out.println("Update in Progress");
 		instDataset();
 		//fillDataset();
 		//sampleDataset();
-		getDataset();
+		//getDataset();
+		
+		setDataset();
+		
 		chart = ChartFactory.createXYLineChart("", "Comprimento de Onda", Image, dataset, 
 				PlotOrientation.VERTICAL,true,true,false);
-		chart.getXYPlot().setRenderer(new XYSplineRenderer());
+		//chart.getXYPlot().setRenderer(new XYSplineRenderer());
 		
 		//Limite da Imagem. para limite do domínio, getDomainAxis
 		NumberAxis counts = (NumberAxis) ((XYPlot) chart.getPlot()).getRangeAxis();
-		//counts.setRange(0, 4000);
+		counts.setRange(0, 2500);
 	
 		//chart.setBackgroundPaint(new Color(255,255,255,50));
 		panel = new ChartPanel(chart);
@@ -141,12 +166,16 @@ public class SpecPanel extends JPanel {
 		series.add(825, 336+(Math.random()-0.5)*300);
 		dataset.addSeries(series);
 	}
-	private void getDataset(){
+	
+	/*private void getDataset(){
 		//Device = new SerialComm("COM3");
+		if(Device.outputStream == null) return;
+		
 		try {
 			Device.outputStream.write("+".getBytes());
 		} catch (IOException e) {
 			e.printStackTrace();
+			Device.serialPort.close();
 		}
 		while(!Device.isDataReady()) if(Device.isDataReady()) break;
 		System.out.println("Done");
@@ -156,6 +185,40 @@ public class SpecPanel extends JPanel {
 			series.add(i, leitura[i]);
 		FileDataBase.logVector(leitura);
 		dataset.addSeries(series);
+	}*/
+	
+	private void setDataset(){
+		Device.sendString(str);
+    	Device.readyToWrite(false);
+    	time = System.nanoTime();
+		try {
+			Device.waitToWrite();
+			String data = Device.getData(); 
+			Double[] leitura = new Double[dataSize];
+			int i = 0;
+			char[] charArray = data.toCharArray();
+			for(char Char : charArray){
+				//System.out.println("Char: "+(int) Char);
+				if(Char!=13 && Char!=10){
+					buffer += Char;
+				}
+				else if(buffer!=""){
+					//System.out.println(Double.parseDouble(buffer));
+					leitura[i] = Double.parseDouble(buffer);
+					series.add(i, leitura[i]);
+					buffer = "";
+					i++;
+				}
+			}
+			FileDataBase.logVector(leitura);
+			time = System.nanoTime() - time;
+			System.out.println(time + " elapsed");
+			dataset.addSeries(series);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 //	private void fillDataset(){
 //		int x = 0;

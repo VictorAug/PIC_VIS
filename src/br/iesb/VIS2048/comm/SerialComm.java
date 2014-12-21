@@ -1,160 +1,142 @@
 package br.iesb.VIS2048.comm;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.TooManyListenersException;
-
-import javax.comm.CommPortIdentifier;
-import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
-import javax.comm.SerialPortEvent;
-import javax.comm.SerialPortEventListener;
-import javax.comm.UnsupportedCommOperationException;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+import jssc.SerialPortList;
 
 public class SerialComm{
-	static Enumeration<?> portList;
-    static CommPortIdentifier portId;
-    static SerialPort serialPort;
-    public static OutputStream outputStream;
-    static InputStream inputStream;
-    Thread readThread;
-    public SerialWrite reader=null;
-    public SerialComm(String port){
-        portList = CommPortIdentifier.getPortIdentifiers();
-
-        while (portList.hasMoreElements()) {
-            portId = (CommPortIdentifier) portList.nextElement();
-            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                if (portId.getName().equals(port)) {
-                    reader = new SerialWrite();
-                }
+	private String portName;
+    private int baudRate = SerialPort.BAUDRATE_115200;
+    private int dataBits = SerialPort.DATABITS_8;
+    private int stopBits = SerialPort.STOPBITS_1;
+    private int parity = SerialPort.PARITY_NONE;
+    private SerialPort serialPort;
+    private boolean readyToWrite = false;
+    private int dataSize = 2048;
+    //private boolean readyToCollect = false;
+	public SerialComm(){
+		String[] ports = SerialPortList.getPortNames();
+        if(ports.length > 0){
+            setPortName(ports[0]);
+            serialPort = new SerialPort(getPortName());
+            if(serialPort != null){
+            	System.out.println("Connected to Port " + getPortName());
+            }
+        }else{
+        	System.out.println("Nenhuma porta disponível");
+        }
+	}
+	public boolean isOpen(){
+		return this.isOpen();
+	}
+	public void openComm(){
+		try {
+			serialPort.openPort();
+		} catch (SerialPortException e3) {
+			e3.printStackTrace();
+		}
+		
+		this.updatePortSettings(portName, baudRate, dataBits, stopBits, parity);
+		
+		try {
+			serialPort.addEventListener(new Reader(), SerialPort.MASK_RXCHAR |
+			        SerialPort.MASK_RXFLAG |
+			        SerialPort.MASK_CTS |
+			        SerialPort.MASK_DSR |
+			        SerialPort.MASK_RLSD);
+		} catch (SerialPortException e1) {
+			e1.printStackTrace();
+		}
+		
+        if(serialPort.isOpened()){
+        	System.out.println("Comunicação Aberta");
+        }
+	}
+	public void closeComm(){
+		try {
+			serialPort.closePort();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+		}
+		if(!serialPort.isOpened()){
+			System.out.println("Comunicação Encerrada");
+		}
+	}
+	public void updatePortSettings(String portName, int baudRate, int dataBits, int stopBits, int parity) {
+    	try {
+			serialPort.setParams(baudRate, dataBits, stopBits, parity);
+	        this.setPortName(portName);
+	        this.baudRate = baudRate;
+	        this.dataBits = dataBits;
+	        this.stopBits = stopBits;
+	        this.parity = parity;
+		} catch (SerialPortException e2) {
+			e2.printStackTrace();
+		}
+    }
+	public void sendString(String str) {
+        if(str.length() > 0){
+            try {
+            	serialPort.writeBytes(str.getBytes());
+            	System.out.println(str + " Enviado");
+            }
+            catch (Exception ex) {
+            	ex.printStackTrace();
+                System.out.println("Erro ao escrever!");
             }
         }
     }
+	public String getPortName() {
+		return portName;
+	}
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+	
+	public synchronized void waitToWrite() throws InterruptedException{
+		while(!readyToWrite) wait();
+	}
+	public synchronized void readyToWrite(boolean readyToWrite){
+		this.readyToWrite = readyToWrite;
+		if(readyToWrite) notifyAll();
+	}
+	public String getData(){
+		return this.Data;
+	}
+	String Data = "";
+	
+	private void setData(String Data){
+		this.Data = Data;
+	}
+	private class Reader implements SerialPortEventListener {
+        private String str = "";
+		@Override
+		public void serialEvent(SerialPortEvent spe) {
+			if(spe.isRXCHAR() || spe.isRXFLAG()){
+                if(spe.getEventValue() > 0){
+                    try {
+                        str = "";
+                        byte[] buffer = serialPort.readBytes(spe.getEventValue());
+                        str = new String(buffer);
+                        pos += str.length() - str.replace("\n", "").length();
+                        reading += str;
+                        if(pos == dataSize){
+                        	setData(reading);
+                        	pos = 0; 
+                        	reading = "";
+                        	readyToWrite(true);
+                        }
+                    }
+                    catch (Exception ex) {
+                    	System.out.println("Erro na thread de leitura");
+                    }
+                }
+            }
+		}
+		private int pos = 0;
+		String reading = "";
+	}
 
-    public boolean isDataReady(){
-    	return reader.ready;
-    }
-    public void clearData(){
-    	reader.ready = false;
-    	reader.clearReading();
-    }
-    public class SerialWrite implements SerialPortEventListener, Runnable {
-    	public SerialWrite(){
-    		clearReading();
-    		try {
-	            serialPort = (SerialPort) portId.open("SimpleReadApp", 2000);
-	            inputStream = serialPort.getInputStream();
-	            outputStream = serialPort.getOutputStream();
-	            serialPort.addEventListener(this);
-	            serialPort.notifyOnDataAvailable(true);
-	            serialPort.setSerialPortParams(115200,
-	                SerialPort.DATABITS_8,
-	                SerialPort.STOPBITS_1,
-	                SerialPort.PARITY_NONE);
-	            readThread = new Thread(this);
-	            readThread.start();
-	        } catch (PortInUseException | IOException | TooManyListenersException | UnsupportedCommOperationException e) {
-	        	e.printStackTrace();
-	        }
-    	}
-    	public void run() {
-	        try {
-	            Thread.sleep(20000);
-	        } catch (InterruptedException e) {}
-	    }
-
-	    public void serialEvent(SerialPortEvent event) {
-	        switch(event.getEventType()) {
-		        case SerialPortEvent.BI:
-		        	System.out.println("BI");
-		        	break;
-		        case SerialPortEvent.OE:
-		        	System.out.println("OE");
-		        	break;
-		        case SerialPortEvent.FE:
-		        	System.out.println("FE");
-		        	break;
-		        case SerialPortEvent.PE:
-		        	System.out.println("PE");
-		        	break;
-		        case SerialPortEvent.CD:
-		        	System.out.println("CD");
-		        	break;
-		        case SerialPortEvent.CTS:
-		        	System.out.println("CTS");
-		        	break;
-		        case SerialPortEvent.DSR:
-		        	System.out.println("DSR");
-		        	break;
-		        case SerialPortEvent.RI:
-		        	System.out.println("RI");
-		        	break;
-		        case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
-		        	System.out.println("OBR");
-		            break;
-		        case SerialPortEvent.DATA_AVAILABLE:
-		            byte[] readBuffer = new byte[1];
-		
-		            try {
-		                while (inputStream.available() > 0) {
-		                    int numBytes = inputStream.read(readBuffer);
-		                    //int a = (int) readBuffer[0];
-		                    //System.out.println(a + ":" + (char) a);
-		                    if((int) readBuffer[0] != 10 && (int) readBuffer[0] != 13)reading[linePos][arrayPos] = readBuffer[0];
-		                    arrayPos++;
-		                    //System.out.println(new String(this.reading[linePos]));
-		                    if((int)readBuffer[0]==13){
-		                    	if(linePos == 2047) {
-		                    		linePos = 0;
-		                    		ready = true;
-		                    	}
-		                    	else linePos++;
-		                    	arrayPos = 0;
-		                    }
-		                    
-		                    //System.out.println(new String(readBuffer));
-		                    //System.out.println(pos);
-		                }
-		                //System.out.println(pos);
-		                //if(pos == 2047){
-		                //	pos = 0; ready = true; 
-		                //}else pos++;
-		                //System.out.println("posicao = "+pos);
-		                
-		            } catch (IOException e) {}
-		            break;
-	        }
-	    }
-	    public boolean isReady(){
-	    	return ready;
-	    }
-	    public byte[][] reading(){
-	    	return reader.reading;
-	    }
-	    public Double[] parseReading(){
-	    	for(int i=0; i<2048; i++){
-	    		//this.dados[i] = new String(this.reading[i]); 
-	    		this.dados[i] = Double.parseDouble(new String(this.reading[i]));
-	    		//System.out.println(this.dados[i]);
-	    	}
-			return dados;
-	    }
-	    public boolean clearReading(){
-	    	ready = false;
-	    	for(int i=0; i<2048; i++)
-	    		for(int j=0; j<16; j++)
-	    			reading[i][j] = 0;
-			return true;
-	    }
-	    Double[] dados = new Double[2048];
-	    byte[][] reading = new byte[2048][16];
-	    int linePos = 0, arrayPos = 0;
-	    private boolean ready = false;
-    }
 }

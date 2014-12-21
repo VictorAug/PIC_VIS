@@ -2,20 +2,20 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/jcommon-1.0.23.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/jfreechart-1.0.19.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/jfreechart-1.0.19-experimental.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/jfreechart-1.0.19-swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/jfreesvg-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/junit-4.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/miglayout-core-4.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/miglayout-swing-4.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/miglayout-swt-4.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/orsoncharts-1.4-eval-nofx.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/orsonpdf-1.6-eval.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/servlet.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/git/PIC_VIS/lib/swtgraphics2d.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Leone/Desktop/comm.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/miglayout-4.2/miglayout-core-4.2.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/miglayout-4.2/miglayout-swing-4.2.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/miglayout-4.2/miglayout-swt-4.2.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jSSC-2.6.0-Release/jssc.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/jfreechart-1.0.19-experimental.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/jfreechart-1.0.19-swt.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/jfreesvg-2.0.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/orsoncharts-1.4-eval-nofx.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/orsonpdf-1.6-eval.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/servlet.jar"/>
+	<classpathentry kind="lib" path="E:/PIC_VIS/third-party/jfreechart-1.0.19/swtgraphics2d.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
