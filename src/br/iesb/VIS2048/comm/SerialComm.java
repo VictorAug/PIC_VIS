@@ -8,7 +8,7 @@ import jssc.SerialPortList;
 
 public class SerialComm {
 
-	private String portName;
+	private String portName = null;
 	private int baudRate = SerialPort.BAUDRATE_115200;
 	private int dataBits = SerialPort.DATABITS_8;
 	private int stopBits = SerialPort.STOPBITS_1;
@@ -23,7 +23,9 @@ public class SerialComm {
 	public SerialComm() {
 		String[] ports = SerialPortList.getPortNames();
 		if (ports.length > 0) {
-			setPortName(ports[0]);
+			if(this.portName == null) {
+				setPortName(ports[0]);
+			}
 			serialPort = new SerialPort(getPortName());
 			if (serialPort != null) {
 				System.out.println("Connected to Port " + getPortName());
@@ -31,6 +33,10 @@ public class SerialComm {
 		} else {
 			System.out.println("Nenhuma porta disponível");
 		}
+	}
+
+	public void configPort(String portName) {
+		setPortName(portName);
 	}
 
 	public void openComm() {

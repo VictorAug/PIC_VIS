@@ -42,15 +42,17 @@ public class SpecPanel extends JPanel {
 	private XYSeriesCollection dataset;
 	private JFreeChart chart;
 	private ChartPanel panel;
-	private SerialComm device = null;
+	private SerialComm device = new SerialComm();
 	private NumberAxis counts;
 
 	public SpecPanel() {
 		this.RSpec.setDaemon(true);
 		this.RSpec.start();
-		this.device.openComm();
-		this.device.updatePortSettings(device.getPortName(), baudRate, dataBits, stopBits, parity);
-		this.device.readyToWrite(true);
+		if(this.device != null) {
+			this.device.openComm();
+			this.device.updatePortSettings(device.getPortName(), baudRate, dataBits, stopBits, parity);
+			this.device.readyToWrite(true);
+		}
 	}
 
 	private synchronized void checkIfGet() throws InterruptedException {
@@ -151,7 +153,6 @@ public class SpecPanel extends JPanel {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public boolean isGet() {

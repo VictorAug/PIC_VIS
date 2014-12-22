@@ -35,6 +35,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
@@ -80,6 +81,10 @@ public class BaseFrame {
 
 	/** The coeficients. */
 	private List<Integer> coeficients = new ArrayList<Integer>();
+
+	private List<JMenuItem> portList = new ArrayList<>();
+
+	private JMenuBar menuBar;
 
 	/**
 	 * Instantiates a new base frame.
@@ -1069,13 +1074,40 @@ public class BaseFrame {
 	 * @return the menu bar
 	 */
 	private JMenuBar getMenuBar() {
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		menuBar.add(getArquivoMenu());
 		menuBar.add(getPreferenciasMenu());
+		menuBar.add(getConexaoMenu());
 		menuBar.add(getAjudaMenu());
 		return menuBar;
 	}
+	
+	private JMenu getConexaoMenu() {
+		JMenu conexaoMenu = new JMenu("Conexão");
+		conexaoMenu.add(getPortMenu());
+		return conexaoMenu;
+	}
+	
 
+	private JMenu getPortMenu() {
+		JMenu portMenu = new JMenu("Port");
+		String[] ports = SerialPortList.getPortNames();
+		for (int i = 0; i < ports.length; i++) {
+			JMenuItem portItem = new JMenuItem(ports[i]);
+			portItem.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					specPanel.setPortName(e.getActionCommand());
+				}
+			});
+			this.portList.add(portItem);
+			portMenu.add(portList.get(i));
+		}
+		
+		return portMenu;
+	}
+	
 	/**
 	 * Gets the arquivo menu.
 	 *
