@@ -91,7 +91,6 @@ public class BaseFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(true);
 		frame.setJMenuBar(getMenuBar());
-//		setCalibPanel();
 		setCalibPanel();
 	}
 
@@ -799,7 +798,6 @@ public class BaseFrame {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);
 					btnParar.setFocusable(true);
-					specPanel.reloadTitle();
 				}
 			}
 		});
@@ -919,10 +917,8 @@ public class BaseFrame {
 			public void actionPerformed(ActionEvent event) {
 				if ("Counts".equals(event.getActionCommand())) {
 					specPanel.setImage("Counts");
-					specPanel.reloadTitle();
 				} else {
 					specPanel.setImage("mV");
-					specPanel.reloadTitle();
 				}
 			}
 		});
@@ -940,10 +936,8 @@ public class BaseFrame {
 			public void actionPerformed(ActionEvent event) {
 				if ("mV".equals(event.getActionCommand())) {
 					specPanel.setImage("mV");
-					specPanel.reloadTitle();
 				} else {
 					specPanel.setImage("Counts");
-					specPanel.reloadTitle();
 				}
 			}
 		});
