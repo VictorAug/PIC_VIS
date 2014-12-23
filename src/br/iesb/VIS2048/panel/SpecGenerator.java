@@ -2,22 +2,31 @@ package br.iesb.VIS2048.panel;
 
 import org.jfree.data.xy.XYSeries;
 
-public class SpecGenerator implements Runnable{
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpecGenerator.
+ */
+public class SpecGenerator implements Runnable {
 
-	XYSeries genStart() throws InterruptedException{
-		while(true){
-			System.out.println("Hello");		
-			Thread.sleep(1*1000);
-		}
+    /**
+     * Gen start.
+     *
+     * @return the XY series
+     * @throws InterruptedException the interrupted exception
+     */
+    XYSeries genStart() throws InterruptedException {
+	while (true) {
+	    System.out.println("Hello");
+	    Thread.sleep(1 * 1000);
+	}
+    }
+
+    public void run() {
+	try {
+	    genStart();
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
 	}
 
-	//@Override
-	public void run() {
-		try {
-			genStart();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-	}
+    }
 }
