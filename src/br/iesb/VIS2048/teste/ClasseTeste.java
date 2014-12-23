@@ -21,8 +21,7 @@ public class ClasseTeste {
 	    @Override
 	    public void run() {
 		try {
-		    BaseFrame baseFrame = new BaseFrame();
-		    baseFrame.getFrame().setVisible(true);
+		    new BaseFrame().getFrame().setVisible(true);
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
