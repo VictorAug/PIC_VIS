@@ -28,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
@@ -39,6 +41,7 @@ public class Visio {
 	private JFrame frame;
 	//private JPanel contentPane;
 	JLabel lblConectado;
+	JLabel label;
 	protected int baudRate = 115200;
 	protected int dataBits = 8;
 	protected int stopBits = 0;
@@ -275,9 +278,15 @@ public class Visio {
 		lblFaixaEspectral.setBackground(new Color(0, 0, 102));
 		lblFaixaEspectral.setOpaque(true);
 		
-		JSlider slider = new JSlider();
+		JSlider slider = new JSlider(0,2048,2048);
 		panel_4.add(slider, "flowx,cell 0 7 2 1,grow");
 		slider.setBackground(new Color(0, 0, 51));
+		slider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				label.setText(""+slider.getValue());
+			}
+		});
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setForeground(new Color(0, 0, 51));
@@ -324,7 +333,7 @@ public class Visio {
 		spinner_1.setBackground(new Color(0, 0, 51));
 		spinner_1.setForeground(new Color(211, 211, 211));
 		
-		JLabel label = new JLabel("2048");
+		label = new JLabel("2048");
 		label.setFont(new Font("Dialog", Font.PLAIN, 11));
 		label.setForeground(new Color(211, 211, 211));
 		panel_4.add(label, "cell 0 7 2 1,grow");
@@ -381,9 +390,9 @@ public class Visio {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("disable".equals(event.getActionCommand())) {
-					//Zipper zipper = new Zipper();
-					//zipper.generateFileList(null);
-					//zipper.zipIt(null);
+					Zipper zipper = new Zipper();
+					zipper.generateFileList(null);
+					zipper.zipIt(null);
 
 					btnAdquirir.setEnabled(true);
 					btnParar.setEnabled(false);
