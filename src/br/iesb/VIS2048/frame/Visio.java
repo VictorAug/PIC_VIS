@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -202,6 +203,38 @@ public class Visio {
 		rdbtnNewRadioButton.setForeground(new Color(211, 211, 211));
 		rdbtnNewRadioButton.setBackground(new Color(0, 0, 51));
 		
+		ButtonGroup groupModoOp = new ButtonGroup();
+		groupModoOp.add(radioButton);
+		groupModoOp.add(rdbtnNewRadioButton);
+		radioButton.setActionCommand("Unico");
+		rdbtnNewRadioButton.setActionCommand("Continuo");
+		rdbtnNewRadioButton.setSelected(true);
+		radioButton.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent event) {
+		    	if ("Unico".equals(event.getActionCommand())) {
+				    btnParar.setEnabled(false);
+				    specPanel.toggleReadOnce(true);
+				    btnAdquirir.setEnabled(true);
+				} else {
+				    btnParar.setEnabled(false);
+				    specPanel.toggleReadOnce(false);
+				}
+		    }
+		});
+		rdbtnNewRadioButton.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent event) {
+			    	if ("Continuo".equals(event.getActionCommand())) {
+					    btnParar.setEnabled(true);
+					    specPanel.toggleReadOnce(false);
+					    btnParar.setEnabled(true);
+					} else {
+					    btnParar.setEnabled(false);
+					    specPanel.toggleReadOnce(true);
+					}
+			    }
+			});
+		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(0, 0, 51));
 		separator.setBackground(new Color(0, 0, 51));
@@ -348,9 +381,9 @@ public class Visio {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("disable".equals(event.getActionCommand())) {
-					Zipper zipper = new Zipper();
-					zipper.generateFileList(null);
-					zipper.zipIt(null);
+					//Zipper zipper = new Zipper();
+					//zipper.generateFileList(null);
+					//zipper.zipIt(null);
 
 					btnAdquirir.setEnabled(true);
 					btnParar.setEnabled(false);
