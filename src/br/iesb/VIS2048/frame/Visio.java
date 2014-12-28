@@ -33,8 +33,8 @@ import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
+import br.iesb.VIS2048.chart.ChartContainer;
 import br.iesb.VIS2048.database.Zipper;
-import br.iesb.VIS2048.panel.SpecPanel;
 
 public class Visio {
 
@@ -42,7 +42,7 @@ public class Visio {
 	//private JPanel contentPane;
 	JLabel lblConectado;
 	JLabel label;
-	protected int baudRate = 115200;
+	protected int baudRate = 225200;
 	protected int dataBits = 8;
 	protected int stopBits = 0;
 	protected int parity = 0;
@@ -104,7 +104,7 @@ public class Visio {
 		tabbedPane.addTab(null, panel);
 		tabbedPane.setEnabledAt(0, true);
 		tabbedPane.setBackgroundAt(0, new Color(255, 255, 255));
-		panel.setLayout(new MigLayout("", "[15%,grow][85%]", "[grow][grow][grow][80px:n,grow]"));
+		panel.setLayout(new MigLayout("", "[15%,grow][85%,grow]", "[grow][grow][grow][80px:n,grow]"));
 		
 		JLabel labTab1 = new JLabel("Espectro");
 		labTab1.setUI(new VerticalLabelUI(false));
@@ -129,15 +129,15 @@ public class Visio {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 0, 51));
 		panel.add(panel_1, "cell 1 0 1 4,grow");
-		panel_1.setLayout(new MigLayout("", "[grow]", "[90%,grow][10%]"));
+		panel_1.setLayout(new MigLayout("", "[grow]", "[85%,grow][15%,grow]"));
 		
-		SpecPanel specPanel = new SpecPanel();
-		specPanel.setBackground(new Color(0, 0, 51));
-		specPanel.setAlignmentY(0.0f);
-		panel_1.add(specPanel, "flowy,cell 0 0,grow");
+		ChartContainer chart = new ChartContainer();
+		chart.setBackground(new Color(0, 0, 51));
+		chart.setAlignmentY(0.0f);
+		panel_1.add(chart, "cell 0 0,grow");
 		
 		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(new Color(0, 0, 51));
+		panel_3.setBackground(new Color(0, 0, 102));
 		panel_1.add(panel_3, "cell 0 1,grow");
 		
 		JPanel panel_6 = new JPanel();
@@ -154,23 +154,23 @@ public class Visio {
 		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		comboBox.addActionListener (new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
-				if(specPanel.getDevice() != null){
-					lblConectado.setText("Indisponível");
-					lblConectado.setForeground(new Color(255, 0, 0));
-					btnAdquirir.setEnabled(false);
-					specPanel.getDevice().closeComm();
-				}
-				lblConectado.setText("Conectando");
-				lblConectado.setForeground(Color.ORANGE);
-				if(specPanel.newComm((String) comboBox.getSelectedItem())){
-					lblConectado.setText("Conectado");
-					lblConectado.setForeground(new Color(0, 211, 0));
-					btnAdquirir.setEnabled(true);
-					System.out.println("Conectado");
-				}else{
-					lblConectado.setText("Indisponível");
-					lblConectado.setForeground(new Color(255, 0, 0));
-				}				
+//				if(specPanel.getDevice() != null){
+//					lblConectado.setText("Indisponível");
+//					lblConectado.setForeground(new Color(255, 0, 0));
+//					btnAdquirir.setEnabled(false);
+//					//specPanel.getDevice().closeComm();
+//				}
+//				lblConectado.setText("Conectando");
+//				lblConectado.setForeground(Color.ORANGE);
+//				if(specPanel.newComm((String) comboBox.getSelectedItem())){
+//					lblConectado.setText("Conectado");
+//					lblConectado.setForeground(new Color(0, 211, 0));
+//					btnAdquirir.setEnabled(true);
+//					System.out.println("Conectado");
+//				}else{
+//					lblConectado.setText("Indisponível");
+//					lblConectado.setForeground(new Color(255, 0, 0));
+//				}				
 		    }
 		});
 		panel_6.add(comboBox, "cell 0 0,growx,aligny center");
@@ -217,11 +217,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 		    	if ("Unico".equals(event.getActionCommand())) {
 				    btnParar.setEnabled(false);
-				    specPanel.toggleReadOnce(true);
+				    //specPanel.toggleReadOnce(true);
 				    btnAdquirir.setEnabled(true);
 				} else {
 				    btnParar.setEnabled(false);
-				    specPanel.toggleReadOnce(false);
+				    //specPanel.toggleReadOnce(false);
 				}
 		    }
 		});
@@ -229,11 +229,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 			    	if ("Continuo".equals(event.getActionCommand())) {
 					    btnParar.setEnabled(true);
-					    specPanel.toggleReadOnce(false);
+					    //specPanel.toggleReadOnce(false);
 					    btnParar.setEnabled(true);
 					} else {
 					    btnParar.setEnabled(false);
-					    specPanel.toggleReadOnce(true);
+					    //specPanel.toggleReadOnce(true);
 					}
 			    }
 			});
@@ -252,17 +252,42 @@ public class Visio {
 		lblNewLabel.setBackground(new Color(0, 0, 102));
 		lblNewLabel.setOpaque(true);
 		
+		ButtonGroup groupUnit = new ButtonGroup();
+		
 		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
 		panel_4.add(rdbtnNewRadioButton_1, "cell 0 4,alignx center,growy");
 		rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		rdbtnNewRadioButton_1.setForeground(new Color(211, 211, 211));
 		rdbtnNewRadioButton_1.setBackground(new Color(0, 0, 51));
+		rdbtnNewRadioButton_1.setActionCommand("Counts");
+		rdbtnNewRadioButton_1.setSelected(true);
+		groupUnit.add(rdbtnNewRadioButton_1);
+		rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent event) {
+				if ("Counts".equals(event.getActionCommand())) {
+				    //specPanel.setImage("Counts");
+				} else {
+				    //specPanel.setImage("mV");
+				}
+		    }
+		});
 		
 		JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("mV");
 		panel_4.add(rdbtnNewRadioButton_2, "cell 1 4,alignx center,growy");
 		rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		rdbtnNewRadioButton_2.setForeground(new Color(211, 211, 211));
 		rdbtnNewRadioButton_2.setBackground(new Color(0, 0, 51));
+		rdbtnNewRadioButton_2.setActionCommand("mV");
+		groupUnit.add(rdbtnNewRadioButton_2);
+		rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent event) {
+					if ("mV".equals(event.getActionCommand())) {
+					    //specPanel.setImage("mV");
+					} else {
+					    //specPanel.setImage("Counts");
+					}
+			   }
+		});
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setForeground(new Color(0, 0, 51));
@@ -287,6 +312,7 @@ public class Visio {
 				label.setText(""+slider.getValue());
 			}
 		});
+		slider.setSnapToTicks(true);
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setForeground(new Color(0, 0, 51));
@@ -397,12 +423,12 @@ public class Visio {
 					btnAdquirir.setEnabled(true);
 					btnParar.setEnabled(false);
 					btnParar.setFocusable(false);
-					specPanel.getSpec(false);
+					//specPanel.getSpec(false);
 				} else {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);
 					btnParar.setFocusable(true);
-					specPanel.reloadTitle();
+					//specPanel.reloadTitle();
 				}
 			}
 		});
@@ -414,13 +440,13 @@ public class Visio {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
-					specPanel.getSpec(true);
-					if (specPanel.isReadOnce())
-						btnParar.setEnabled(false);
-					else {
-						btnParar.setEnabled(true);
-						btnAdquirir.setEnabled(false);
-					}
+					//specPanel.getSpec(true);
+//					if (specPanel.isReadOnce())
+//						btnParar.setEnabled(false);
+//					else {
+//						btnParar.setEnabled(true);
+//						btnAdquirir.setEnabled(false);
+//					}
 
 				} else {
 					btnAdquirir.setEnabled(true);

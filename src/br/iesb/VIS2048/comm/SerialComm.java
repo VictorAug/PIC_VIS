@@ -4,146 +4,131 @@ import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
-import jssc.SerialPortList;
 
-public class SerialComm{
-	private String portName;
-    private int baudRate = SerialPort.BAUDRATE_115200;
-    private int dataBits = SerialPort.DATABITS_8;
-    private int stopBits = SerialPort.STOPBITS_1;
-    private int parity = SerialPort.PARITY_NONE;
-    private SerialPort serialPort;
-    private boolean readyToWrite = false;
-    private int dataSize = 2048;
-    private boolean availablePort = false;
+public class SerialComm {
+	private String portName = "";
+    private int baudRate = 115200;
+    private int dataBits = 8;
+    private int stopBits = 0;
+    private int parity = 0;
+    private SerialPort serialPort = null;
+    private int numberOfSamples = 2048;
+    private boolean connected = false;
+    private boolean openPort = false;
+    private boolean readyToGet = false;
     
-	public SerialComm(String port){
-		//String[] ports = SerialPortList.getPortNames();
-        //if(ports.length > 0){
-            //setPortName(ports[0]);
-            //serialPort = new SerialPort(getPortName());
-			if(port == "null") return;
-			serialPort = new SerialPort(port);
-            if(serialPort != null){
-            	setPortName(port);
-            	System.out.println("Connected to Port " + getPortName());
-            	setPortAvailable(true);
-            }
-        //}else{
-        //	System.out.println("Nenhuma porta disponível");
-        //}
-	}
-	public String[] availablePorts(){
-		return SerialPortList.getPortNames();
+	public SerialComm(String port) {
+		if(port.equals("null") || port.equals("")){
+			System.out.println("SerialComm Constructor: nome de porta Nulo");
+			setConnected(false);
+		}
+		serialPort = new SerialPort(port);
+        if(serialPort != null){
+        	setPortName(port);
+        	setConnected(true);
+        	System.out.println("SerialComm Constructor: Conexão em Porta " + getPortName());
+        }else{
+        	System.out.println("SerialComm Constructor: Não foi possível estabelecer conexão: serialPort = null");
+        	setConnected(false);
+        }
 	}
 	
-	public boolean isOpen(){
-		return this.isOpen();
-	}
-	public void openComm(){
+	public void OpenComm(){
+		if(!isConnected()){
+			System.out.println("SerialComm OpenComm: Impossível abrir porta "+ getPortName() + ", não há conexão");
+			return;
+		}
 		try {
 			serialPort.openPort();
+			setOpenPort(true);
+			System.out.println("SerialComm OpenComm: Porta " + getPortName() + " Aberta");
 		} catch (SerialPortException e3) {
 			e3.printStackTrace();
+			setOpenPort(false);
+			System.out.println("SerialComm OpenComm: Erro ao abrir porta" + getPortName());
 		}
-		
-		this.updatePortSettings(portName, baudRate, dataBits, stopBits, parity);
-		
+	}
+	
+	public void OpenReading(){
+		if(!isOpenPort()){
+			System.out.println("SerialComm OpenReading: Nenhuma porta aberta");
+			return;
+		}
 		try {
 			serialPort.addEventListener(new Reader(), SerialPort.MASK_RXCHAR |
 			        SerialPort.MASK_RXFLAG |
 			        SerialPort.MASK_CTS |
 			        SerialPort.MASK_DSR |
 			        SerialPort.MASK_RLSD);
+			System.out.println("SerialComm OpenReading: Evento de Leitura Registrado");
 		} catch (SerialPortException e1) {
 			e1.printStackTrace();
 		}
-		
-        if(serialPort.isOpened()){
-        	System.out.println("Comunicação Aberta");
-        }
 	}
-	public void closeComm(){
-		System.out.println("Tentando abrir porta");
-		try {
-			serialPort.closePort();
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-		}finally{
-			if(!serialPort.isOpened()){
-				System.out.println("Comunicação Encerrada");
-			}
-		}
-		
-	}
-	public void updatePortSettings(String portName, int baudRate, int dataBits, int stopBits, int parity) {
+	
+	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity) {
+		System.out.println("SerialComm updatePortSettings:" + baudRate + " - " + dataBits + " - " + stopBits + " - " +parity);
     	try {
 			serialPort.setParams(baudRate, dataBits, stopBits, parity);
 	        this.baudRate = baudRate;
 	        this.dataBits = dataBits;
 	        this.stopBits = stopBits;
 	        this.parity = parity;
+	        System.out.println("SerialComm updatePortSettings: Dados de Porta Atualizados");
 		} catch (SerialPortException e2) {
+			System.out.println("SerialComm updatePortSettings: Erro na atualização dos dados");
 			e2.printStackTrace();
 		}
     }
+	
 	public void sendString(String str) {
+		//System.out.println("Entrou");
         if(str.length() > 0){
             try {
             	serialPort.writeBytes(str.getBytes());
-            	//System.out.println(str + " Enviado");
+            	System.out.println("SerialComm OpenComm: " + str + " Enviado");
             }
             catch (Exception ex) {
             	ex.printStackTrace();
-                System.out.println("Erro ao escrever!");
+                System.out.println("SerialComm OpenComm: Erro ao escrever: " + str);
             }
         }
     }
-	public String getPortName() {
-		return portName;
+	public synchronized void waitToGet() throws InterruptedException{
+		while(!readyToGet) wait();
 	}
-	public void setPortName(String portName) {
-		this.portName = portName;
+	public synchronized void readyToGet(boolean readyToGet){
+		this.readyToGet = readyToGet;
+		if(readyToGet) notifyAll();
 	}
 	
-	public synchronized void waitToWrite() throws InterruptedException{
-		while(!readyToWrite) wait();
-	}
-	public synchronized void readyToWrite(boolean readyToWrite){
-		this.readyToWrite = readyToWrite;
-		if(readyToWrite) notifyAll();
-	}
 	public String getData(){
 		return this.Data;
 	}
-	String Data = "";
-	
 	private void setData(String Data){
 		this.Data = Data;
 	}
-	public boolean isPortAvailable() {
-		return availablePort;
-	}
-	public void setPortAvailable(boolean availablePort) {
-		this.availablePort = availablePort;
-	}
+	private String Data = "";
+
 	private class Reader implements SerialPortEventListener {
         private String str = "";
 		@Override
 		public void serialEvent(SerialPortEvent spe) {
 			if(spe.isRXCHAR() || spe.isRXFLAG()){
                 if(spe.getEventValue() > 0){
+                	//System.out.println("Event");
                     try {
                         str = "";
                         byte[] buffer = serialPort.readBytes(spe.getEventValue());
                         str = new String(buffer);
                         pos += str.length() - str.replace("\n", "").length();
                         reading += str;
-                        if(pos == dataSize){
+                        if(pos == numberOfSamples){
                         	setData(reading);
+                        	//System.out.println("Posicao: " + pos);
                         	pos = 0; 
                         	reading = "";
-                        	readyToWrite(true);
+                        	readyToGet(true);
                         }
                     }
                     catch (Exception ex) {
@@ -154,6 +139,78 @@ public class SerialComm{
 		}
 		private int pos = 0;
 		String reading = "";
+	}
+	
+	public String getPortName() {
+		return portName;
+	}
+
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+
+	public int getBaudRate() {
+		return baudRate;
+	}
+
+	public void setBaudRate(int baudRate) {
+		this.baudRate = baudRate;
+	}
+
+	public int getDataBits() {
+		return dataBits;
+	}
+
+	public void setDataBits(int dataBits) {
+		this.dataBits = dataBits;
+	}
+
+	public int getStopBits() {
+		return stopBits;
+	}
+
+	public void setStopBits(int stopBits) {
+		this.stopBits = stopBits;
+	}
+
+	public int getParity() {
+		return parity;
+	}
+
+	public void setParity(int parity) {
+		this.parity = parity;
+	}
+
+	public SerialPort getSerialPort() {
+		return serialPort;
+	}
+
+	public void setSerialPort(SerialPort serialPort) {
+		this.serialPort = serialPort;
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+
+	public int getNumberOfSamples() {
+		return numberOfSamples;
+	}
+
+	public void setNumberOfSamples(int numberOfSamples) {
+		this.numberOfSamples = numberOfSamples;
+	}
+
+	public boolean isOpenPort() {
+		return openPort;
+	}
+
+	public void setOpenPort(boolean openPort) {
+		this.openPort = openPort;
 	}
 
 }
