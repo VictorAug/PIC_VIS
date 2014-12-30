@@ -5,23 +5,19 @@ import org.jfree.data.xy.XYSeries;
 import br.iesb.VIS2048.chart.Chart;
 
 public class Harvester {
-
 	private SerialComm comm;
+	private String port;
+	private int baudRate = 335200;
+	private int dataBits = 8;
+	private int stopBits = 0;
+	private int parity = 0;
+	private boolean isConnected;
 	private Thread launch = new Thread(new Harvest(), "Spectrometer");
-	public Harvester() {
-		comm = new SerialComm("COM6");
-		if(comm.isConnected()){
-			comm.OpenComm();
-			comm.OpenReading();
-			comm.updatePortSettings(335200, 8, 0, 0);
-			comm.readyToGet(true);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			//launch();
-		}		
+	public Harvester(String port) {
+		this.port = port;
+		//if(tryConnection(port)) setConnected(true);
+		//else setConnected(false);
+		
 	}
 	
 	public void launch(){
@@ -29,24 +25,44 @@ public class Harvester {
 		launch.start();
 	}
 	
+	public boolean tryConnection(String port){
+		this.port = port;
+		setDevice(new SerialComm(this.port));
+		if(getDevice().isConnected()){
+			getDevice().OpenComm();
+			getDevice().OpenReading();
+			getDevice().updatePortSettings(baudRate, dataBits, stopBits, parity);
+			getDevice().readyToGet(true);
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			//launch();
+			return true;
+		}
+		return false;
+	}
+	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity){
+		getDevice().updatePortSettings(baudRate, dataBits, stopBits, parity);
+	}
 	private class Harvest implements Runnable{
 		@Override
 		public void run() {
 			while(true){
 			}			
 		}
-		
 	}
 	
 	public Chart getDataset(String str, XYSeries series){
 		String buffer = "";
-		comm.readyToGet(false);
-		comm.sendString(str);
+		getDevice().readyToGet(false);
+		getDevice().sendString(str);
 		double time = System.nanoTime();
 		try {
-			comm.waitToGet();
-			String data = comm.getData(); 
-			Double[] leitura = new Double[comm.getNumberOfSamples()];
+			getDevice().waitToGet();
+			String data = getDevice().getData(); 
+			Double[] leitura = new Double[getDevice().getNumberOfSamples()];
 			int i = 0;
 			char[] charArray = data.toCharArray();
 			for(char Char : charArray){
@@ -62,7 +78,7 @@ public class Harvester {
 			}
 			time = System.nanoTime() - time;
 			System.out.println("Harvester getDataset: "+time + " elapsed");
-			Chart chart = new Chart(leitura, "Teste", "Teste", comm.getNumberOfSamples(), System.currentTimeMillis());
+			Chart chart = new Chart(leitura, "Teste", "Teste", getDevice().getNumberOfSamples(), System.currentTimeMillis());
 			
 			chart.setXyseries(series);
 			return chart;
@@ -71,6 +87,22 @@ public class Harvester {
 		}
 		
 		return null;		
+	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	public void setConnected(boolean isConnected) {
+		this.isConnected = isConnected;
+	}
+
+	public SerialComm getDevice() {
+		return comm;
+	}
+
+	public void setDevice(SerialComm comm) {
+		this.comm = comm;
 	}
 	
 }

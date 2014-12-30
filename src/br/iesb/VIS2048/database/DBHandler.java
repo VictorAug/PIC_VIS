@@ -14,123 +14,101 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipException;
 
 /**
  * The Class FileDataBase.
  */
 public class DBHandler {
 
-	/** The app path string. */
-	private final static String appPathString = "./data";
+	private final static String appPathString = "./Vis/";
+	private final static String DBPathString = appPathString + "DB/";
+	private static String DBFileConfig = DBPathString + "config/";
+	private static String DBFileCollection = DBPathString + "collection/";
+	private ArrayList<String> collection = new ArrayList<String>();
+	private String mainDB;
+	DBChartCollection DBChart;
 	
-	/** The DB path string. */
-	private final static String DBPathString = appPathString + "/DB";
-	
-	/** The DB file. */
-	private static String DBFile = DBPathString + "/DB1.txt";
-	
-	/** The file. */
-	private static File file;
-	
-	/** To count files created. */
-	private Integer count;
-
-	/**
-	 * Instantiates a new file data base.
-	 */
 	public DBHandler() {
-		createDirectory(appPathString);
-		createDirectory(DBPathString);
-		try {
-			if (createFile(DBFile))
-				System.out.println("DBFile: " + DBFile);
-		} catch (ZipException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Reload title for DBFile name.
-	 */
-	public void reloadTitle() {
-		DBFile.concat("/DB"+(count++)+".txt");
-	}
-	
-	/**
-	 * Reset count for DBFile name.
-	 */
-	public void resetCount() {
-		count = 0;
-	}
-
-	/**
-	 * Creates the directory.
-	 *
-	 * @param path the path
-	 * @return true, if successful
-	 */
-	private static boolean createDirectory(String path) {
-		if (Files.exists(Paths.get(path)))
-			return true;// Diretório já existe
-		else {
-			File dir = new File(path);
-			if (dir.mkdir())
-				return true;// Diretório criado com sucesso
-			else
-				return false;// Diretório não pôde ser criado
-		}
-	}
-
-	/**
-	 * Creates the file.
-	 *
-	 * @param path the path
-	 * @return true, if successful
-	 * @throws ZipException the zip exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private static boolean createFile(String path) throws ZipException, IOException {
-		file = new File(path);
-		if (file.isFile()) {
-			return true;// Arquivo já existe
-		} else {
-			try {
-				if (file.createNewFile()) {
-					return true;// Arquivo criado
-				}
-			} catch (IOException e1) {
-				e1.printStackTrace();
+		createDir(appPathString);
+		createDir(DBPathString);
+		createDir(DBFileConfig);
+		createDir(DBFileCollection);
+		
+		for (File file : getFilesList(DBFileCollection))
+			if(file.getName().endsWith(".vis")){
+				collection.add(file.getName().toLowerCase());
+			}		
+		//System.out.println(collection.size());
+		
+		for(int i = 1; i<collection.size()+2; i++){
+			if(!collection.contains(("solucao"+i+".vis").toLowerCase())){
+				setMainDB("solucao"+i+".vis");
+				break;
 			}
 		}
-		return false;
+		System.err.print(DBFileCollection+getMainDB());
+		DBChart = new DBChartCollection();
+		saveChartCollection();
+		System.out.println(" Ready");
 	}
-
-	/**
-	 * Fill random vector.
-	 *
-	 * @param vet the vet
-	 * @param size the size
-	 * @return the double[]
-	 */
-	public double[] fillRandomVector(double[] vet, int size) {
-		vet = new double[size];
-		for (int i = 0; i < size; i++)
-			vet[i] = Math.random() * 1000;
-		return vet;
+	
+	public void saveChartCollection(){
+		saveGZipObject(DBChart, DBFileCollection+getMainDB());
 	}
+	
+	private static void createDir(String path){
+		if(!Files.exists(Paths.get(path))){
+			new File(path).mkdir();
+		}
+	}
+//	private static void createFile(String path){
+//		if (!new File(path).isFile()){
+//			try {
+//				new File(path).createNewFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+	public File[] getFilesList(String directoryName){
+        return new File(directoryName).listFiles();
+    }
+	public void listFilesAndFolders(String directoryName){
+        File directory = new File(directoryName);
+        File[] fList = directory.listFiles();
+        for (File file : fList){
+            System.out.println(file.getName());
+        }
+    }
+	public void listFiles(String directoryName){
+        File directory = new File(directoryName);
+        File[] fList = directory.listFiles();
+        for (File file : fList){
+            if (file.isFile()){
+                System.out.println(file.getName());
+            }
+        }
+    }
+	public void listFolders(String directoryName){
+        File directory = new File(directoryName);
+        File[] fList = directory.listFiles();
+        for (File file : fList){
+            if (file.isDirectory()){
+                System.out.println(file.getName());
+            }
+        }
+    }
+//	public double[] fillRandomVector(double[] vet, int size) {
+//		vet = new double[size];
+//		for (int i = 0; i < size; i++)
+//			vet[i] = Math.random() * 1000;
+//		return vet;
+//	}
 
-	/**
-	 * Log vector.
-	 *
-	 * @param leitura the vet
-	 * @return true, if successful
-	 */
-	public static void saveGZipObject(Object vlo, String fileName) {
+	public static boolean saveGZipObject(Object vlo, String fileName) {
 		FileOutputStream fos = null;
 		GZIPOutputStream gos = null;
 		ObjectOutputStream oos = null;
@@ -143,11 +121,12 @@ public class DBHandler {
 			oos.close();
 			gos.close();
 			fos.close();
+			return true;
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
+			return false;
 		}
 	}
-	
 	public static Object loadGZipObject(String fileName) {
 		Object obj = null;
 		FileInputStream fis = null;
@@ -187,27 +166,11 @@ public class DBHandler {
 		writeToFile(text);
 		return true;
 	}
-	/**
-	 * Write to file.
-	 *
-	 * @param text the text
-	 * @return true, if successful
-	 */
 	private static boolean writeToFile(String text) {
 		try {
-			createDirectory(appPathString);
-			createDirectory(DBPathString);
-			try {
-				createFile(DBFile);
-				//if (createFile(DBFile))
-					//System.out.println("DBFile: " + DBFile);
-			} catch (ZipException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			File f = new File(DBFile);
+			createDir(appPathString);
+			createDir(DBPathString);
+			File f = new File(DBFileCollection);
 			FileWriter fw = new FileWriter(f, true);
 			PrintWriter output = new PrintWriter(fw);
 			output.println(text);
@@ -233,7 +196,6 @@ public class DBHandler {
         //System.out.println("Output String lenght : " + outStr.length());
         return outStr;
      }
-    
     public static String decompress(String str) throws IOException {
         if (str == null || str.length() == 0) {
             return str;
@@ -248,6 +210,14 @@ public class DBHandler {
         }
         //System.out.println("Output String lenght : " + outStr.length());
         return outStr;
-     }	
+     }
+
+	public String getMainDB() {
+		return mainDB;
+	}
+
+	public void setMainDB(String mainDB) {
+		this.mainDB = mainDB;
+	}	
 
 }

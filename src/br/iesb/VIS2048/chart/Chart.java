@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.jfree.data.xy.XYSeries;
 
-import br.iesb.VIS2048.database.DBHandler;
-
 
 public class Chart implements Serializable{
 	/**
@@ -27,7 +25,7 @@ public class Chart implements Serializable{
 		this.setTimestamp(timestamp);
 		this.setNumberOfSamples(numberOfSamples);
 		
-		DBHandler.logVector(doubleSeries, this.nome, this.description, this.numberOfSamples, this.timestamp);
+		//DBHandler.logVector(doubleSeries, this.nome, this.description, this.numberOfSamples, this.timestamp);
 		//this.setPicture(picture);
 		//this.setXyseries(xyseries);
 	}
@@ -86,6 +84,11 @@ public class Chart implements Serializable{
 
 	public void setXyseries(XYSeries xyseries) {
 		this.xyseries = xyseries;
+	}
+
+	public boolean validate() {
+		
+		return true;
 	}
 	
 }

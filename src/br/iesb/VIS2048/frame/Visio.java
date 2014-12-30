@@ -34,7 +34,7 @@ import javax.swing.event.ChangeListener;
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.chart.ChartContainer;
-import br.iesb.VIS2048.database.Zipper;
+import br.iesb.VIS2048.database.DBHandler;
 
 public class Visio {
 
@@ -42,6 +42,9 @@ public class Visio {
 	//private JPanel contentPane;
 	JLabel lblConectado;
 	JLabel label;
+	JButton btnAdquirir;
+	JComboBox<String> comboBox;
+	ChartContainer chart;
 	protected int baudRate = 225200;
 	protected int dataBits = 8;
 	protected int stopBits = 0;
@@ -74,6 +77,8 @@ public class Visio {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		DBHandler db = new DBHandler();
+		
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(204, 204, 255));
 		frame.setBounds(100, 100, 840, 600);
@@ -117,7 +122,7 @@ public class Visio {
 		panel.add(panel_5, "cell 0 0,grow");
 		panel_5.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px]"));
 		
-		JButton btnAdquirir = new JButton("Adquirir");
+		btnAdquirir = new JButton("Adquirir");
 		btnAdquirir.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnAdquirir.setEnabled(false);
 		panel_5.add(btnAdquirir, "cell 0 0,grow");
@@ -131,7 +136,7 @@ public class Visio {
 		panel.add(panel_1, "cell 1 0 1 4,grow");
 		panel_1.setLayout(new MigLayout("", "[grow]", "[85%,grow][15%,grow]"));
 		
-		ChartContainer chart = new ChartContainer();
+		chart = new ChartContainer("COM6");
 		chart.setBackground(new Color(0, 0, 51));
 		chart.setAlignmentY(0.0f);
 		panel_1.add(chart, "cell 0 0,grow");
@@ -145,39 +150,47 @@ public class Visio {
 		panel_6.setForeground(new Color(211, 211, 211));
 		panel_6.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Conex\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
 		panel.add(panel_6, "cell 0 1,grow");
-		panel_6.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px,grow]"));
+		panel_6.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[20px,grow]"));
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox = new JComboBox<String>();
 		checkPort = new Thread(new checkForPorts(comboBox));
+		cleaner = new Thread(new clearComm());
+		cleaner.setDaemon(true);
+		cleaner.start();
 		comboBox.setForeground(new Color(211, 211, 211));
 		comboBox.setBackground(new Color(0, 0, 51));
 		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		comboBox.addActionListener (new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
-//				if(specPanel.getDevice() != null){
-//					lblConectado.setText("Indisponível");
-//					lblConectado.setForeground(new Color(255, 0, 0));
-//					btnAdquirir.setEnabled(false);
-//					//specPanel.getDevice().closeComm();
-//				}
-//				lblConectado.setText("Conectando");
-//				lblConectado.setForeground(Color.ORANGE);
-//				if(specPanel.newComm((String) comboBox.getSelectedItem())){
-//					lblConectado.setText("Conectado");
-//					lblConectado.setForeground(new Color(0, 211, 0));
-//					btnAdquirir.setEnabled(true);
-//					System.out.println("Conectado");
-//				}else{
-//					lblConectado.setText("Indisponível");
-//					lblConectado.setForeground(new Color(255, 0, 0));
-//				}				
-		    }
+				timeToClear(true);
+			}
 		});
+		
 		panel_6.add(comboBox, "cell 0 0,growx,aligny center");
+		
+		JButton button = new JButton("Reset");
+		button.setToolTipText("Recuperar Conexão");
+		button.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		button.setEnabled(true);
+		panel_6.add(button, "cell 1 0");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnAdquirir.setEnabled(false);
+				btnParar.setEnabled(false);
+				
+				if(chart.RSpec.isAlive()){
+					chart.launchThread();
+					chart.RSpec.setDaemon(true);
+					chart.RSpec.start();
+				}
+				timeToClear(true);	
+			}
+		});		
 		
 		lblConectado = new JLabel("Indisponível");
 		lblConectado.setForeground(new Color(255, 0, 0));
-		panel_6.add(lblConectado, "cell 1 0,alignx center,aligny center");
+		panel_6.add(lblConectado, "cell 2 0,alignx center,aligny center");
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(new Color(0, 0, 51));
@@ -217,11 +230,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 		    	if ("Unico".equals(event.getActionCommand())) {
 				    btnParar.setEnabled(false);
-				    //specPanel.toggleReadOnce(true);
+				    chart.setReadOnce(true);
 				    btnAdquirir.setEnabled(true);
 				} else {
 				    btnParar.setEnabled(false);
-				    //specPanel.toggleReadOnce(false);
+				    chart.setReadOnce(false);
 				}
 		    }
 		});
@@ -229,11 +242,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 			    	if ("Continuo".equals(event.getActionCommand())) {
 					    btnParar.setEnabled(true);
-					    //specPanel.toggleReadOnce(false);
+					    chart.setReadOnce(false);
 					    btnParar.setEnabled(true);
 					} else {
 					    btnParar.setEnabled(false);
-					    //specPanel.toggleReadOnce(true);
+					    chart.setReadOnce(true);
 					}
 			    }
 			});
@@ -383,7 +396,7 @@ public class Visio {
 		panel.add(panel_7, "cell 0 3,grow");
 		panel_7.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
 		
-		JLabel lblConjunto = new JLabel("Conjunto");
+		JLabel lblConjunto = new JLabel(db.getMainDB());
 		lblConjunto.setForeground(new Color(211, 211, 211));
 		lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_7.add(lblConjunto, "flowx,cell 0 0,growx,aligny top");
@@ -416,14 +429,13 @@ public class Visio {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("disable".equals(event.getActionCommand())) {
-					Zipper zipper = new Zipper();
-					zipper.generateFileList(null);
-					zipper.zipIt(null);
-
+					//Zipper zipper = new Zipper();
+					//zipper.generateFileList(null);
+					//zipper.zipIt(null);
 					btnAdquirir.setEnabled(true);
 					btnParar.setEnabled(false);
 					btnParar.setFocusable(false);
-					//specPanel.getSpec(false);
+					chart.setGet(false);
 				} else {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);
@@ -440,14 +452,13 @@ public class Visio {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
-					//specPanel.getSpec(true);
-//					if (specPanel.isReadOnce())
-//						btnParar.setEnabled(false);
-//					else {
-//						btnParar.setEnabled(true);
-//						btnAdquirir.setEnabled(false);
-//					}
-
+					chart.setGet(true);
+					if (chart.isReadOnce())
+						btnParar.setEnabled(false);
+					else {
+						btnParar.setEnabled(true);
+						btnAdquirir.setEnabled(false);
+					}
 				} else {
 					btnAdquirir.setEnabled(true);
 					btnParar.setEnabled(false);
@@ -455,7 +466,19 @@ public class Visio {
 			}
 		});
 	}
+	private boolean clear = false;
+	
+	private synchronized void waitToClear() throws InterruptedException{ 
+		while(!clear) wait();
+	}
+	
+	public synchronized void timeToClear(boolean get){ 
+		this.clear = get;
+		if(this.clear) notifyAll();
+	}
+	
 	private Thread checkPort;
+	private Thread cleaner;
 	//private boolean changeOnPort = false;
 	private class checkForPorts implements Runnable{
 		JComboBox<String> comboBox;
@@ -501,8 +524,38 @@ public class Visio {
 					}
 				}
 			}
-			
 		}
+	}
+	private class clearComm implements Runnable{
+		public void run(){
+			while(true){
+				try {
+					waitToClear();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println("Time to close comm");
+				if(chart.getDevice() != null){
+					lblConectado.setText("Indisponível");
+					lblConectado.setForeground(new Color(255, 0, 0));
+					btnAdquirir.setEnabled(false);
+					chart.getHarvester().getDevice().closeComm();
+				}
+				lblConectado.setText("Conectando");
+				lblConectado.setForeground(Color.ORANGE);
+
+				if(chart.getHarvester().tryConnection(((String) comboBox.getSelectedItem()))){
+					lblConectado.setText("Conectado");
+					lblConectado.setForeground(new Color(0, 211, 0));
+					btnAdquirir.setEnabled(true);
+					System.out.println("Conectado");
+				}else{
+					lblConectado.setText("Indisponível");
+					lblConectado.setForeground(new Color(255, 0, 0));
+				}
+				timeToClear(false);
+			}
+	    }
 	}
 }
 

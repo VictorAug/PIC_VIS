@@ -19,39 +19,48 @@ public class SerialComm {
     
 	public SerialComm(String port) {
 		if(port.equals("null") || port.equals("")){
-			System.out.println("SerialComm Constructor: nome de porta Nulo");
+			//System.out.println("SerialComm Constructor: nome de porta Nulo");
 			setConnected(false);
 		}
 		serialPort = new SerialPort(port);
         if(serialPort != null){
         	setPortName(port);
         	setConnected(true);
-        	System.out.println("SerialComm Constructor: Conexão em Porta " + getPortName());
+        	//System.out.println("SerialComm Constructor: Conexão em Porta " + getPortName());
         }else{
-        	System.out.println("SerialComm Constructor: Não foi possível estabelecer conexão: serialPort = null");
+        	//System.out.println("SerialComm Constructor: Não foi possível estabelecer conexão: serialPort = null");
         	setConnected(false);
         }
 	}
 	
 	public void OpenComm(){
 		if(!isConnected()){
-			System.out.println("SerialComm OpenComm: Impossível abrir porta "+ getPortName() + ", não há conexão");
+			//System.out.println("SerialComm OpenComm: Impossível abrir porta "+ getPortName() + ", não há conexão");
 			return;
 		}
 		try {
 			serialPort.openPort();
 			setOpenPort(true);
-			System.out.println("SerialComm OpenComm: Porta " + getPortName() + " Aberta");
+			//System.out.println("SerialComm OpenComm: Porta " + getPortName() + " Aberta");
 		} catch (SerialPortException e3) {
 			e3.printStackTrace();
 			setOpenPort(false);
-			System.out.println("SerialComm OpenComm: Erro ao abrir porta" + getPortName());
+			//System.out.println("SerialComm OpenComm: Erro ao abrir porta" + getPortName());
+		}
+	}
+	
+	public void closeComm(){
+		if(serialPort != null)
+		try {
+			serialPort.closePort();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void OpenReading(){
 		if(!isOpenPort()){
-			System.out.println("SerialComm OpenReading: Nenhuma porta aberta");
+			//System.out.println("SerialComm OpenReading: Nenhuma porta aberta");
 			return;
 		}
 		try {
@@ -60,23 +69,23 @@ public class SerialComm {
 			        SerialPort.MASK_CTS |
 			        SerialPort.MASK_DSR |
 			        SerialPort.MASK_RLSD);
-			System.out.println("SerialComm OpenReading: Evento de Leitura Registrado");
+			//System.out.println("SerialComm OpenReading: Evento de Leitura Registrado");
 		} catch (SerialPortException e1) {
 			e1.printStackTrace();
 		}
 	}
 	
 	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity) {
-		System.out.println("SerialComm updatePortSettings:" + baudRate + " - " + dataBits + " - " + stopBits + " - " +parity);
+		//System.out.println("SerialComm updatePortSettings:" + baudRate + " - " + dataBits + " - " + stopBits + " - " +parity);
     	try {
 			serialPort.setParams(baudRate, dataBits, stopBits, parity);
 	        this.baudRate = baudRate;
 	        this.dataBits = dataBits;
 	        this.stopBits = stopBits;
 	        this.parity = parity;
-	        System.out.println("SerialComm updatePortSettings: Dados de Porta Atualizados");
+	        //System.out.println("SerialComm updatePortSettings: Dados de Porta Atualizados");
 		} catch (SerialPortException e2) {
-			System.out.println("SerialComm updatePortSettings: Erro na atualização dos dados");
+			//System.out.println("SerialComm updatePortSettings: Erro na atualização dos dados");
 			e2.printStackTrace();
 		}
     }
