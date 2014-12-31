@@ -29,15 +29,16 @@ public class ChartContainer extends JPanel{
 	private DBChartCollection chartCollection;
 	private Harvester harvester;
 	private String port;
+	private JPanel container;
 	private int baudRate = 335200;
 	private int dataBits = 8;
 	private int stopBits = 0;
 	private int parity = 0;
 	private String collectionName;
+	private String fileName;
 	private static final long serialVersionUID = -8773563746572880829L;
 
 	public ChartContainer(String port){
-		
 		setBackground(new Color(0, 0, 102));
 		
 		dataset = new XYSeriesCollection();
@@ -50,13 +51,23 @@ public class ChartContainer extends JPanel{
 		panel = new ChartPanel(chart);
 		panel.setPreferredSize(new Dimension(600, 300));
 		((XYPlot) chart.getPlot()).setRangeGridlinePaint(Color.white);
+		((XYPlot) chart.getPlot()).setBackgroundPaint(new Color(0, 0, 51));
 		this.setLayout(new BorderLayout());
 		this.add(panel, BorderLayout.CENTER);
-		chartCollection = new DBChartCollection();
+		setChartCollection(new DBChartCollection());
 		setHarvester(new Harvester(port));
 		RSpec.setDaemon(true);
 		RSpec.start();		
 		
+	}
+	public void setContainer(JPanel container){
+		this.container = container;
+	}
+	public int getContainerCount(){
+		return container.getComponentCount(); 
+	}
+	public void changeContainerBackground(int n){
+		container.getComponent(n).setBackground(new Color(0, 0, 0));
 	}
 	public void launchThread(){
 		RSpec = new Thread(new updateChart(), "Spectrometer");
@@ -123,7 +134,14 @@ public class ChartContainer extends JPanel{
 	public void setPort(String port) {
 		this.port = port;
 	}
-
+	
+	public void slideContainer() throws InterruptedException{
+		for(int i=0; i<container.getComponentCount()-1; i++){
+			container.getComponent(i).setBackground(container.getComponent(i+1).getBackground());
+		}
+		container.getComponent(container.getComponentCount()-1).setBackground(new Color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256)));
+	}
+	
 	public class updateChart implements Runnable{
 		XYSeries series;
 		public void run() {
@@ -136,7 +154,8 @@ public class ChartContainer extends JPanel{
 				series = new XYSeries("Teste");
 				Chart chart = getHarvester().getDataset("+", series);
 				if(chart.validate()){
-					chartCollection.addChart(chart);
+					getChartCollection().addChart(chart);
+					System.out.println(getChartCollection().count());
 					if(dataset.getSeriesCount() > 0)
 						dataset.removeSeries(dataset.getSeries("Teste"));
 					dataset.addSeries(series);
@@ -156,5 +175,18 @@ public class ChartContainer extends JPanel{
 	}
 	public void setHarvester(Harvester harvester) {
 		this.harvester = harvester;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+		getChartCollection().setFileName(fileName);
+	}
+	public DBChartCollection getChartCollection() {
+		return chartCollection;
+	}
+	public void setChartCollection(DBChartCollection chartCollection) {
+		this.chartCollection = chartCollection;
 	}
 }

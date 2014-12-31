@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -134,7 +135,7 @@ public class Visio {
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 0, 51));
 		panel.add(panel_1, "cell 1 0 1 4,grow");
-		panel_1.setLayout(new MigLayout("", "[grow]", "[85%,grow][15%,grow]"));
+		panel_1.setLayout(new MigLayout("", "0[grow]0", "0[85%,grow]0[15%,grow]0"));
 		
 		chart = new ChartContainer("COM6");
 		chart.setBackground(new Color(0, 0, 51));
@@ -142,8 +143,74 @@ public class Visio {
 		panel_1.add(chart, "cell 0 0,grow");
 		
 		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(new Color(0, 0, 102));
+		panel_3.setBackground(new Color(0, 0, 51));
 		panel_1.add(panel_3, "cell 0 1,grow");
+		panel_3.setLayout(new MigLayout("", "0[8px][10px][grow][10px]0", "[grow]0[grow]0[grow]0"));
+		
+		JButton button_1 = new JButton("+");
+		button_1.setToolTipText("Adicionar Pacote");
+		button_1.setMargin(new Insets(2, 6, 2, 6));
+		panel_3.add(button_1, "cell 0 0,grow");
+		
+		JButton button_4 = new JButton("<");
+		button_4.setForeground(new Color(255, 255, 255));
+		button_4.setBackground(new Color(0, 0, 128));
+		panel_3.add(button_4, "cell 1 0,grow");
+		
+		JPanel panel_8 = new JPanel();
+		chart.setContainer(panel_8);
+		panel_8.setBackground(new Color(0, 0, 51));
+		panel_3.add(panel_8, "cell 2 0 1 3,grow");
+		panel_8.setLayout(new MigLayout("", "0[grow][grow][grow][grow][grow][grow]0", "0[grow]0"));
+		
+		JPanel panel_9 = new JPanel();
+		panel_9.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_9, "cell 0 0,grow");
+		
+		JPanel panel_10 = new JPanel();
+		panel_10.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_10, "cell 1 0,grow");
+		
+		JPanel panel_11 = new JPanel();
+		panel_11.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_11, "cell 2 0,grow");
+		
+		JPanel panel_12 = new JPanel();
+		panel_12.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_12, "cell 3 0,grow");
+		
+		JPanel panel_13 = new JPanel();
+		panel_13.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_13, "cell 4 0,grow");
+		
+		JPanel panel_14 = new JPanel();
+		panel_14.setBackground(new Color(0, 0, 128));
+		panel_8.add(panel_14, "cell 5 0,grow");
+		
+		JButton button_6 = new JButton(">");
+		button_6.setForeground(new Color(255, 255, 255));
+		button_6.setBackground(new Color(0, 0, 128));
+		panel_3.add(button_6, "cell 3 0,grow");
+		
+		JButton button_2 = new JButton("-");
+		button_2.setToolTipText("Remover Pacote");
+		button_2.setMargin(new Insets(2, 6, 2, 6));
+		panel_3.add(button_2, "cell 0 1,grow");
+		
+		JButton button_5 = new JButton("<<");
+		button_5.setForeground(new Color(255, 255, 255));
+		button_5.setBackground(new Color(0, 0, 128));
+		panel_3.add(button_5, "cell 1 2,grow");
+		
+		JButton button_7 = new JButton(">>");
+		button_7.setBackground(new Color(0, 0, 128));
+		button_7.setForeground(new Color(255, 255, 255));
+		panel_3.add(button_7, "cell 3 2,grow");
+		
+		JButton button_3 = new JButton("0");
+		button_3.setToolTipText("Deviation");
+		button_3.setMargin(new Insets(2, 6, 2, 6));
+		panel_3.add(button_3, "cell 0 2,grow");
 		
 		JPanel panel_6 = new JPanel();
 		panel_6.setBackground(new Color(0, 0, 51));
@@ -397,6 +464,7 @@ public class Visio {
 		panel_7.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
 		
 		JLabel lblConjunto = new JLabel(db.getMainDB());
+		chart.setFileName(db.getMainDBFileName());
 		lblConjunto.setForeground(new Color(211, 211, 211));
 		lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_7.add(lblConjunto, "flowx,cell 0 0,growx,aligny top");
@@ -436,6 +504,10 @@ public class Visio {
 					btnParar.setEnabled(false);
 					btnParar.setFocusable(false);
 					chart.setGet(false);
+					double time = System.nanoTime();
+					DBHandler.saveGZipObject(chart.getChartCollection(), chart.getChartCollection().getFileName());
+					time = System.nanoTime() - time;
+					System.out.println("Time elapsed: "+time + ". Number of Charts: "+chart.getChartCollection().count());
 				} else {
 					btnAdquirir.setEnabled(false);
 					btnParar.setEnabled(true);

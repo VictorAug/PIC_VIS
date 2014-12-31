@@ -215,7 +215,9 @@ public class DBHandler {
 	public String getMainDB() {
 		return mainDB;
 	}
-
+	public String getMainDBFileName() {
+		return DBFileCollection+mainDB;
+	}
 	public void setMainDB(String mainDB) {
 		this.mainDB = mainDB;
 	}	
