@@ -590,9 +590,11 @@ public class Visio {
 					      if(ev.getStateChange()==ItemEvent.SELECTED){
 					        System.out.println(chart.getTimestamp() + " is selected");
 					        dataset.addSeries(chart.getXyseries());
+					        chart.setBorderPainted(true);
 					      } else if(ev.getStateChange()==ItemEvent.DESELECTED){
 					        System.out.println(chart.getTimestamp() + " is not selected");
 					        dataset.removeSeries(chart.getXyseries());
+					        chart.setBorderPainted(false);
 					      }
 					   }
 					});
