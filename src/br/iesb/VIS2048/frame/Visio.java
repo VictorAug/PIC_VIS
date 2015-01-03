@@ -587,10 +587,12 @@ public class Visio {
 				dataset.addSeries(series);
 				chart.addItemListener(new ItemListener() {
 					   public void itemStateChanged(ItemEvent ev) {
+						  if(chart.getXyseries() == dataset.getSeries(0)) return;
 					      if(ev.getStateChange()==ItemEvent.SELECTED){
 					        System.out.println(chart.getTimestamp() + " is selected");
 					        dataset.addSeries(chart.getXyseries());
 					        chart.setBorderPainted(true);
+					        
 					      } else if(ev.getStateChange()==ItemEvent.DESELECTED){
 					        System.out.println(chart.getTimestamp() + " is not selected");
 					        dataset.removeSeries(chart.getXyseries());
