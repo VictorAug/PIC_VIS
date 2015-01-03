@@ -5,7 +5,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-public class SerialComm {
+public class SerialCommBackup {
 	private String portName = "";
     private int baudRate = 115200;
     private int dataBits = 8;
@@ -17,7 +17,7 @@ public class SerialComm {
     private boolean openPort = false;
     private boolean readyToGet = false;
     
-	public SerialComm(String port) {
+	public SerialCommBackup(String port) {
 		if(port.equals("null") || port.equals("")){
 			//System.out.println("SerialComm Constructor: nome de porta Nulo");
 			setConnected(false);

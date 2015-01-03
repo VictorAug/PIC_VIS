@@ -5,10 +5,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
@@ -21,10 +24,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
@@ -34,30 +39,50 @@ import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
-import br.iesb.VIS2048.chart.ChartContainer;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import br.iesb.VIS2048.comm.Harvester;
+import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 
 public class Visio {
-
-	private JFrame frame;
-	//private JPanel contentPane;
 	JLabel lblConectado;
 	JLabel label;
 	JButton btnAdquirir;
 	JComboBox<String> comboBox;
-	ChartContainer chart;
+	Harvester harvester;
 	protected int baudRate = 225200;
 	protected int dataBits = 8;
 	protected int stopBits = 0;
 	protected int parity = 0;
-	/**
-	 * Launch the application.
-	 */
+	private JFrame frame;
+	public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
+	private boolean readOnce = false;
+	private boolean get = false;
+	//public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
+	private XYSeriesCollection dataset;
+	private JFreeChart jfreechart;
+	//private ChartPanel panel;
+	private NumberAxis counts;
+	private DBChartCollection chartCollection;
+	//private String port;
+	private JScrollPane scrollPane;
+	private String collectionName;
+	private String fileName;
+	private JPanel sliderPanel;
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.d3d", "false");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					System.setProperty("sun.java2d.d3d", "false");
 					Visio window = new Visio();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -67,18 +92,14 @@ public class Visio {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public Visio() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		DBHandler db = new DBHandler();
+		harvester = new Harvester();
+		comboBox = new JComboBox<String>();
 		
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(204, 204, 255));
@@ -105,12 +126,13 @@ public class Visio {
 		tabbedPane.setBackground(new Color(240, 248, 255));
 		frame.getContentPane().add(tabbedPane);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(0, 0, 51));
-		tabbedPane.addTab(null, panel);
+		JPanel panel;
+		panel_8 = new JPanel();
+		panel_8.setBackground(new Color(0, 0, 51));
+		tabbedPane.addTab(null, panel_8);
 		tabbedPane.setEnabledAt(0, true);
 		tabbedPane.setBackgroundAt(0, new Color(255, 255, 255));
-		panel.setLayout(new MigLayout("", "[15%,grow][85%,grow]", "[grow][grow][grow][80px:n,grow]"));
+		panel_8.setLayout(new MigLayout("", "[15%,grow][85%,grow]", "[grow][grow][grow][80px:n,grow]"));
 		
 		JLabel labTab1 = new JLabel("Espectro");
 		labTab1.setUI(new VerticalLabelUI(false));
@@ -120,7 +142,7 @@ public class Visio {
 		panel_5.setBackground(new Color(0, 0, 51));
 		panel_5.setForeground(new Color(211, 211, 211));
 		panel_5.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Espectro", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-		panel.add(panel_5, "cell 0 0,grow");
+		panel_8.add(panel_5, "cell 0 0,grow");
 		panel_5.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px]"));
 		
 		btnAdquirir = new JButton("Adquirir");
@@ -134,96 +156,119 @@ public class Visio {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 0, 51));
-		panel.add(panel_1, "cell 1 0 1 4,grow");
-		panel_1.setLayout(new MigLayout("", "0[grow]0", "0[85%,grow]0[15%,grow]0"));
+		panel_8.add(panel_1, "cell 1 0 1 4,grow");
+		panel_1.setLayout(new MigLayout("", "0[grow]0", "0[grow]0[115px:115px]0"));
 		
-		chart = new ChartContainer("COM6");
-		chart.setBackground(new Color(0, 0, 51));
-		chart.setAlignmentY(0.0f);
-		panel_1.add(chart, "cell 0 0,grow");
+		JPanel primeChart = new JPanel();
+		primeChart.setBackground(new Color(0, 0, 51));
+		primeChart.setAlignmentY(0.0f);
+		dataset = new XYSeriesCollection();
+		jfreechart = ChartFactory.createXYLineChart("", "Counts", collectionName, dataset, 
+				PlotOrientation.VERTICAL,true,true,false);
+		counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		counts.setRange(0, 2500);
+		panel = new ChartPanel(jfreechart);
+		//panel.setPreferredSize(new Dimension(300, 150));
+		((XYPlot) jfreechart.getPlot()).setRangeGridlinePaint(Color.white);
+		((XYPlot) jfreechart.getPlot()).setBackgroundPaint(new Color(0, 0, 51));
+		primeChart.setLayout(new BorderLayout());
+		primeChart.add(panel, BorderLayout.CENTER);
+		chartCollection = new DBChartCollection();
+		panel_1.add(primeChart, "cell 0 0,grow");
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(new Color(0, 0, 51));
 		panel_1.add(panel_3, "cell 0 1,grow");
-		panel_3.setLayout(new MigLayout("", "0[8px][10px][grow][10px]0", "[grow]0[grow]0[grow]0"));
+		panel_3.setLayout(new MigLayout("", "0[8px][grow]0", "[grow]0[grow]0[grow]0"));
 		
 		JButton button_1 = new JButton("+");
 		button_1.setToolTipText("Adicionar Pacote");
 		button_1.setMargin(new Insets(2, 6, 2, 6));
 		panel_3.add(button_1, "cell 0 0,grow");
 		
-		JButton button_4 = new JButton("<");
-		button_4.setForeground(new Color(255, 255, 255));
-		button_4.setBackground(new Color(0, 0, 128));
-		panel_3.add(button_4, "cell 1 0,grow");
+		scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null);
+		panel_3.add(scrollPane, "cell 1 0 1 3,grow");
 		
-		JPanel panel_8 = new JPanel();
-		chart.setContainer(panel_8);
-		panel_8.setBackground(new Color(0, 0, 51));
-		panel_3.add(panel_8, "cell 2 0 1 3,grow");
-		panel_8.setLayout(new MigLayout("", "0[grow][grow][grow][grow][grow][grow]0", "0[grow]0"));
-		
-		JPanel panel_9 = new JPanel();
-		panel_9.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_9, "cell 0 0,grow");
-		
-		JPanel panel_10 = new JPanel();
-		panel_10.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_10, "cell 1 0,grow");
-		
-		JPanel panel_11 = new JPanel();
-		panel_11.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_11, "cell 2 0,grow");
-		
-		JPanel panel_12 = new JPanel();
-		panel_12.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_12, "cell 3 0,grow");
-		
-		JPanel panel_13 = new JPanel();
-		panel_13.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_13, "cell 4 0,grow");
-		
-		JPanel panel_14 = new JPanel();
-		panel_14.setBackground(new Color(0, 0, 128));
-		panel_8.add(panel_14, "cell 5 0,grow");
-		
-		JButton button_6 = new JButton(">");
-		button_6.setForeground(new Color(255, 255, 255));
-		button_6.setBackground(new Color(0, 0, 128));
-		panel_3.add(button_6, "cell 3 0,grow");
+		sliderPanel = new JPanel();
+		sliderPanel.setBackground(new Color(0, 0, 51));
+		scrollPane.setViewportView(sliderPanel);
+		sliderPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		
 		JButton button_2 = new JButton("-");
 		button_2.setToolTipText("Remover Pacote");
 		button_2.setMargin(new Insets(2, 6, 2, 6));
 		panel_3.add(button_2, "cell 0 1,grow");
 		
-		JButton button_5 = new JButton("<<");
-		button_5.setForeground(new Color(255, 255, 255));
-		button_5.setBackground(new Color(0, 0, 128));
-		panel_3.add(button_5, "cell 1 2,grow");
-		
-		JButton button_7 = new JButton(">>");
-		button_7.setBackground(new Color(0, 0, 128));
-		button_7.setForeground(new Color(255, 255, 255));
-		panel_3.add(button_7, "cell 3 2,grow");
-		
 		JButton button_3 = new JButton("0");
 		button_3.setToolTipText("Deviation");
 		button_3.setMargin(new Insets(2, 6, 2, 6));
 		panel_3.add(button_3, "cell 0 2,grow");
-		
-		JPanel panel_6 = new JPanel();
-		panel_6.setBackground(new Color(0, 0, 51));
-		panel_6.setForeground(new Color(211, 211, 211));
-		panel_6.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Conex\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-		panel.add(panel_6, "cell 0 1,grow");
-		panel_6.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[20px,grow]"));
-		
-		comboBox = new JComboBox<String>();
-		checkPort = new Thread(new checkForPorts(comboBox));
 		cleaner = new Thread(new clearComm());
 		cleaner.setDaemon(true);
 		cleaner.start();
+		
+		ButtonGroup groupModoOp = new ButtonGroup();
+		
+		ButtonGroup groupUnit = new ButtonGroup();
+		checkPort = new Thread(new checkForPorts(comboBox));
+		checkPort.setDaemon(true);
+		checkPort.start();
+		fileName = db.getMainDBFileName();
+		collectionName = db.getMainDB();
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBackground(new Color(0, 0, 51));
+		tabbedPane.addTab("New tab", null, panel_2, null);
+		tabbedPane.setEnabledAt(1, true);
+		tabbedPane.setBackgroundAt(1, new Color(255, 255, 255));
+		
+		JLabel labTab2 = new JLabel("PCA");
+		labTab2.setUI(new VerticalLabelUI(false));
+		tabbedPane.setTabComponentAt(1, labTab2);
+
+		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		btnParar.setActionCommand("disable");
+		btnParar.setEnabled(false);
+		btnParar.requestFocus();
+		btnParar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if ("disable".equals(event.getActionCommand())) {
+					//Zipper zipper = new Zipper();
+					//zipper.generateFileList(null);
+					//zipper.zipIt(null);
+					btnAdquirir.setEnabled(true);
+					btnParar.setEnabled(false);
+					btnParar.setFocusable(false);
+					setGet(false);
+					double time = System.nanoTime();
+					//DBHandler.saveGZipObject(chart.getChartCollection(), chart.getChartCollection().getFileName());
+					time = System.nanoTime() - time;
+					System.out.println("Time elapsed: "+time + ". Number of Charts: "+chartCollection.count());
+				} else {
+					btnAdquirir.setEnabled(false);
+					btnParar.setEnabled(true);
+					btnParar.setFocusable(true);
+					//specPanel.reloadTitle();
+				}
+			}
+		});
+
+		btnAdquirir.setActionCommand("enable");
+		btnAdquirir.setToolTipText("Adquirir leituras");
+		
+		JPanel panel_6 = new JPanel();
+		panel_8.add(panel_6, "cell 0 1");
+		panel_6.setBackground(new Color(0, 0, 51));
+		panel_6.setForeground(new Color(211, 211, 211));
+		panel_6.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Conex\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+		panel_6.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[20px,grow]"));
+		
+		
+		checkPort = new Thread(new checkForPorts(comboBox));
 		comboBox.setForeground(new Color(211, 211, 211));
 		comboBox.setBackground(new Color(0, 0, 51));
 		comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -246,10 +291,10 @@ public class Visio {
 				btnAdquirir.setEnabled(false);
 				btnParar.setEnabled(false);
 				
-				if(chart.RSpec.isAlive()){
-					chart.launchThread();
-					chart.RSpec.setDaemon(true);
-					chart.RSpec.start();
+				if(RSpec.isAlive()){
+					launchThread();
+					RSpec.setDaemon(true);
+					RSpec.start();
 				}
 				timeToClear(true);	
 			}
@@ -260,9 +305,9 @@ public class Visio {
 		panel_6.add(lblConectado, "cell 2 0,alignx center,aligny center");
 		
 		JPanel panel_4 = new JPanel();
+		panel_8.add(panel_4, "cell 0 2");
 		panel_4.setBackground(new Color(0, 0, 51));
 		panel_4.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-		panel.add(panel_4, "cell 0 2,grow");
 		panel_4.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[30px][20px][1px::][30px][20px][1px::][30px][20px][1px::][30px][30px][1px::][30px][20px]"));
 		
 		JLabel lblModoDeOperao = new JLabel("Modo de Operação");
@@ -285,8 +330,6 @@ public class Visio {
 		rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		rdbtnNewRadioButton.setForeground(new Color(211, 211, 211));
 		rdbtnNewRadioButton.setBackground(new Color(0, 0, 51));
-		
-		ButtonGroup groupModoOp = new ButtonGroup();
 		groupModoOp.add(radioButton);
 		groupModoOp.add(rdbtnNewRadioButton);
 		radioButton.setActionCommand("Unico");
@@ -297,11 +340,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 		    	if ("Unico".equals(event.getActionCommand())) {
 				    btnParar.setEnabled(false);
-				    chart.setReadOnce(true);
+				    setReadOnce(true);
 				    btnAdquirir.setEnabled(true);
 				} else {
 				    btnParar.setEnabled(false);
-				    chart.setReadOnce(false);
+				    setReadOnce(false);
 				}
 		    }
 		});
@@ -309,11 +352,11 @@ public class Visio {
 		    public void actionPerformed(ActionEvent event) {
 			    	if ("Continuo".equals(event.getActionCommand())) {
 					    btnParar.setEnabled(true);
-					    chart.setReadOnce(false);
+					    setReadOnce(false);
 					    btnParar.setEnabled(true);
 					} else {
 					    btnParar.setEnabled(false);
-					    chart.setReadOnce(true);
+					    setReadOnce(true);
 					}
 			    }
 			});
@@ -331,8 +374,6 @@ public class Visio {
 		lblNewLabel.setForeground(new Color(211, 211, 211));
 		lblNewLabel.setBackground(new Color(0, 0, 102));
 		lblNewLabel.setOpaque(true);
-		
-		ButtonGroup groupUnit = new ButtonGroup();
 		
 		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
 		panel_4.add(rdbtnNewRadioButton_1, "cell 0 4,alignx center,growy");
@@ -453,18 +494,15 @@ public class Visio {
 		panel_4.add(lblNm, "cell 1 13,alignx right,growy");
 		lblNm.setFont(new Font("Dialog", Font.PLAIN, 11));
 		lblNm.setForeground(new Color(211, 211, 211));
-		checkPort.setDaemon(true);
-		checkPort.start();
 		
 		JPanel panel_7 = new JPanel();
+		panel_8.add(panel_7, "cell 0 3");
 		panel_7.setForeground(new Color(211, 211, 211));
 		panel_7.setBackground(new Color(0, 0, 51));
 		panel_7.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-		panel.add(panel_7, "cell 0 3,grow");
 		panel_7.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
 		
 		JLabel lblConjunto = new JLabel(db.getMainDB());
-		chart.setFileName(db.getMainDBFileName());
 		lblConjunto.setForeground(new Color(211, 211, 211));
 		lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_7.add(lblConjunto, "flowx,cell 0 0,growx,aligny top");
@@ -477,55 +515,13 @@ public class Visio {
 		
 		JButton btnLimpar = new JButton("Limpar");
 		panel_7.add(btnLimpar, "cell 0 1,growx");
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(new Color(0, 0, 51));
-		tabbedPane.addTab("New tab", null, panel_2, null);
-		tabbedPane.setEnabledAt(1, true);
-		tabbedPane.setBackgroundAt(1, new Color(255, 255, 255));
-		
-		JLabel labTab2 = new JLabel("PCA");
-		labTab2.setUI(new VerticalLabelUI(false));
-		tabbedPane.setTabComponentAt(1, labTab2);
-
-		btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		btnParar.setActionCommand("disable");
-		btnParar.setEnabled(false);
-		btnParar.requestFocus();
-		btnParar.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				if ("disable".equals(event.getActionCommand())) {
-					//Zipper zipper = new Zipper();
-					//zipper.generateFileList(null);
-					//zipper.zipIt(null);
-					btnAdquirir.setEnabled(true);
-					btnParar.setEnabled(false);
-					btnParar.setFocusable(false);
-					chart.setGet(false);
-					double time = System.nanoTime();
-					DBHandler.saveGZipObject(chart.getChartCollection(), chart.getChartCollection().getFileName());
-					time = System.nanoTime() - time;
-					System.out.println("Time elapsed: "+time + ". Number of Charts: "+chart.getChartCollection().count());
-				} else {
-					btnAdquirir.setEnabled(false);
-					btnParar.setEnabled(true);
-					btnParar.setFocusable(true);
-					//specPanel.reloadTitle();
-				}
-			}
-		});
-
-		btnAdquirir.setActionCommand("enable");
-		btnAdquirir.setToolTipText("Adquirir leituras");
 		btnAdquirir.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				if ("enable".equals(event.getActionCommand())) {
-					chart.setGet(true);
-					if (chart.isReadOnce())
+					setGet(true);
+					if (isReadOnce())
 						btnParar.setEnabled(false);
 					else {
 						btnParar.setEnabled(true);
@@ -537,6 +533,7 @@ public class Visio {
 				}
 			}
 		});
+		if( !((String) comboBox.getSelectedItem()).equals("") || comboBox.getSelectedItem() != null) timeToClear(true);
 	}
 	private boolean clear = false;
 	
@@ -548,10 +545,67 @@ public class Visio {
 		this.clear = get;
 		if(this.clear) notifyAll();
 	}
+	public boolean isReadOnce() {
+		return readOnce;
+	}
+
+	public void setReadOnce(boolean readOnce) {
+		this.readOnce = readOnce;
+	}
+	private synchronized void checkIfGet() throws InterruptedException{ //Verifica se há ordem de Adquirir
+		while(!get) wait();
+	}
 	
+	public synchronized void setGet(boolean get){ //Controla ordem de adquirir
+		this.get = get;
+		if(this.get) notifyAll();
+	}
+	public void launchThread(){
+		RSpec = new Thread(new updateChart(), "Spectrometer");
+	}
 	private Thread checkPort;
 	private Thread cleaner;
+	private JPanel panel_8;
 	//private boolean changeOnPort = false;
+	public class updateChart implements Runnable{
+		XYSeries series;
+		public void run() {
+			while(true){
+				try {
+					System.out.println("CheckIfGet");
+					checkIfGet();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				series = new XYSeries(collectionName);
+				Chart chart = harvester.getDataset("+");
+				series = chart.getXyseries();
+				chartCollection.addChart(chart);
+				System.out.println(chartCollection.count());
+				if(dataset.getSeriesCount() > 0)
+					dataset.removeAllSeries();
+				dataset.addSeries(series);
+				chart.addItemListener(new ItemListener() {
+					   public void itemStateChanged(ItemEvent ev) {
+					      if(ev.getStateChange()==ItemEvent.SELECTED){
+					        System.out.println(chart.getTimestamp() + " is selected");
+					        dataset.addSeries(chart.getXyseries());
+					      } else if(ev.getStateChange()==ItemEvent.DESELECTED){
+					        System.out.println(chart.getTimestamp() + " is not selected");
+					        dataset.removeSeries(chart.getXyseries());
+					      }
+					   }
+					});
+				chart.setPicture();
+				sliderPanel.add(chart);
+				sliderPanel.updateUI();
+								
+				if (readOnce) {
+					setGet(false);
+				}
+			}
+		}
+	}
 	private class checkForPorts implements Runnable{
 		JComboBox<String> comboBox;
 		String[] bufferList;
@@ -607,20 +661,23 @@ public class Visio {
 					e.printStackTrace();
 				}
 				System.out.println("Time to close comm");
-				if(chart.getDevice() != null){
+				if(harvester != null){
 					lblConectado.setText("Indisponível");
 					lblConectado.setForeground(new Color(255, 0, 0));
 					btnAdquirir.setEnabled(false);
-					chart.getHarvester().getDevice().closeComm();
+					harvester.closeComm();
 				}
 				lblConectado.setText("Conectando");
 				lblConectado.setForeground(Color.ORANGE);
 
-				if(chart.getHarvester().tryConnection(((String) comboBox.getSelectedItem()))){
+				if(harvester.tryConnection(((String) comboBox.getSelectedItem()))){
 					lblConectado.setText("Conectado");
 					lblConectado.setForeground(new Color(0, 211, 0));
 					btnAdquirir.setEnabled(true);
 					System.out.println("Conectado");
+					launchThread();
+					RSpec.setDaemon(true);
+					RSpec.start();
 				}else{
 					lblConectado.setText("Indisponível");
 					lblConectado.setForeground(new Color(255, 0, 0));
@@ -630,5 +687,3 @@ public class Visio {
 	    }
 	}
 }
-
-

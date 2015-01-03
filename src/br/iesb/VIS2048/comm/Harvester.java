@@ -1,38 +1,135 @@
 package br.iesb.VIS2048.comm;
 
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+
 import org.jfree.data.xy.XYSeries;
 
-import br.iesb.VIS2048.chart.Chart;
+import br.iesb.VIS2048.frame.Chart;
 
 public class Harvester {
-	private SerialComm comm;
-	private String port;
+	////Port Settings////
+	private String portName = "";
 	private int baudRate = 335200;
 	private int dataBits = 8;
 	private int stopBits = 0;
 	private int parity = 0;
-	private boolean isConnected;
-	private Thread launch = new Thread(new Harvest(), "Spectrometer");
-	public Harvester(String port) {
-		this.port = port;
-		//if(tryConnection(port)) setConnected(true);
-		//else setConnected(false);
+	/////////////////////
+	
+	////Protocol////
+	private int numberOfSamples = 2048;
+	private String Data = "";
+	////////////////
+	
+	////Variáveis de Estado////
+    private SerialPort serialPort = null;
+    private boolean connected = false;
+    private boolean openPort = false;
+    private boolean readyToGet = false;
+	///////////////////////////
+	
+	private Thread launch;
+	
+	public Harvester() {
 		
 	}
-	
+	//////////////////////////////
+	////Communications Methods////
+	//////////////////////////////
+	public void OpenComm(){
+		if(!isConnected()){
+			//System.out.println("SerialComm OpenComm: Impossível abrir porta "+ getPortName() + ", não há conexão");
+			return;
+		}
+		try {
+			serialPort.openPort();
+			setOpenPort(true);
+			//System.out.println("SerialComm OpenComm: Porta " + getPortName() + " Aberta");
+		} catch (SerialPortException e3) {
+			e3.printStackTrace();
+			setOpenPort(false);
+			//System.out.println("SerialComm OpenComm: Erro ao abrir porta" + getPortName());
+		}
+	}
+	public void closeComm(){
+		if(serialPort != null)
+		try {
+			serialPort.closePort();
+		} catch (SerialPortException e) {
+			e.printStackTrace();
+		}
+	}
+	public void OpenReading(){
+		if(!isOpenPort()){
+			//System.out.println("SerialComm OpenReading: Nenhuma porta aberta");
+			return;
+		}
+		try {
+			serialPort.addEventListener(new Reader(), SerialPort.MASK_RXCHAR |
+			        SerialPort.MASK_RXFLAG |
+			        SerialPort.MASK_CTS |
+			        SerialPort.MASK_DSR |
+			        SerialPort.MASK_RLSD);
+			//System.out.println("SerialComm OpenReading: Evento de Leitura Registrado");
+		} catch (SerialPortException e1) {
+			e1.printStackTrace();
+		}
+	}
+	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity) {
+		//System.out.println("SerialComm updatePortSettings:" + baudRate + " - " + dataBits + " - " + stopBits + " - " +parity);
+    	try {
+			serialPort.setParams(baudRate, dataBits, stopBits, parity);
+	        this.baudRate = baudRate;
+	        this.dataBits = dataBits;
+	        this.stopBits = stopBits;
+	        this.parity = parity;
+	        //System.out.println("SerialComm updatePortSettings: Dados de Porta Atualizados");
+		} catch (SerialPortException e2) {
+			//System.out.println("SerialComm updatePortSettings: Erro na atualização dos dados");
+			e2.printStackTrace();
+		}
+    }
+	public void sendString(String str) {
+		//System.out.println("Entrou");
+        if(str.length() > 0){
+            try {
+            	serialPort.writeBytes(str.getBytes());
+            	System.out.println("SerialComm OpenComm: " + str + " Enviado");
+            }
+            catch (Exception ex) {
+            	ex.printStackTrace();
+                System.out.println("SerialComm OpenComm: Erro ao escrever: " + str);
+            }
+        }
+    }
 	public void launch(){
+		launch = new Thread(new Harvest(), "Spectrometer");
 		launch.setDaemon(true);
 		launch.start();
 	}
-	
 	public boolean tryConnection(String port){
-		this.port = port;
-		setDevice(new SerialComm(this.port));
-		if(getDevice().isConnected()){
-			getDevice().OpenComm();
-			getDevice().OpenReading();
-			getDevice().updatePortSettings(baudRate, dataBits, stopBits, parity);
-			getDevice().readyToGet(true);
+		this.portName = port;
+		if(portName.equals("null") || portName.equals("")){
+			//System.out.println("SerialComm Constructor: nome de porta Nulo");
+			setConnected(false);
+		}
+		serialPort = new SerialPort(portName);
+        if(serialPort != null){
+        	setPortName(portName);
+        	setConnected(true);
+        	//System.out.println("SerialComm Constructor: Conexão em Porta " + getPortName());
+        }else{
+        	//System.out.println("SerialComm Constructor: Não foi possível estabelecer conexão: serialPort = null");
+        	setConnected(false);
+        }
+		//setDevice(new SerialComm(this.port));
+		if(isConnected()){
+			OpenComm();
+			OpenReading();
+			updatePortSettings(baudRate, dataBits, stopBits, parity);
+			readyToGet(true);
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -43,28 +140,36 @@ public class Harvester {
 		}
 		return false;
 	}
-	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity){
-		getDevice().updatePortSettings(baudRate, dataBits, stopBits, parity);
-	}
-	private class Harvest implements Runnable{
+	//////////////////////////////
+//	public void updatePortSettings(int baudRate, int dataBits, int stopBits, int parity){
+//		updatePortSettings(baudRate, dataBits, stopBits, parity);
+//	}
+	
+	/////////////////////////////
+	////Harvesting Chart Data////
+	/////////////////////////////
+	private class Harvest implements Runnable{ //Não foi implementado ainda
 		@Override
 		public void run() {
 			while(true){
 			}			
 		}
 	}
-	
-	public Chart getDataset(String str, XYSeries series){
+	public Chart getDataset(String str){
 		String buffer = "";
-		getDevice().readyToGet(false);
-		getDevice().sendString(str);
+		readyToGet(false);
+		sendString(str);
 		double time = System.nanoTime();
+		long timestamp = 0;
+		XYSeries series = null;
 		try {
-			getDevice().waitToGet();
-			String data = getDevice().getData(); 
-			Double[] leitura = new Double[getDevice().getNumberOfSamples()];
+			waitToGet();
+			String data = getData(); 
+			Double[] leitura = new Double[getNumberOfSamples()];
 			int i = 0;
 			char[] charArray = data.toCharArray();
+			timestamp = System.currentTimeMillis();
+			series = new XYSeries(timestamp);
 			for(char Char : charArray){
 				if(Char!=13 && Char!=10){
 					buffer += Char;
@@ -78,7 +183,7 @@ public class Harvester {
 			}
 			time = System.nanoTime() - time;
 			System.out.println("Harvester getDataset: "+time + " elapsed");
-			Chart chart = new Chart(leitura, "Teste", "Teste", getDevice().getNumberOfSamples(), System.currentTimeMillis());
+			Chart chart = new Chart(/*leitura,*/ "Teste", "Teste", getNumberOfSamples(), timestamp, series);
 			
 			chart.setXyseries(series);
 			return chart;
@@ -88,21 +193,104 @@ public class Harvester {
 		
 		return null;		
 	}
-
+	public synchronized void waitToGet() throws InterruptedException{
+		while(!readyToGet) wait();
+	}
+	public synchronized void readyToGet(boolean readyToGet){
+		this.readyToGet = readyToGet;
+		if(readyToGet) notifyAll();
+	}
+	private class Reader implements SerialPortEventListener {
+        private String str = "";
+		@Override
+		public void serialEvent(SerialPortEvent spe) {
+			if(spe.isRXCHAR() || spe.isRXFLAG()){
+                if(spe.getEventValue() > 0){
+                	//System.out.println("Event");
+                    try {
+                        str = "";
+                        byte[] buffer = serialPort.readBytes(spe.getEventValue());
+                        str = new String(buffer);
+                        pos += str.length() - str.replace("\n", "").length();
+                        reading += str;
+                        if(pos == numberOfSamples){
+                        	setData(reading);
+                        	//System.out.println("Posicao: " + pos);
+                        	pos = 0; 
+                        	reading = "";
+                        	readyToGet(true);
+                        }
+                    }
+                    catch (Exception ex) {
+                    	System.out.println("Erro na thread de leitura");
+                    }
+                }
+            }
+		}
+		private int pos = 0;
+		String reading = "";
+	}
+	/////////////////////////////////
+	////Variable Handling Methods////
+	/////////////////////////////////
+	public String getData(){
+		return this.Data;
+	}
+	private void setData(String Data){
+		this.Data = Data;
+	}	
+	public String getPortName() {
+		return portName;
+	}
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+	public int getBaudRate() {
+		return baudRate;
+	}
+	public void setBaudRate(int baudRate) {
+		this.baudRate = baudRate;
+	}
+	public int getDataBits() {
+		return dataBits;
+	}
+	public void setDataBits(int dataBits) {
+		this.dataBits = dataBits;
+	}
+	public int getStopBits() {
+		return stopBits;
+	}
+	public void setStopBits(int stopBits) {
+		this.stopBits = stopBits;
+	}
+	public int getParity() {
+		return parity;
+	}
+	public void setParity(int parity) {
+		this.parity = parity;
+	}
+	public SerialPort getSerialPort() {
+		return serialPort;
+	}
+	public void setSerialPort(SerialPort serialPort) {
+		this.serialPort = serialPort;
+	}
 	public boolean isConnected() {
-		return isConnected;
+		return connected;
 	}
-
-	public void setConnected(boolean isConnected) {
-		this.isConnected = isConnected;
+	public void setConnected(boolean connected) {
+		this.connected = connected;
 	}
-
-	public SerialComm getDevice() {
-		return comm;
+	public int getNumberOfSamples() {
+		return numberOfSamples;
 	}
-
-	public void setDevice(SerialComm comm) {
-		this.comm = comm;
+	public void setNumberOfSamples(int numberOfSamples) {
+		this.numberOfSamples = numberOfSamples;
 	}
-	
+	public boolean isOpenPort() {
+		return openPort;
+	}
+	public void setOpenPort(boolean openPort) {
+		this.openPort = openPort;
+	}
 }

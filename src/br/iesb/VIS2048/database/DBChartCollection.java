@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.iesb.VIS2048.chart.Chart;
+import br.iesb.VIS2048.frame.Chart;
 
 
 public class DBChartCollection implements Serializable{
