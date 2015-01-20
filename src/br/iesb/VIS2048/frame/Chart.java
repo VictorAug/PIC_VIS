@@ -68,12 +68,14 @@ public class Chart extends JToggleButton implements Serializable{
 			((XYPlot) jfreechart.getPlot()).setDomainGridlinesVisible(false);
 			((XYPlot) jfreechart.getPlot()).setOutlineVisible(false);
 			((XYPlot) jfreechart.getPlot()).setBackgroundPaint(new Color(0, 0, 51));
-
+			((XYPlot) jfreechart.getPlot()).setBackgroundPaint(Color.black);
+			//jfreechart.setBackgroundPaint(Color.black);
 			counts.setTickMarksVisible(false);
 			counts.setTickLabelsVisible(false);
 			//jfreechart.setBorderPaint(new Color(255,255,255));
 			
 			dataset.addSeries(xyseries);
+			((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.white);
 			//picture = new JLabel(new ImageIcon(resizeImg(jfreechart.createBufferedImage( 640, 480, null), 112, 84)));
 			picture =new JLabel(new ImageIcon(jfreechart.createBufferedImage(640,  480).getScaledInstance(112, 84, 2)));
 			
