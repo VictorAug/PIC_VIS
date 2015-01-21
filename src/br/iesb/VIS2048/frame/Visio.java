@@ -17,6 +17,7 @@ import java.util.Arrays;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -55,11 +56,15 @@ import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
+import br.iesb.VIS2048.database.DBViewer;
+
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
@@ -233,7 +238,7 @@ public class Visio {
 	primeChart.add(panel, BorderLayout.CENTER);
 	
 	jfreechart.setBackgroundPaint(Color.black);
-	((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.white);
+	((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.green);
 	((XYPlot) jfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
 	((XYPlot) jfreechart.getPlot()).setDomainGridlinePaint(Color.white);
 	
@@ -559,6 +564,20 @@ public class Visio {
 
 	JButton btnEscolher = new JButton("Escolher");
 	panel_7.add(btnEscolher, "flowx,cell 0 1,growx");
+	
+	btnEscolher.setToolTipText("click");
+	btnEscolher.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				DBViewer dialog = new DBViewer();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	});
 
 	JButton btnNovo = new JButton("Novo");
 	panel_7.add(btnNovo, "cell 0 1");

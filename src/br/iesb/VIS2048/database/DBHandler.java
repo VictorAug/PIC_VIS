@@ -35,9 +35,9 @@ public class DBHandler {
 		createDir(appPathString);
 		createDir(DBPathString);
 		createDir(DBFileConfig);
-		createDir(DBFileCollection);
+		createDir(getDBFileCollection());
 		
-		for (File file : getFilesList(DBFileCollection))
+		for (File file : getFilesList(getDBFileCollection()))
 			if(file.getName().endsWith(".vis")){
 				collection.add(file.getName().toLowerCase());
 			}		
@@ -49,14 +49,18 @@ public class DBHandler {
 				break;
 			}
 		}
-		System.err.print(DBFileCollection+getMainDB());
+		System.err.print(getDBFileCollection()+getMainDB());
 		DBChart = new DBChartCollection();
-		saveChartCollection();
+		//saveChartCollection();
 		System.out.println(" Ready");
 	}
 	
+	public ArrayList<String> getCollectionList(){
+		return collection;		
+	}	
+	
 	public void saveChartCollection(){
-		saveGZipObject(DBChart, DBFileCollection+getMainDB());
+		saveGZipObject(DBChart, getDBFileCollection()+getMainDB());
 	}
 	
 	private static void createDir(String path){
@@ -73,7 +77,7 @@ public class DBHandler {
 //			}
 //		}
 //	}
-	public File[] getFilesList(String directoryName){
+	public static File[] getFilesList(String directoryName){
         return new File(directoryName).listFiles();
     }
 	public void listFilesAndFolders(String directoryName){
@@ -170,7 +174,7 @@ public class DBHandler {
 		try {
 			createDir(appPathString);
 			createDir(DBPathString);
-			File f = new File(DBFileCollection);
+			File f = new File(getDBFileCollection());
 			FileWriter fw = new FileWriter(f, true);
 			PrintWriter output = new PrintWriter(fw);
 			output.println(text);
@@ -216,10 +220,18 @@ public class DBHandler {
 		return mainDB;
 	}
 	public String getMainDBFileName() {
-		return DBFileCollection+mainDB;
+		return getDBFileCollection()+mainDB;
 	}
 	public void setMainDB(String mainDB) {
 		this.mainDB = mainDB;
+	}
+
+	public static String getDBFileCollection() {
+		return DBFileCollection;
+	}
+
+	public static void setDBFileCollection(String dBFileCollection) {
+		DBFileCollection = dBFileCollection;
 	}	
 
 }

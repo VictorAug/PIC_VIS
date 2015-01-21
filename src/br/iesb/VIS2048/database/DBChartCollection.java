@@ -13,23 +13,30 @@ public class DBChartCollection implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 8532379948568202426L;
-	private List<Chart> chartQueue;
-	private String fileName = "";
+	private ArrayList<Chart> chartQueue;
+	private String nome;
+	
 	public DBChartCollection() {
-		chartQueue = new ArrayList<Chart>();
+		setChartQueue(new ArrayList<Chart>());
 	}
 	public void addChart(Chart chart){
-		chartQueue.add(chart);
+		getChartQueue().add(chart);
 		//DBHandler.saveGZipObject(this, "teste.gz");
 	}
 	public int count(){
-		return chartQueue.size();
+		return getChartQueue().size();
 	}
-	public String getFileName() {
-		return fileName;
+	public String getNome() {
+		return nome;
 	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setNome(String fileName) {
+		this.nome = fileName;
+	}
+	public ArrayList<Chart> getChartQueue() {
+		return chartQueue;
+	}
+	public void setChartQueue(ArrayList<Chart> chartQueue) {
+		this.chartQueue = chartQueue;
 	}
 
 }
