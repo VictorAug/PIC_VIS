@@ -32,7 +32,7 @@ public class Chart extends JToggleButton implements Serializable{
 	private int numberOfSamples;
 	private XYSeries xyseries;
 	private JLabel picture;
-	public Thread Image = new Thread(new genImage(), "Spectrometer");
+	public transient Thread Image = new Thread(new genImage(), "Spectrometer");
 	public Chart(/*Double[] doubleSeries, */String name, String description, int numberOfSamples, long timestamp, XYSeries series) {
 		setBackground(new Color(0, 0, 51));
 		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(0, 0, 102), null, null, null));
