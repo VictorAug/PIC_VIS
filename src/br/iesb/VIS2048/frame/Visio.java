@@ -555,35 +555,39 @@ public class Visio {
 	panel_7.setForeground(new Color(211, 211, 211));
 	panel_7.setBackground(new Color(0, 0, 51));
 	panel_7.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	panel_7.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
+	panel_7.setLayout(new MigLayout("", "[grow][grow]", "[18px,grow][16,grow]"));
 
 	JLabel lblConjunto = new JLabel(db.getMainDB());
 	lblConjunto.setForeground(new Color(211, 211, 211));
 	lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
-	panel_7.add(lblConjunto, "flowx,cell 0 0,growx,aligny top");
-
-	JButton btnEscolher = new JButton("Escolher");
-	panel_7.add(btnEscolher, "flowx,cell 0 1,growx");
+	panel_7.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny top");
 	
-	btnEscolher.setToolTipText("click");
-	btnEscolher.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			try {
-				DBViewer dialog = new DBViewer();
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
+		JButton btnEscolher = new JButton("Adicionar");
+		panel_7.add(btnEscolher, "cell 0 1,growx");
+		
+		btnEscolher.setToolTipText("click");
+		btnEscolher.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					DBViewer dialog = new DBViewer();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+		});
+
+	JButton btnSalvar = new JButton("Salvar");
+	panel_7.add(btnSalvar, "cell 1 1,growx");
+	btnSalvar.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			DBHandler.saveGZipObject(chartCollection, db.getMainDBFileName());
 		}
 	});
-
-	JButton btnNovo = new JButton("Novo");
-	panel_7.add(btnNovo, "cell 0 1");
-
-	JButton btnLimpar = new JButton("Limpar");
-	panel_7.add(btnLimpar, "cell 0 1,growx");
+	
 	btnAdquirir.addActionListener(new ActionListener() {
 
 	    @Override
