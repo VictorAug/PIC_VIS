@@ -13,23 +13,22 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SalvarAction.
+ * Class SalvarAction.
  */
 public class SalvarAction extends AbstractAction {
 
-    /** The Constant serialVersionUID. */
+    /** Constante serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The parent. */
+    /** Atributo parent. */
     private JFrame parent;
     
-    /** The text area. */
+    /** Atributo text area. */
     private JTextArea textArea;
 
     /**
-     * Instantiates a new salvar action.
+     * Instancia um novo salvar action.
      *
      * @param frame the frame
      */
@@ -70,7 +69,7 @@ public class SalvarAction extends AbstractAction {
      *
      * @param conteudo the conteudo
      * @param fileName the file name
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException Sinaliza que uma I/O exception ocorreu.
      */
     public void escreveArquivo(String conteudo, String fileName) throws IOException {
 

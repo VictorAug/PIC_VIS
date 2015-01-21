@@ -68,64 +68,63 @@ import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Visio.
+ * Class Visio.
  */
 public class Visio {
     
-    /** The lbl conectado. */
+    /** Atributo lbl conectado. */
     JLabel lblConectado;
     
-    /** The label. */
+    /** Atributo label. */
     JLabel label;
     
-    /** The btn adquirir. */
+    /** Atributo btn adquirir. */
     JButton btnAdquirir;
     
-    /** The combo box. */
+    /** Atributo combo box. */
     JComboBox<String> comboBox;
     
-    /** The harvester. */
+    /** Atributo harvester. */
     Harvester harvester;
     
-    /** The baud rate. */
+    /** Atributo baud rate. */
     protected int baudRate = 225200;
     
-    /** The data bits. */
+    /** Atributo data bits. */
     protected int dataBits = 8;
     
-    /** The stop bits. */
+    /** Atributo stop bits. */
     protected int stopBits = 0;
     
-    /** The parity. */
+    /** Atributo parity. */
     protected int parity = 0;
     
-    /** The frame. */
+    /** Atributo frame. */
     private JFrame frame;
     
-    /** The R spec. */
+    /** Atributo R spec. */
     public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
     
-    /** The read once. */
+    /** Atributo read once. */
     private boolean readOnce = false;
     
-    /** The get. */
+    /** Atributo get. */
     private boolean get = false;
     // public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
-    /** The dataset. */
+    /** Atributo dataset. */
     private XYSeriesCollection dataset;
     
-    /** The jfreechart. */
+    /** Atributo jfreechart. */
     private JFreeChart jfreechart;
     // private ChartPanel panel;
-    /** The counts. */
+    /** Atributo counts. */
     private NumberAxis counts;
     
-    /** The chart collection. */
+    /** Atributo chart collection. */
     private DBChartCollection chartCollection;
     // private String port;
-    /** The scroll pane. */
+    /** Atributo scroll pane. */
     private JScrollPane scrollPane;
     
     /** The collection name. */
@@ -555,7 +554,7 @@ public class Visio {
 	panel_7.setForeground(new Color(211, 211, 211));
 	panel_7.setBackground(new Color(0, 0, 51));
 	panel_7.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	panel_7.setLayout(new MigLayout("", "[grow][grow]", "[18px,grow][16,grow]"));
+	panel_7.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
 
 	JLabel lblConjunto = new JLabel(db.getMainDB());
 	lblConjunto.setForeground(new Color(211, 211, 211));
@@ -870,6 +869,8 @@ public class Visio {
 	
 	/** The series. */
 	XYSeries series;
+	
+	/** Atributo k. */
 	int j = 0, k = 0;
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -910,8 +911,8 @@ public class Visio {
 					"<html>"
 					+ "<p><b>Nome:</b> " + chart.getName() + "</p>"
 					+ "<p><b>Data:</b> " + new java.util.Date((long)chart.getTimestamp()) + "</p>"
-					+ "<p><b>Resolução:</b> " + chart.getNumberOfSamples() + "</p>"
-					+ "<p><b>Descrição:</b> " + chart.getDescription() + "</p>"
+					+ "<p><b>Resoluï¿½ï¿½o:</b> " + chart.getNumberOfSamples() + "</p>"
+					+ "<p><b>Descriï¿½ï¿½o:</b> " + chart.getDescription() + "</p>"
 					+ "</html>");
 			sliderPanel.add(chart, "cell 0 " + k++);
 			sliderPanel.updateUI();

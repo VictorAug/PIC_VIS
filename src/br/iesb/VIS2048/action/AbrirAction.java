@@ -11,20 +11,19 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class AbrirAction.
+ * Class AbrirAction.
  */
 public class AbrirAction extends AbstractAction {
 
-    /** The Constant serialVersionUID. */
+    /** Constante serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The text area. */
+    /** Atributo text area. */
     private JTextArea textArea;
 
     /**
-     * Instantiates a new abrir action.
+     * Instancia um novo abrir action.
      */
     public AbrirAction() {
 	super("Abrir");
