@@ -34,8 +34,9 @@ public class Chart extends JToggleButton implements Serializable{
 	private JLabel picture;
 	public transient Thread Image = new Thread(new genImage(), "Spectrometer");
 	public Chart(/*Double[] doubleSeries, */String name, String description, int numberOfSamples, long timestamp, XYSeries series) {
+		setBorderPainted(false);
 		setBackground(new Color(0, 0, 51));
-		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(0, 0, 102), null, null, null));
+		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(102, 204, 204), new Color(102, 204, 204), null, null));
 		//this.setDoubleSeries(doubleSeries);
 		this.xyseries = series;
 		this.setName(name);
@@ -44,7 +45,6 @@ public class Chart extends JToggleButton implements Serializable{
 		this.setNumberOfSamples(numberOfSamples);
 		this.setSize(112, 84);
 		this.setMargin(new Insets(0, 0, 0, 0));
-		this.setBorderPainted(false);
 		//DBHandler.logVector(doubleSeries, this.nome, this.description, this.numberOfSamples, this.timestamp);
 		//this.setPicture(picture);
 		//this.setXyseries(xyseries);
