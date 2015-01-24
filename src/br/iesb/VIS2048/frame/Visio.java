@@ -112,7 +112,10 @@ public class Visio extends BaseFrame {
     private JFreeChart jfreechart;
     // private ChartPanel panel;
     /** Atributo counts. */
-    private NumberAxis counts;
+    private NumberAxis counts = new NumberAxis();
+
+    /** Atributo m v. */
+    protected NumberAxis mV = new NumberAxis();
 
     /** Atributo chart collection. */
     private DBChartCollection chartCollection;
@@ -180,6 +183,12 @@ public class Visio extends BaseFrame {
     /** Atributo solucao field set. */
     private JPanel solucaoFieldSet;
 
+    /** Atributo group modo op. */
+    ButtonGroup groupModoOp = new ButtonGroup();
+
+    /** Atributo flag. */
+    private boolean flag;
+
     // ///////////////////////////////////////
     // ///////// MÉTODOS /////////////////////
     // ///////////////////////////////////////
@@ -246,7 +255,7 @@ public class Visio extends BaseFrame {
 	// / Tab Espectro -> FieldSet Conexão, Opções e Solução ////
 	// /////////////////////////////////////////////////////////
 	addConnectionFieldSet();
-	//addOpcoesFieldSet();
+	// addOpcoesFieldSet();
 	addSolucaoFieldSet();
 
 	btnAdquirir.addActionListener(new ActionListener() {
@@ -287,11 +296,6 @@ public class Visio extends BaseFrame {
      */
     private void addSolucaoFieldSet() {
     }
-
-    /**
-     * Adds the opcoes field set.
-     */
-   	ButtonGroup groupModoOp = new ButtonGroup();
 
     /**
      * Adds the connection field set.
@@ -448,7 +452,7 @@ public class Visio extends BaseFrame {
      * Adds the espectro fieldset.
      */
     private void addEspectroFieldset() {
-	
+
 	JPanel panel_1 = new JPanel();
 	panel_1.setBackground(new Color(0, 0, 51));
 	espectroPanel.add(panel_1, "cell 0 0,grow");
@@ -501,259 +505,262 @@ public class Visio extends BaseFrame {
 	connectionFieldSet.setForeground(new Color(211, 211, 211));
 	connectionFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), CONEXAO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
 	connectionFieldSet.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[20px,grow]"));
-	
-		connectionFieldSet.add(comboBox, "cell 0 0,growx,aligny center");
-		
-			JButton button = new JButton("Reset");
-			button.setToolTipText(RECUPERAR_CONEXÃO);
-			button.setFont(new Font("Tahoma", Font.PLAIN, 11));
-			button.setEnabled(true);
-			connectionFieldSet.add(button, "cell 1 0");
-			button.addActionListener(new ActionListener() {
-			    @Override
-			    public void actionPerformed(ActionEvent e) {
-				btnAdquirir.setEnabled(false);
-				btnParar.setEnabled(false);
 
-				if (RSpec.isAlive()) {
-				    launchThread();
-				    RSpec.setDaemon(true);
-				    RSpec.start();
-				}
-				timeToClear(true);
-			    }
-			});
-			
-				lblConectado = new JLabel(INDISPONIVEL);
-				lblConectado.setForeground(new Color(255, 0, 0));
-				connectionFieldSet.add(lblConectado, "cell 2 0,alignx center,aligny center");
-				opcoesFieldSet = new JPanel();
-				panel_1.add(opcoesFieldSet, "cell 0 2,growx");
-				opcoesFieldSet.setBackground(new Color(0, 0, 51));
-				opcoesFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-				opcoesFieldSet.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[30px][20px][1px::][30px][20px][1px::][30px][20px][1px::][30px][30px][1px::][30px][20px]"));
-				
-					JLabel lblModoDeOperao = new JLabel("Modo de Operação");
-					lblModoDeOperao.setHorizontalAlignment(SwingConstants.CENTER);
-					lblModoDeOperao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-					opcoesFieldSet.add(lblModoDeOperao, "cell 0 0 2 1,grow");
-					lblModoDeOperao.setFont(new Font("Dialog", Font.PLAIN, 12));
-					lblModoDeOperao.setForeground(new Color(211, 211, 211));
-					lblModoDeOperao.setBackground(new Color(0, 0, 102));
-					lblModoDeOperao.setOpaque(true);
-					
-						JRadioButton radioButton = new JRadioButton("\u00DAnico");
-						opcoesFieldSet.add(radioButton, "cell 0 1,alignx center,growy");
-						radioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-						radioButton.setForeground(new Color(211, 211, 211));
-						radioButton.setBackground(new Color(0, 0, 51));
-						
-							JRadioButton rdbtnNewRadioButton = new JRadioButton("Cont\u00EDnuo");
-							opcoesFieldSet.add(rdbtnNewRadioButton, "cell 1 1,alignx center,growy");
-							rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-							rdbtnNewRadioButton.setForeground(new Color(211, 211, 211));
-							rdbtnNewRadioButton.setBackground(new Color(0, 0, 51));
-							
-							groupModoOp.add(radioButton);
-							groupModoOp.add(rdbtnNewRadioButton);
-							
-								radioButton.setActionCommand("Unico");
-								rdbtnNewRadioButton.setActionCommand("Continuo");
-								rdbtnNewRadioButton.setSelected(true);
-								radioButton.addActionListener(new ActionListener() {
-								    @Override
-								    public void actionPerformed(ActionEvent event) {
-									if ("Unico".equals(event.getActionCommand())) {
-									    btnParar.setEnabled(false);
-									    setReadOnce(true);
-									    btnAdquirir.setEnabled(true);
-									} else {
-									    btnParar.setEnabled(false);
-									    setReadOnce(false);
-									}
-								    }
-								});
-								rdbtnNewRadioButton.addActionListener(new ActionListener() {
-								    public void actionPerformed(ActionEvent event) {
-									if ("Continuo".equals(event.getActionCommand())) {
-									    btnParar.setEnabled(true);
-									    setReadOnce(false);
-									    btnParar.setEnabled(true);
-									} else {
-									    btnParar.setEnabled(false);
-									    setReadOnce(true);
-									}
-								    }
-								});
-								
-									JSeparator separator = new JSeparator();
-									separator.setForeground(new Color(0, 0, 51));
-									separator.setBackground(new Color(0, 0, 51));
-									opcoesFieldSet.add(separator, "cell 0 2 2 1,grow");
-									
-										JLabel lblNewLabel = new JLabel("Unidade");
-										lblNewLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-										lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-										opcoesFieldSet.add(lblNewLabel, "cell 0 3 2 1,grow");
-										lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-										lblNewLabel.setForeground(new Color(211, 211, 211));
-										lblNewLabel.setBackground(new Color(0, 0, 102));
-										lblNewLabel.setOpaque(true);
-										
-											JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
-											opcoesFieldSet.add(rdbtnNewRadioButton_1, "cell 0 4,alignx center,growy");
-											rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-											rdbtnNewRadioButton_1.setForeground(new Color(211, 211, 211));
-											rdbtnNewRadioButton_1.setBackground(new Color(0, 0, 51));
-											rdbtnNewRadioButton_1.setActionCommand("Counts");
-											rdbtnNewRadioButton_1.setSelected(true);
-											groupUnit.add(rdbtnNewRadioButton_1);
-											rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
-											    public void actionPerformed(ActionEvent event) {
-												if ("Counts".equals(event.getActionCommand())) {
+	connectionFieldSet.add(comboBox, "cell 0 0,growx,aligny center");
 
-												}
-											    }
-											});
-											
-												JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("mV");
-												opcoesFieldSet.add(rdbtnNewRadioButton_2, "cell 1 4,alignx center,growy");
-												rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
-												rdbtnNewRadioButton_2.setForeground(new Color(211, 211, 211));
-												rdbtnNewRadioButton_2.setBackground(new Color(0, 0, 51));
-												rdbtnNewRadioButton_2.setActionCommand("mV");
-												groupUnit.add(rdbtnNewRadioButton_2);
-												rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
-												    public void actionPerformed(ActionEvent event) {
-													if ("mV".equals(event.getActionCommand())) {
-													    // specPanel.setImage("mV");
-													} else {
-													    // specPanel.setImage("Counts");
-													}
-												    }
-												});
-												
-													JSeparator separator_1 = new JSeparator();
-													separator_1.setForeground(new Color(0, 0, 51));
-													separator_1.setBackground(new Color(0, 0, 51));
-													opcoesFieldSet.add(separator_1, "cell 0 5 2 1,grow");
-													
-														JLabel lblFaixaEspectral = new JLabel("N\u00FAmero de Amostras");
-														lblFaixaEspectral.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-														lblFaixaEspectral.setHorizontalAlignment(SwingConstants.CENTER);
-														opcoesFieldSet.add(lblFaixaEspectral, "cell 0 6 2 1,grow");
-														lblFaixaEspectral.setFont(new Font("Dialog", Font.PLAIN, 12));
-														lblFaixaEspectral.setForeground(new Color(211, 211, 211));
-														lblFaixaEspectral.setBackground(new Color(0, 0, 102));
-														lblFaixaEspectral.setOpaque(true);
-														
-															JSlider slider = new JSlider(0, 2048, 2048);
-															opcoesFieldSet.add(slider, "flowx,cell 0 7 2 1,grow");
-															slider.setBackground(new Color(0, 0, 51));
-															slider.addChangeListener(new ChangeListener() {
-															    @Override
-															    public void stateChanged(ChangeEvent e) {
-																label.setText("" + slider.getValue());
-															    }
-															});
-															slider.setSnapToTicks(true);
-															
-																JSeparator separator_2 = new JSeparator();
-																separator_2.setForeground(new Color(0, 0, 51));
-																separator_2.setBackground(new Color(0, 0, 51));
-																opcoesFieldSet.add(separator_2, "cell 0 8 2 1,grow");
-																
-																	JLabel lblTempoDeIntegrao = new JLabel("Tempo de Integra\u00E7\u00E3o");
-																	lblTempoDeIntegrao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-																	lblTempoDeIntegrao.setHorizontalAlignment(SwingConstants.CENTER);
-																	opcoesFieldSet.add(lblTempoDeIntegrao, "cell 0 9 2 1,grow");
-																	lblTempoDeIntegrao.setFont(new Font("Dialog", Font.PLAIN, 12));
-																	lblTempoDeIntegrao.setForeground(new Color(211, 211, 211));
-																	lblTempoDeIntegrao.setBackground(new Color(0, 0, 102));
-																	lblTempoDeIntegrao.setOpaque(true);
-																	
-																		JComboBox<String> comboBox_1 = new JComboBox<String>();
-																		comboBox_1.setBackground(new Color(0, 0, 51));
-																		comboBox_1.setForeground(new Color(211, 211, 211));
-																		opcoesFieldSet.add(comboBox_1, "cell 0 10 2 1,growx");
-																		
-																			JSeparator separator_3 = new JSeparator();
-																			separator_3.setForeground(new Color(0, 0, 51));
-																			separator_3.setBackground(new Color(0, 0, 51));
-																			opcoesFieldSet.add(separator_3, "cell 0 11 2 1,grow");
-																			
-																				JLabel lblFaixaEspectral_1 = new JLabel("Faixa Espectral");
-																				lblFaixaEspectral_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-																				lblFaixaEspectral_1.setHorizontalAlignment(SwingConstants.CENTER);
-																				opcoesFieldSet.add(lblFaixaEspectral_1, "cell 0 12 2 1,grow");
-																				lblFaixaEspectral_1.setFont(new Font("Dialog", Font.PLAIN, 12));
-																				lblFaixaEspectral_1.setForeground(new Color(211, 211, 211));
-																				lblFaixaEspectral_1.setBackground(new Color(0, 0, 102));
-																				lblFaixaEspectral_1.setOpaque(true);
-																				
-																					JSpinner spinner = new JSpinner();
-																					opcoesFieldSet.add(spinner, "flowx,cell 0 13,grow");
-																					spinner.setFont(new Font("Tahoma", Font.PLAIN, 11));
-																					spinner.setBackground(new Color(0, 0, 51));
-																					spinner.setForeground(new Color(211, 211, 211));
-																					
-																						JSpinner spinner_1 = new JSpinner();
-																						opcoesFieldSet.add(spinner_1, "flowx,cell 1 13,grow");
-																						spinner_1.setFont(new Font("Dialog", Font.PLAIN, 11));
-																						spinner_1.setBackground(new Color(0, 0, 51));
-																						spinner_1.setForeground(new Color(211, 211, 211));
-																						
-																							label = new JLabel("2048");
-																							label.setFont(new Font("Dialog", Font.PLAIN, 11));
-																							label.setForeground(new Color(211, 211, 211));
-																							opcoesFieldSet.add(label, "cell 0 7 2 1,grow");
-																							
-																								JLabel lblA = new JLabel("a");
-																								opcoesFieldSet.add(lblA, "cell 0 13,alignx right,growy");
-																								lblA.setFont(new Font("Dialog", Font.PLAIN, 11));
-																								lblA.setForeground(new Color(211, 211, 211));
-																								
-																									JLabel lblNm = new JLabel("nm");
-																									opcoesFieldSet.add(lblNm, "cell 1 13,alignx right,growy");
-																									lblNm.setFont(new Font("Dialog", Font.PLAIN, 11));
-																									lblNm.setForeground(new Color(211, 211, 211));
-																									solucaoFieldSet = new JPanel();
-																									panel_1.add(solucaoFieldSet, "cell 0 3,growx");
-																									solucaoFieldSet.setForeground(new Color(211, 211, 211));
-																									solucaoFieldSet.setBackground(new Color(0, 0, 51));
-																									solucaoFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-																									solucaoFieldSet.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
-																									
-																										JLabel lblConjunto = new JLabel(db.getMainDB());
-																										lblConjunto.setForeground(new Color(211, 211, 211));
-																										lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
-																										solucaoFieldSet.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny top");
-																										
-																											JButton btnEscolher = new JButton("Adicionar");
-																											solucaoFieldSet.add(btnEscolher, "cell 0 1,growx");
-																											
-																												btnEscolher.setToolTipText("click");
-																												btnEscolher.addActionListener(new ActionListener() {
-																												    @Override
-																												    public void actionPerformed(ActionEvent arg0) {
-																													try {
-																													    DBViewer dialog = new DBViewer();
-																													    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-																													    dialog.setVisible(true);
-																													} catch (Exception e) {
-																													    e.printStackTrace();
-																													}
-																												    }
-																												});
-																												
-																													JButton btnSalvar = new JButton("Salvar");
-																													solucaoFieldSet.add(btnSalvar, "cell 1 1,growx");
-																													btnSalvar.addActionListener(new ActionListener() {
-																													    @Override
-																													    public void actionPerformed(ActionEvent event) {
-																														DBHandler.saveGZipObject(chartCollection, db.getMainDBFileName());
-																													    }
-																													});
+	JButton button = new JButton("Reset");
+	button.setToolTipText(RECUPERAR_CONEXÃO);
+	button.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	button.setEnabled(true);
+	connectionFieldSet.add(button, "cell 1 0");
+	button.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		btnAdquirir.setEnabled(false);
+		btnParar.setEnabled(false);
+
+		if (RSpec.isAlive()) {
+		    launchThread();
+		    RSpec.setDaemon(true);
+		    RSpec.start();
+		}
+		timeToClear(true);
+	    }
+	});
+
+	lblConectado = new JLabel(INDISPONIVEL);
+	lblConectado.setForeground(new Color(255, 0, 0));
+	connectionFieldSet.add(lblConectado, "cell 2 0,alignx center,aligny center");
+	opcoesFieldSet = new JPanel();
+	panel_1.add(opcoesFieldSet, "cell 0 2,growx");
+	opcoesFieldSet.setBackground(new Color(0, 0, 51));
+	opcoesFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+	opcoesFieldSet.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[30px][20px][1px::][30px][20px][1px::][30px][20px][1px::][30px][30px][1px::][30px][20px]"));
+
+	JLabel lblModoDeOperao = new JLabel("Modo de Operação");
+	lblModoDeOperao.setHorizontalAlignment(SwingConstants.CENTER);
+	lblModoDeOperao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	opcoesFieldSet.add(lblModoDeOperao, "cell 0 0 2 1,grow");
+	lblModoDeOperao.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblModoDeOperao.setForeground(new Color(211, 211, 211));
+	lblModoDeOperao.setBackground(new Color(0, 0, 102));
+	lblModoDeOperao.setOpaque(true);
+
+	JRadioButton radioButton = new JRadioButton("\u00DAnico");
+	opcoesFieldSet.add(radioButton, "cell 0 1,alignx center,growy");
+	radioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	radioButton.setForeground(new Color(211, 211, 211));
+	radioButton.setBackground(new Color(0, 0, 51));
+
+	JRadioButton rdbtnNewRadioButton = new JRadioButton("Cont\u00EDnuo");
+	opcoesFieldSet.add(rdbtnNewRadioButton, "cell 1 1,alignx center,growy");
+	rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	rdbtnNewRadioButton.setForeground(new Color(211, 211, 211));
+	rdbtnNewRadioButton.setBackground(new Color(0, 0, 51));
+
+	groupModoOp.add(radioButton);
+	groupModoOp.add(rdbtnNewRadioButton);
+
+	radioButton.setActionCommand("Unico");
+	rdbtnNewRadioButton.setActionCommand("Continuo");
+	rdbtnNewRadioButton.setSelected(true);
+	radioButton.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent event) {
+		if ("Unico".equals(event.getActionCommand())) {
+		    btnParar.setEnabled(false);
+		    setReadOnce(true);
+		    btnAdquirir.setEnabled(true);
+		} else {
+		    btnParar.setEnabled(false);
+		    setReadOnce(false);
+		}
+	    }
+	});
+	rdbtnNewRadioButton.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent event) {
+		if ("Continuo".equals(event.getActionCommand())) {
+		    btnParar.setEnabled(true);
+		    setReadOnce(false);
+		    btnParar.setEnabled(true);
+		} else {
+		    btnParar.setEnabled(false);
+		    setReadOnce(true);
+		}
+	    }
+	});
+
+	JSeparator separator = new JSeparator();
+	separator.setForeground(new Color(0, 0, 51));
+	separator.setBackground(new Color(0, 0, 51));
+	opcoesFieldSet.add(separator, "cell 0 2 2 1,grow");
+
+	JLabel lblNewLabel = new JLabel("Unidade");
+	lblNewLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblNewLabel, "cell 0 3 2 1,grow");
+	lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblNewLabel.setForeground(new Color(211, 211, 211));
+	lblNewLabel.setBackground(new Color(0, 0, 102));
+	lblNewLabel.setOpaque(true);
+
+	JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
+	opcoesFieldSet.add(rdbtnNewRadioButton_1, "cell 0 4,alignx center,growy");
+	rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	rdbtnNewRadioButton_1.setForeground(new Color(211, 211, 211));
+	rdbtnNewRadioButton_1.setBackground(new Color(0, 0, 51));
+	rdbtnNewRadioButton_1.setActionCommand("Counts");
+	rdbtnNewRadioButton_1.setSelected(true);
+
+	groupUnit.add(rdbtnNewRadioButton_1);
+	rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent event) {
+		if ("Counts".equals(event.getActionCommand()) && flag) {
+		    counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		    counts.setRange(0, (mV.getUpperBound() / 3300) * 4096);
+		    flag = false;
+		}
+	    }
+	});
+
+	JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("mV");
+	opcoesFieldSet.add(rdbtnNewRadioButton_2, "cell 1 4,alignx center,growy");
+	rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	rdbtnNewRadioButton_2.setForeground(new Color(211, 211, 211));
+	rdbtnNewRadioButton_2.setBackground(new Color(0, 0, 51));
+	rdbtnNewRadioButton_2.setActionCommand("mV");
+	groupUnit.add(rdbtnNewRadioButton_2);
+	rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent event) {
+		if ("mV".equals(event.getActionCommand()) && !flag) {
+		    mV = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		    mV.setRange(0, (counts.getUpperBound() / 4096) * 3300);
+		    flag = true;
+		}
+	    }
+	});
+
+	JSeparator separator_1 = new JSeparator();
+	separator_1.setForeground(new Color(0, 0, 51));
+	separator_1.setBackground(new Color(0, 0, 51));
+	opcoesFieldSet.add(separator_1, "cell 0 5 2 1,grow");
+
+	JLabel lblFaixaEspectral = new JLabel("N\u00FAmero de Amostras");
+	lblFaixaEspectral.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblFaixaEspectral.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblFaixaEspectral, "cell 0 6 2 1,grow");
+	lblFaixaEspectral.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblFaixaEspectral.setForeground(new Color(211, 211, 211));
+	lblFaixaEspectral.setBackground(new Color(0, 0, 102));
+	lblFaixaEspectral.setOpaque(true);
+
+	JSlider slider = new JSlider(0, 2048, 2048);
+	opcoesFieldSet.add(slider, "flowx,cell 0 7 2 1,grow");
+	slider.setBackground(new Color(0, 0, 51));
+	slider.addChangeListener(new ChangeListener() {
+	    @Override
+	    public void stateChanged(ChangeEvent e) {
+		label.setText("" + slider.getValue());
+	    }
+	});
+	slider.setSnapToTicks(true);
+
+	JSeparator separator_2 = new JSeparator();
+	separator_2.setForeground(new Color(0, 0, 51));
+	separator_2.setBackground(new Color(0, 0, 51));
+	opcoesFieldSet.add(separator_2, "cell 0 8 2 1,grow");
+
+	JLabel lblTempoDeIntegrao = new JLabel("Tempo de Integra\u00E7\u00E3o");
+	lblTempoDeIntegrao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblTempoDeIntegrao.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblTempoDeIntegrao, "cell 0 9 2 1,grow");
+	lblTempoDeIntegrao.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblTempoDeIntegrao.setForeground(new Color(211, 211, 211));
+	lblTempoDeIntegrao.setBackground(new Color(0, 0, 102));
+	lblTempoDeIntegrao.setOpaque(true);
+
+	JComboBox<String> comboBox_1 = new JComboBox<String>();
+	comboBox_1.setBackground(new Color(0, 0, 51));
+	comboBox_1.setForeground(new Color(211, 211, 211));
+	opcoesFieldSet.add(comboBox_1, "cell 0 10 2 1,growx");
+
+	JSeparator separator_3 = new JSeparator();
+	separator_3.setForeground(new Color(0, 0, 51));
+	separator_3.setBackground(new Color(0, 0, 51));
+	opcoesFieldSet.add(separator_3, "cell 0 11 2 1,grow");
+
+	JLabel lblFaixaEspectral_1 = new JLabel("Faixa Espectral");
+	lblFaixaEspectral_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblFaixaEspectral_1.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblFaixaEspectral_1, "cell 0 12 2 1,grow");
+	lblFaixaEspectral_1.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblFaixaEspectral_1.setForeground(new Color(211, 211, 211));
+	lblFaixaEspectral_1.setBackground(new Color(0, 0, 102));
+	lblFaixaEspectral_1.setOpaque(true);
+
+	JSpinner spinner = new JSpinner();
+	opcoesFieldSet.add(spinner, "flowx,cell 0 13,grow");
+	spinner.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	spinner.setBackground(new Color(0, 0, 51));
+	spinner.setForeground(new Color(211, 211, 211));
+
+	JSpinner spinner_1 = new JSpinner();
+	opcoesFieldSet.add(spinner_1, "flowx,cell 1 13,grow");
+	spinner_1.setFont(new Font("Dialog", Font.PLAIN, 11));
+	spinner_1.setBackground(new Color(0, 0, 51));
+	spinner_1.setForeground(new Color(211, 211, 211));
+
+	label = new JLabel("2048");
+	label.setFont(new Font("Dialog", Font.PLAIN, 11));
+	label.setForeground(new Color(211, 211, 211));
+	opcoesFieldSet.add(label, "cell 0 7 2 1,grow");
+
+	JLabel lblA = new JLabel("a");
+	opcoesFieldSet.add(lblA, "cell 0 13,alignx right,growy");
+	lblA.setFont(new Font("Dialog", Font.PLAIN, 11));
+	lblA.setForeground(new Color(211, 211, 211));
+
+	JLabel lblNm = new JLabel("nm");
+	opcoesFieldSet.add(lblNm, "cell 1 13,alignx right,growy");
+	lblNm.setFont(new Font("Dialog", Font.PLAIN, 11));
+	lblNm.setForeground(new Color(211, 211, 211));
+	solucaoFieldSet = new JPanel();
+	panel_1.add(solucaoFieldSet, "cell 0 3,growx");
+	solucaoFieldSet.setForeground(new Color(211, 211, 211));
+	solucaoFieldSet.setBackground(new Color(0, 0, 51));
+	solucaoFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+	solucaoFieldSet.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
+
+	JLabel lblConjunto = new JLabel(db.getMainDB());
+	lblConjunto.setForeground(new Color(211, 211, 211));
+	lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
+	solucaoFieldSet.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny top");
+
+	JButton btnEscolher = new JButton("Adicionar");
+	solucaoFieldSet.add(btnEscolher, "cell 0 1,growx");
+
+	btnEscolher.setToolTipText("click");
+	btnEscolher.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+		try {
+		    DBViewer dialog = new DBViewer();
+		    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		    dialog.setVisible(true);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	});
+
+	JButton btnSalvar = new JButton("Salvar");
+	solucaoFieldSet.add(btnSalvar, "cell 1 1,growx");
+	btnSalvar.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent event) {
+		DBHandler.saveGZipObject(chartCollection, db.getMainDBFileName());
+	    }
+	});
     }
 
     // ////////////////////////////
@@ -1038,11 +1045,13 @@ public class Visio extends BaseFrame {
 		    }
 		});
 		chart.setPicture();
-		chart.setToolTipText("<html>" 
-			//+ "<p><b>Nome:</b> " + chart.getName() 
-			+ "</p>" + "<p><b>Data:</b> " + new java.util.Date((long) chart.getTimestamp()) 
-			//+ "</p>" + "<p><b>Resolução:</b> " + chart.getNumberOfSamples() 
-			//+ "</p>" + "<p><b>Descrição:</b> " + chart.getDescription() + "</p>" 
+		chart.setToolTipText("<html>"
+		// + "<p><b>Nome:</b> " + chart.getName()
+			+ "</p>" + "<p><b>Data:</b> " + new java.util.Date((long) chart.getTimestamp())
+			// + "</p>" + "<p><b>Resolução:</b> " +
+			// chart.getNumberOfSamples()
+			// + "</p>" + "<p><b>Descrição:</b> " +
+			// chart.getDescription() + "</p>"
 			+ "</html>");
 		sliderPanel.add(chart, "cell 0 " + k++);
 		sliderPanel.updateUI();
