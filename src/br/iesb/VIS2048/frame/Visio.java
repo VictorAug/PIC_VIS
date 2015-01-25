@@ -504,15 +504,15 @@ public class Visio extends BaseFrame {
 	connectionFieldSet.setBackground(new Color(0, 0, 51));
 	connectionFieldSet.setForeground(new Color(211, 211, 211));
 	connectionFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), CONEXAO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	connectionFieldSet.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[20px,grow]"));
+	connectionFieldSet.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[25px:25px:25px]"));
 
-	connectionFieldSet.add(comboBox, "cell 0 0,growx,aligny center");
+	connectionFieldSet.add(comboBox, "cell 0 0,grow");
 
 	JButton button = new JButton("Reset");
 	button.setToolTipText(RECUPERAR_CONEXÃO);
 	button.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	button.setEnabled(true);
-	connectionFieldSet.add(button, "cell 1 0");
+	connectionFieldSet.add(button, "cell 1 0,growy");
 	button.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
@@ -530,12 +530,12 @@ public class Visio extends BaseFrame {
 
 	lblConectado = new JLabel(INDISPONIVEL);
 	lblConectado.setForeground(new Color(255, 0, 0));
-	connectionFieldSet.add(lblConectado, "cell 2 0,alignx center,aligny center");
+	connectionFieldSet.add(lblConectado, "cell 2 0,alignx center,growy");
 	opcoesFieldSet = new JPanel();
 	panel_1.add(opcoesFieldSet, "cell 0 2,growx");
 	opcoesFieldSet.setBackground(new Color(0, 0, 51));
 	opcoesFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	opcoesFieldSet.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[30px][20px][1px::][30px][20px][1px::][30px][20px][1px::][30px][30px][1px::][30px][20px]"));
+	opcoesFieldSet.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px:20px:20px][20px][20px:20px:20px][20px][20px:20px:20px][20px][20px:20px:20px][30px][20px:20px:20px][20px]"));
 
 	JLabel lblModoDeOperao = new JLabel("Modo de Operação");
 	lblModoDeOperao.setHorizontalAlignment(SwingConstants.CENTER);
@@ -590,22 +590,17 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JSeparator separator = new JSeparator();
-	separator.setForeground(new Color(0, 0, 51));
-	separator.setBackground(new Color(0, 0, 51));
-	opcoesFieldSet.add(separator, "cell 0 2 2 1,grow");
-
 	JLabel lblNewLabel = new JLabel("Unidade");
 	lblNewLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblNewLabel, "cell 0 3 2 1,grow");
+	opcoesFieldSet.add(lblNewLabel, "cell 0 2 2 1,grow");
 	lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 	lblNewLabel.setForeground(new Color(211, 211, 211));
 	lblNewLabel.setBackground(new Color(0, 0, 102));
 	lblNewLabel.setOpaque(true);
 
 	JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
-	opcoesFieldSet.add(rdbtnNewRadioButton_1, "cell 0 4,alignx center,growy");
+	opcoesFieldSet.add(rdbtnNewRadioButton_1, "cell 0 3,alignx center,growy");
 	rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnNewRadioButton_1.setForeground(new Color(211, 211, 211));
 	rdbtnNewRadioButton_1.setBackground(new Color(0, 0, 51));
@@ -624,7 +619,7 @@ public class Visio extends BaseFrame {
 	});
 
 	JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("mV");
-	opcoesFieldSet.add(rdbtnNewRadioButton_2, "cell 1 4,alignx center,growy");
+	opcoesFieldSet.add(rdbtnNewRadioButton_2, "cell 1 3,alignx center,growy");
 	rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnNewRadioButton_2.setForeground(new Color(211, 211, 211));
 	rdbtnNewRadioButton_2.setBackground(new Color(0, 0, 51));
@@ -640,22 +635,17 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JSeparator separator_1 = new JSeparator();
-	separator_1.setForeground(new Color(0, 0, 51));
-	separator_1.setBackground(new Color(0, 0, 51));
-	opcoesFieldSet.add(separator_1, "cell 0 5 2 1,grow");
-
 	JLabel lblFaixaEspectral = new JLabel("N\u00FAmero de Amostras");
 	lblFaixaEspectral.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblFaixaEspectral.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblFaixaEspectral, "cell 0 6 2 1,grow");
+	opcoesFieldSet.add(lblFaixaEspectral, "cell 0 4 2 1,grow");
 	lblFaixaEspectral.setFont(new Font("Dialog", Font.PLAIN, 12));
 	lblFaixaEspectral.setForeground(new Color(211, 211, 211));
 	lblFaixaEspectral.setBackground(new Color(0, 0, 102));
 	lblFaixaEspectral.setOpaque(true);
 
 	JSlider slider = new JSlider(0, 2048, 2048);
-	opcoesFieldSet.add(slider, "flowx,cell 0 7 2 1,grow");
+	opcoesFieldSet.add(slider, "flowx,cell 0 5 2 1,grow");
 	slider.setBackground(new Color(0, 0, 51));
 	slider.addChangeListener(new ChangeListener() {
 	    @Override
@@ -665,15 +655,10 @@ public class Visio extends BaseFrame {
 	});
 	slider.setSnapToTicks(true);
 
-	JSeparator separator_2 = new JSeparator();
-	separator_2.setForeground(new Color(0, 0, 51));
-	separator_2.setBackground(new Color(0, 0, 51));
-	opcoesFieldSet.add(separator_2, "cell 0 8 2 1,grow");
-
 	JLabel lblTempoDeIntegrao = new JLabel("Tempo de Integra\u00E7\u00E3o");
 	lblTempoDeIntegrao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblTempoDeIntegrao.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblTempoDeIntegrao, "cell 0 9 2 1,grow");
+	opcoesFieldSet.add(lblTempoDeIntegrao, "cell 0 6 2 1,grow");
 	lblTempoDeIntegrao.setFont(new Font("Dialog", Font.PLAIN, 12));
 	lblTempoDeIntegrao.setForeground(new Color(211, 211, 211));
 	lblTempoDeIntegrao.setBackground(new Color(0, 0, 102));
@@ -682,30 +667,25 @@ public class Visio extends BaseFrame {
 	JComboBox<String> comboBox_1 = new JComboBox<String>();
 	comboBox_1.setBackground(new Color(0, 0, 51));
 	comboBox_1.setForeground(new Color(211, 211, 211));
-	opcoesFieldSet.add(comboBox_1, "cell 0 10 2 1,growx");
-
-	JSeparator separator_3 = new JSeparator();
-	separator_3.setForeground(new Color(0, 0, 51));
-	separator_3.setBackground(new Color(0, 0, 51));
-	opcoesFieldSet.add(separator_3, "cell 0 11 2 1,grow");
+	opcoesFieldSet.add(comboBox_1, "cell 0 7 2 1,growx");
 
 	JLabel lblFaixaEspectral_1 = new JLabel("Faixa Espectral");
 	lblFaixaEspectral_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblFaixaEspectral_1.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblFaixaEspectral_1, "cell 0 12 2 1,grow");
+	opcoesFieldSet.add(lblFaixaEspectral_1, "cell 0 8 2 1,grow");
 	lblFaixaEspectral_1.setFont(new Font("Dialog", Font.PLAIN, 12));
 	lblFaixaEspectral_1.setForeground(new Color(211, 211, 211));
 	lblFaixaEspectral_1.setBackground(new Color(0, 0, 102));
 	lblFaixaEspectral_1.setOpaque(true);
 
 	JSpinner spinner = new JSpinner();
-	opcoesFieldSet.add(spinner, "flowx,cell 0 13,grow");
+	opcoesFieldSet.add(spinner, "flowx,cell 0 9,grow");
 	spinner.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	spinner.setBackground(new Color(0, 0, 51));
 	spinner.setForeground(new Color(211, 211, 211));
 
 	JSpinner spinner_1 = new JSpinner();
-	opcoesFieldSet.add(spinner_1, "flowx,cell 1 13,grow");
+	opcoesFieldSet.add(spinner_1, "flowx,cell 1 9,grow");
 	spinner_1.setFont(new Font("Dialog", Font.PLAIN, 11));
 	spinner_1.setBackground(new Color(0, 0, 51));
 	spinner_1.setForeground(new Color(211, 211, 211));
@@ -713,15 +693,15 @@ public class Visio extends BaseFrame {
 	label = new JLabel("2048");
 	label.setFont(new Font("Dialog", Font.PLAIN, 11));
 	label.setForeground(new Color(211, 211, 211));
-	opcoesFieldSet.add(label, "cell 0 7 2 1,grow");
+	opcoesFieldSet.add(label, "cell 0 5 2 1,grow");
 
 	JLabel lblA = new JLabel("a");
-	opcoesFieldSet.add(lblA, "cell 0 13,alignx right,growy");
+	opcoesFieldSet.add(lblA, "cell 0 9,alignx right,growy");
 	lblA.setFont(new Font("Dialog", Font.PLAIN, 11));
 	lblA.setForeground(new Color(211, 211, 211));
 
 	JLabel lblNm = new JLabel("nm");
-	opcoesFieldSet.add(lblNm, "cell 1 13,alignx right,growy");
+	opcoesFieldSet.add(lblNm, "cell 1 9,alignx right,growy");
 	lblNm.setFont(new Font("Dialog", Font.PLAIN, 11));
 	lblNm.setForeground(new Color(211, 211, 211));
 	solucaoFieldSet = new JPanel();
@@ -729,7 +709,7 @@ public class Visio extends BaseFrame {
 	solucaoFieldSet.setForeground(new Color(211, 211, 211));
 	solucaoFieldSet.setBackground(new Color(0, 0, 51));
 	solucaoFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	solucaoFieldSet.setLayout(new MigLayout("", "[grow]", "[18px,grow][16,grow]"));
+	solucaoFieldSet.setLayout(new MigLayout("", "[grow][grow]", "[20px:20px:20px][20px:20px:20px]"));
 
 	JLabel lblConjunto = new JLabel(db.getMainDB());
 	lblConjunto.setForeground(new Color(211, 211, 211));
