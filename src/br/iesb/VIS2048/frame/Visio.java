@@ -3,14 +3,13 @@ package br.iesb.VIS2048.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Arrays;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -25,7 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -65,9 +63,9 @@ public class Visio extends BaseFrame {
     // ///////////////////////////////////////
     // ///////// ATRIBUTOS ///////////////////
     // ///////////////////////////////////////
-
+	JButton btnConectar = new JButton("Conectar");
     /** Atributo lbl conectado. */
-    JLabel lblConectado;
+    JLabel commLabel;
 
     /** Atributo label. */
     JLabel label;
@@ -76,7 +74,7 @@ public class Visio extends BaseFrame {
     JButton btnAdquirir;
 
     /** Atributo combo box. */
-    JComboBox<String> comboBox = new JComboBox<String>();
+    JComboBox<String> commComboBox = new JComboBox<String>();
 
     /** Atributo harvester. */
     Harvester harvester = new Harvester();
@@ -143,9 +141,6 @@ public class Visio extends BaseFrame {
 
     /** The panel_8. */
     private JPanel espectroPanel;
-
-    /** The clear. */
-    private boolean clear = false;
 
     /** Atributo tabbed pane. */
     private JTabbedPane tabbedPane;
@@ -276,7 +271,6 @@ public class Visio extends BaseFrame {
 		}
 	    }
 	});
-	checkComboBoxInit();
     }
 
     // ////////////////////////////////////////////////
@@ -285,11 +279,7 @@ public class Visio extends BaseFrame {
     /**
      * Check combo box init.
      */
-    private void checkComboBoxInit() {
-	if (!"".equals(((String) comboBox.getSelectedItem()))) {
-	    timeToClear(true);
-	}
-    }
+    
 
     /**
      * Adds the solucao field set.
@@ -302,15 +292,9 @@ public class Visio extends BaseFrame {
      */
     private void addConnectionFieldSet() {
 
-	checkPort = new Thread(new checkForPorts(comboBox));
-	comboBox.setForeground(new Color(211, 211, 211));
-	comboBox.setBackground(new Color(0, 0, 51));
-	comboBox.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-	comboBox.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-		timeToClear(true);
-	    }
-	});
+	checkPort = new Thread(new checkForPorts());
+	
+	
     }
 
     /**
@@ -338,7 +322,7 @@ public class Visio extends BaseFrame {
      * Check for ports.
      */
     private void checkForPorts() {
-	checkPort = new Thread(new checkForPorts(comboBox));
+	checkPort = new Thread(new checkForPorts());
 	checkPort.setDaemon(true);
 	checkPort.start();
 	fileName = db.getMainDBFileName();
@@ -364,35 +348,35 @@ public class Visio extends BaseFrame {
      * Inits the visio panel.
      */
     private void initVisioPanel() {
-	visioPanel = new JPanel();
-	visioPanel.setBackground(new Color(0, 0, 51));
-	espectroPanel.add(visioPanel, "cell 1 0,grow");
-	visioPanel.setLayout(new MigLayout("", "0[grow]0", "0[grow]0"));
-
-	primeChart = new JPanel();
-	primeChart.setBackground(Color.black);
-	primeChart.setAlignmentY(0.0f);
-	dataset = new XYSeriesCollection();
-	jfreechart = ChartFactory.createXYLineChart(VISIO, "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
-	counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
-	counts.setRange(0, 2500);
-	panel = new ChartPanel(jfreechart);
-	panel.setBackground(Color.black);
-	((XYPlot) jfreechart.getPlot()).setRangeGridlinePaint(Color.white);
-	((XYPlot) jfreechart.getPlot()).setBackgroundPaint(Color.black);
-	primeChart.setLayout(new BorderLayout());
-	primeChart.add(panel, BorderLayout.CENTER);
-
-	jfreechart.setBackgroundPaint(Color.black);
-	((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.green);
-	((XYPlot) jfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
-	((XYPlot) jfreechart.getPlot()).setDomainGridlinePaint(Color.white);
-
-	chartCollection = new DBChartCollection();
-	visioPanel.add(primeChart, "cell 0 0,grow");
-	cleaner = new Thread(new clearComm());
-	cleaner.setDaemon(true);
-	cleaner.start();
+		visioPanel = new JPanel();
+		visioPanel.setBackground(new Color(0, 0, 51));
+		espectroPanel.add(visioPanel, "cell 1 0,grow");
+		visioPanel.setLayout(new MigLayout("", "0[grow]0", "0[grow]0"));
+	
+		primeChart = new JPanel();
+		primeChart.setBackground(Color.black);
+		primeChart.setAlignmentY(0.0f);
+		dataset = new XYSeriesCollection();
+		jfreechart = ChartFactory.createXYLineChart(VISIO, "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
+		counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		counts.setRange(0, 2500);
+		panel = new ChartPanel(jfreechart);
+		panel.setBackground(Color.black);
+		((XYPlot) jfreechart.getPlot()).setRangeGridlinePaint(Color.white);
+		((XYPlot) jfreechart.getPlot()).setBackgroundPaint(Color.black);
+		primeChart.setLayout(new BorderLayout());
+		primeChart.add(panel, BorderLayout.CENTER);
+	
+		jfreechart.setBackgroundPaint(Color.black);
+		((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.green);
+		((XYPlot) jfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
+		((XYPlot) jfreechart.getPlot()).setDomainGridlinePaint(Color.white);
+	
+		chartCollection = new DBChartCollection();
+		visioPanel.add(primeChart, "cell 0 0,grow");
+		cleaner = new Thread(new connector());
+		cleaner.setDaemon(true);
+		cleaner.start();
     }
 
     /**
@@ -402,7 +386,7 @@ public class Visio extends BaseFrame {
 	tabbedPane.addTab(null, espectroPanel);
 	tabbedPane.setEnabledAt(0, true);
 	tabbedPane.setBackgroundAt(0, new Color(255, 255, 255));
-	espectroPanel.setLayout(new MigLayout("", "0[240px:240px:240px]0[grow]0[142px:142px:142px]0", "0[grow]0"));
+	espectroPanel.setLayout(new MigLayout("", "[245px:245px:245px]0[grow]0[142px:142px:142px]0", "0[grow]0"));
 
 	JLabel labTab1 = new JLabel(ESPECTRO);
 	labTab1.setUI(new VerticalLabelUI(false));
@@ -456,7 +440,7 @@ public class Visio extends BaseFrame {
 	JPanel panel_1 = new JPanel();
 	panel_1.setBackground(new Color(0, 0, 51));
 	espectroPanel.add(panel_1, "cell 0 0,grow");
-	panel_1.setLayout(new MigLayout("", "[240px]", "[][][][]"));
+	panel_1.setLayout(new MigLayout("", "0[245px]", "0[][][][]"));
 	espectroFieldset = new JPanel();
 	panel_1.add(espectroFieldset, "cell 0 0,grow");
 	espectroFieldset.setBackground(new Color(0, 0, 51));
@@ -504,33 +488,15 @@ public class Visio extends BaseFrame {
 	connectionFieldSet.setBackground(new Color(0, 0, 51));
 	connectionFieldSet.setForeground(new Color(211, 211, 211));
 	connectionFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), CONEXAO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	connectionFieldSet.setLayout(new MigLayout("", "[100px,grow][][100px,grow]", "[25px:25px:25px]"));
+	connectionFieldSet.setLayout(new MigLayout("", "[70px:70px:70px][70px:70px:70px][60px:60px:60px]", "[25px:25px:25px]"));
 
-	connectionFieldSet.add(comboBox, "cell 0 0,grow");
+	connectionFieldSet.add(commComboBox, "cell 0 0,grow");
+	btnConectar.setMargin(new Insets(2, 5, 2, 5));
+	connectionFieldSet.add(btnConectar, "cell 1 0,grow");
+	
 
-	JButton button = new JButton("Reset");
-	button.setToolTipText(RECUPERAR_CONEXÃO);
-	button.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	button.setEnabled(true);
-	connectionFieldSet.add(button, "cell 1 0,growy");
-	button.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		btnAdquirir.setEnabled(false);
-		btnParar.setEnabled(false);
-
-		if (RSpec.isAlive()) {
-		    launchThread();
-		    RSpec.setDaemon(true);
-		    RSpec.start();
-		}
-		timeToClear(true);
-	    }
-	});
-
-	lblConectado = new JLabel(INDISPONIVEL);
-	lblConectado.setForeground(new Color(255, 0, 0));
-	connectionFieldSet.add(lblConectado, "cell 2 0,alignx center,growy");
+	commLabel = new JLabel(INDISPONIVEL);
+	connectionFieldSet.add(commLabel, "cell 2 0,alignx center,growy");
 	opcoesFieldSet = new JPanel();
 	panel_1.add(opcoesFieldSet, "cell 0 2,growx");
 	opcoesFieldSet.setBackground(new Color(0, 0, 51));
@@ -709,17 +675,18 @@ public class Visio extends BaseFrame {
 	solucaoFieldSet.setForeground(new Color(211, 211, 211));
 	solucaoFieldSet.setBackground(new Color(0, 0, 51));
 	solucaoFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	solucaoFieldSet.setLayout(new MigLayout("", "[grow][grow]", "[20px:20px:20px][20px:20px:20px]"));
+	solucaoFieldSet.setLayout(new MigLayout("", "[grow][grow]", "0[20px:20px:20px][20px:20px:20px]"));
 
 	JLabel lblConjunto = new JLabel(db.getMainDB());
 	lblConjunto.setForeground(new Color(211, 211, 211));
 	lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
-	solucaoFieldSet.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny top");
+	solucaoFieldSet.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny center");
 
 	JButton btnEscolher = new JButton("Adicionar");
 	solucaoFieldSet.add(btnEscolher, "cell 0 1,growx");
+	btnEscolher.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
-	btnEscolher.setToolTipText("click");
+	btnEscolher.setToolTipText("");
 	btnEscolher.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
@@ -734,6 +701,7 @@ public class Visio extends BaseFrame {
 	});
 
 	JButton btnSalvar = new JButton("Salvar");
+	btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	solucaoFieldSet.add(btnSalvar, "cell 1 1,growx");
 	btnSalvar.addActionListener(new ActionListener() {
 	    @Override
@@ -899,30 +867,7 @@ public class Visio extends BaseFrame {
     // //////////////////////////////////
     // ////// GRÁFICO ///////////////////
     // //////////////////////////////////
-    /**
-     * Wait to clear.
-     *
-     * @throws InterruptedException
-     *             the interrupted exception
-     */
-    private synchronized void waitToClear() throws InterruptedException {
-	while (!clear)
-	    wait();
-    }
-
-    /**
-     * Time to clear.
-     *
-     * @param get
-     *            the get
-     */
-    public synchronized void timeToClear(boolean get) {
-	this.clear = get;
-	if (this.clear)
-	    notifyAll();
-    }
-
-    /**
+     /**
      * Checks if is read once.
      *
      * @return true, if is read once
@@ -1089,113 +1034,132 @@ public class Visio extends BaseFrame {
     /**
      * The Class checkForPorts.
      */
-    private class checkForPorts implements Runnable {
-
-	/** The combo box. */
-	JComboBox<String> comboBox;
-
-	/** The buffer list. */
-	String[] bufferList;
-
-	/** The ports. */
-	String[] ports = SerialPortList.getPortNames();
-
-	/**
-	 * Instantiates a new check for ports.
-	 *
-	 * @param comboBox
-	 *            the combo box
-	 */
-	checkForPorts(JComboBox<String> comboBox) {
-	    this.comboBox = comboBox;
+    private class connector implements Runnable{
+		@Override
+		public void run() {
+			while(true){
+				try {
+					checkCommEvent();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if(harvester != null)
+				if(harvester.tryConnection(((String) commComboBox.getSelectedItem()))){
+					commLabel.setText("Conectado");
+					commLabel.setForeground(Color.GREEN);
+					conectado = true;
+					setCommEvent(false);
+					launchThread();
+					RSpec.setDaemon(true);
+					RSpec.start();
+					btnAdquirir.setEnabled(true);
+				}
+			}			
+		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-	    while (true) {
-		ports = SerialPortList.getPortNames();
-		String actualPort = (String) comboBox.getSelectedItem();
-
-		if (!Arrays.equals(ports, bufferList)) { // houve mudança na
-							 // lista de portas
-		    boolean sumiu = true;
-		    if (ports.length > 0) {
-			for (String port : ports) {
-			    if (port.equals(actualPort) && !"".equals(port)) {
-				sumiu = false;
-			    }
+	private synchronized void checkCommEvent() throws InterruptedException { // Verifica
+		while (!commEvent)
+			wait();
+	}
+	boolean commEvent = false;
+	boolean conectado = false;
+	public synchronized void setCommEvent(boolean commEvent) { // Controla ordem de adquirir
+		this.commEvent = commEvent;
+		if (this.commEvent)
+			notifyAll();
+	}
+	private class checkForPorts implements Runnable{
+		String portaAtual = null;
+	
+		boolean findItem(String port){
+			for(int i=0; i<commComboBox.getItemCount(); i++){
+				if(commComboBox.getItemAt(i).equals(port)) return true;
 			}
-		    }
-		    if (sumiu) {
-			comboBox.removeAllItems();
-		    }
-		    for (String port : ports) {
-			System.out.println("port: " + port + "\nactualPort: " + actualPort);
-			if (!port.equals(actualPort))
-			    comboBox.addItem(port);
-		    }
-		    bufferList = ports;
-		    try {
-			Thread.sleep(2000);
-		    } catch (InterruptedException e) {
-			e.printStackTrace();
-		    }
-		} else {
-		    try {
-			Thread.sleep(4000);
-		    } catch (InterruptedException e) {
-			e.printStackTrace();
-		    }
+			return false;
 		}
-	    }
+		
+		@Override
+		public void run() {
+			commLabel.setText("Indisponível");
+			commLabel.setForeground(new Color(255, 0, 0));
+			btnConectar.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			commComboBox.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			btnConectar.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					System.out.println("Iniciando conexão");
+					commLabel.setText("Conectando");
+					commLabel.setForeground(Color.ORANGE);
+					btnConectar.setEnabled(false);
+					setCommEvent(true);
+				}
+			});
+			commComboBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if(arg0.getModifiers() > 0){
+						System.err.println(arg0.getModifiers());
+						System.out.println(commComboBox.getSelectedItem());
+						portaAtual = (String) commComboBox.getSelectedItem();
+						if(conectado){
+							System.out.println("Encerra conexão");
+							if(harvester != null) harvester.closeComm();
+							conectado = false;
+						}
+						commLabel.setText("Indisponível");
+						commLabel.setForeground(new Color(255, 0, 0));
+					}
+				}
+			});
+			while(true){
+				String portList[] = SerialPortList.getPortNames();
+				
+				if(portList.length == 0){
+					btnConectar.setEnabled(false);
+					commComboBox.removeAllItems(); 
+					portaAtual = null;
+					System.out.println("Nenhuma porta encontrada");
+					commLabel.setText("Indisponível");
+					commLabel.setForeground(new Color(255, 0, 0));
+					if(conectado){
+						System.out.println("Encerra conexão");
+						if(harvester != null) harvester.closeComm();
+						conectado = false;
+					}
+				}else{
+					if(!conectado){
+						btnConectar.setEnabled(true);
+					}
+					commComboBox.removeAllItems(); 
+					for(String port : portList){
+						commComboBox.addItem(port);
+					}
+					if(portaAtual != null){
+						System.out.println("Há valor");
+						if(findItem(portaAtual)){
+							commComboBox.setSelectedItem(portaAtual);
+						}else{
+							System.out.println("Perdeu porta");
+							portaAtual = null;
+							if(conectado){
+								System.out.println("Encerra conexão");
+								conectado = false;
+							}
+							commLabel.setText("Indisponível");
+							commLabel.setForeground(new Color(255, 0, 0));
+						}
+					}
+					else{						
+						System.out.println(">> Recebeu um valor");
+						portaAtual = (String) commComboBox.getSelectedItem();
+					}
+				}
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 	}
-    }
-
-    /**
-     * The Class clearComm.
-     */
-    private class clearComm implements Runnable {
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-	    while (true) {
-		try {
-		    waitToClear();
-		} catch (InterruptedException e) {
-		    e.printStackTrace();
-		}
-		System.out.println("Time to close comm");
-		if (harvester != null) {
-		    lblConectado.setText("Indisponível");
-		    lblConectado.setForeground(new Color(255, 0, 0));
-		    btnAdquirir.setEnabled(false);
-		    harvester.closeComm();
-		}
-		lblConectado.setText("Conectando");
-		lblConectado.setForeground(Color.ORANGE);
-
-		if (harvester.tryConnection(((String) comboBox.getSelectedItem()))) {
-		    lblConectado.setText("Conectado");
-		    lblConectado.setForeground(new Color(0, 211, 0));
-		    btnAdquirir.setEnabled(true);
-		    System.out.println("Conectado");
-		    launchThread();
-		    RSpec.setDaemon(true);
-		    RSpec.start();
-		} else {
-		    lblConectado.setText("Indisponível");
-		    lblConectado.setForeground(new Color(255, 0, 0));
-		}
-		timeToClear(false);
-	    }
-	}
-    }
 }

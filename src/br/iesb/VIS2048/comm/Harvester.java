@@ -1,5 +1,7 @@
 package br.iesb.VIS2048.comm;
 
+import java.text.DecimalFormat;
+
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -12,7 +14,7 @@ import br.iesb.VIS2048.frame.Chart;
 public class Harvester {
 	////Port Settings////
 	private String portName = "";
-	private int baudRate = 335200;
+	private int baudRate = 1000000;
 	private int dataBits = 8;
 	private int stopBits = 0;
 	private int parity = 0;
@@ -23,7 +25,7 @@ public class Harvester {
 	private String Data = "";
 	////////////////
 	
-	////Variáveis de Estado////
+	////Variï¿½veis de Estado////
     private SerialPort serialPort = null;
     private boolean connected = false;
     private boolean openPort = false;
@@ -40,7 +42,7 @@ public class Harvester {
 	//////////////////////////////
 	public void OpenComm(){
 		if(!isConnected()){
-			//System.out.println("SerialComm OpenComm: Impossível abrir porta "+ getPortName() + ", não há conexão");
+			//System.out.println("SerialComm OpenComm: Impossï¿½vel abrir porta "+ getPortName() + ", nï¿½o hï¿½ conexï¿½o");
 			return;
 		}
 		try {
@@ -87,7 +89,7 @@ public class Harvester {
 	        this.parity = parity;
 	        //System.out.println("SerialComm updatePortSettings: Dados de Porta Atualizados");
 		} catch (SerialPortException e2) {
-			//System.out.println("SerialComm updatePortSettings: Erro na atualização dos dados");
+			//System.out.println("SerialComm updatePortSettings: Erro na atualizaï¿½ï¿½o dos dados");
 			e2.printStackTrace();
 		}
     }
@@ -119,9 +121,9 @@ public class Harvester {
         if(serialPort != null){
         	setPortName(portName);
         	setConnected(true);
-        	//System.out.println("SerialComm Constructor: Conexão em Porta " + getPortName());
+        	//System.out.println("SerialComm Constructor: Conexï¿½o em Porta " + getPortName());
         }else{
-        	//System.out.println("SerialComm Constructor: Não foi possível estabelecer conexão: serialPort = null");
+        	//System.out.println("SerialComm Constructor: Nï¿½o foi possï¿½vel estabelecer conexï¿½o: serialPort = null");
         	setConnected(false);
         }
 		//setDevice(new SerialComm(this.port));
@@ -148,24 +150,28 @@ public class Harvester {
 	/////////////////////////////
 	////Harvesting Chart Data////
 	/////////////////////////////
-	private class Harvest implements Runnable{ //Não foi implementado ainda
+	private class Harvest implements Runnable{ //Nï¿½o foi implementado ainda
 		@Override
 		public void run() {
 			while(true){
 			}			
 		}
 	}
+	Double[] leitura = null;
+	String data = null;
 	public Chart getDataset(String str){
 		String buffer = "";
 		readyToGet(false);
-		sendString(str);
 		double time = System.nanoTime();
+		sendString(str);
 		long timestamp = 0;
 		XYSeries series = null;
 		try {
-			waitToGet();
-			String data = getData(); 
-			Double[] leitura = new Double[getNumberOfSamples()];
+			waitToGet();			
+			data = getData();
+			//System.out.println("Reading Time: "+ (System.nanoTime()-time)/1000000.0 + " elapsed");
+			//time = System.nanoTime();
+			leitura = new Double[getNumberOfSamples()];
 			int i = 0;
 			char[] charArray = data.toCharArray();
 			timestamp = System.currentTimeMillis();
@@ -182,7 +188,7 @@ public class Harvester {
 				}
 			}
 			time = System.nanoTime() - time;
-			System.out.println("Harvester getDataset: "+time + " elapsed");
+			System.out.println("Full Harvesting Time: "+time/1000000.0 + " elapsed");
 			Chart chart = new Chart(/*leitura,*/ "Teste", "Teste", getNumberOfSamples(), timestamp, series);
 			
 			chart.setXyseries(series);
@@ -202,24 +208,30 @@ public class Harvester {
 	}
 	private class Reader implements SerialPortEventListener {
         private String str = "";
+        double readingTime = 0;
+        double spentTime = 0;
+        byte[] buffer = null;
 		@Override
 		public void serialEvent(SerialPortEvent spe) {
 			if(spe.isRXCHAR() || spe.isRXFLAG()){
                 if(spe.getEventValue() > 0){
-                	//System.out.println("Event");
-                    try {
+                	spentTime += (System.nanoTime()-readingTime);
+                    try {                   	
                         str = "";
-                        byte[] buffer = serialPort.readBytes(spe.getEventValue());
+                        //System.out.println(serialPort.getInputBufferBytesCount());
+                        buffer = serialPort.readBytes(/*spe.getEventValue()*/6*2048);
                         str = new String(buffer);
                         pos += str.length() - str.replace("\n", "").length();
                         reading += str;
                         if(pos == numberOfSamples){
                         	setData(reading);
-                        	//System.out.println("Posicao: " + pos);
                         	pos = 0; 
                         	reading = "";
+                        	//System.out.println("Spent Time: " + (spentTime)/1000000.0);
+                        	spentTime = 0;
                         	readyToGet(true);
                         }
+                        //readingTime = System.nanoTime();
                     }
                     catch (Exception ex) {
                     	System.out.println("Erro na thread de leitura");
