@@ -978,7 +978,13 @@ public class Visio extends BaseFrame {
 			// + "</p>" + "<p><b>Descrição:</b> " +
 			// chart.getDescription() + "</p>"
 			+ "</html>");
-		sliderPanel.add(chart, "cell 0 " + k++);
+		
+		for(int i = sliderPanel.getComponentCount(); i>0; i--){
+			Component comp = sliderPanel.getComponent(i-1);
+			sliderPanel.remove(comp);
+			sliderPanel.add(comp, "cell 0 " + i);
+		}
+		sliderPanel.add(chart, "cell 0 0");// + k++);
 		sliderPanel.updateUI();
 		if (readOnce) {
 		    setGet(false);

@@ -219,7 +219,7 @@ public class Harvester {
                     try {                   	
                         str = "";
                         //System.out.println(serialPort.getInputBufferBytesCount());
-                        buffer = serialPort.readBytes(/*spe.getEventValue()*/6*2048);
+                        buffer = serialPort.readBytes(spe.getEventValue());
                         str = new String(buffer);
                         pos += str.length() - str.replace("\n", "").length();
                         reading += str;
