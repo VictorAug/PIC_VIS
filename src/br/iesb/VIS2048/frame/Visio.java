@@ -706,7 +706,8 @@ public class Visio extends BaseFrame {
 	btnSalvar.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent event) {
-		DBHandler.saveGZipObject(chartCollection, db.getMainDBFileName());
+	    	//DBHandler.saveChartCollection(chartCollection, db.getMainDBFileName());
+	    	DBHandler.saveGZipObject(chartCollection, db.getMainDBFileName());
 	    }
 	});
     }
@@ -955,18 +956,17 @@ public class Visio extends BaseFrame {
 		dataset.addSeries(series);
 		chart.addItemListener(new ItemListener() {
 		    public void itemStateChanged(ItemEvent ev) {
-			if (chart.getXyseries() == dataset.getSeries(0))
-			    return;
-			if (ev.getStateChange() == ItemEvent.SELECTED) {
-			    System.out.println(chart.getTimestamp() + " is selected");
-			    dataset.addSeries(chart.getXyseries());
-			    chart.setBorderPainted(true);
-
-			} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
-			    System.out.println(chart.getTimestamp() + " is not selected");
-			    dataset.removeSeries(chart.getXyseries());
-			    chart.setBorderPainted(false);
-			}
+				if (chart.getXyseries() == dataset.getSeries(0))
+				    return;
+				if (ev.getStateChange() == ItemEvent.SELECTED) {
+				    System.out.println(chart.getTimestamp() + " is selected");
+				    dataset.addSeries(chart.getXyseries());
+				    chart.setBorderPainted(true);
+				} else if (ev.getStateChange() == ItemEvent.DESELECTED) {
+				    System.out.println(chart.getTimestamp() + " is not selected");
+				    dataset.removeSeries(chart.getXyseries());
+				    chart.setBorderPainted(false);
+				}
 		    }
 		});
 		chart.setPicture();
@@ -979,10 +979,10 @@ public class Visio extends BaseFrame {
 			// chart.getDescription() + "</p>"
 			+ "</html>");
 		
-		for(int i = sliderPanel.getComponentCount(); i>0; i--){
-			Component comp = sliderPanel.getComponent(i-1);
+		for(int i = chartCollection.count(); i>0; i--){
+			Component comp = chartCollection.getChart(i-1);
 			sliderPanel.remove(comp);
-			sliderPanel.add(comp, "cell 0 " + i);
+			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+1));
 		}
 		sliderPanel.add(chart, "cell 0 0");// + k++);
 		sliderPanel.updateUI();

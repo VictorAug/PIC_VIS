@@ -23,6 +23,9 @@ public class DBChartCollection implements Serializable{
 		getChartQueue().add(chart);
 		//DBHandler.saveGZipObject(this, "teste.gz");
 	}
+	public Chart getChart(int i){
+		return getChartQueue().get(i);
+	}
 	public int count(){
 		return getChartQueue().size();
 	}

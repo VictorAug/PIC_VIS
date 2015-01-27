@@ -25,7 +25,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class Chart extends JToggleButton implements Serializable{
 	private static final long serialVersionUID = -914154144556108519L;
-	private Double[] doubleSeries;
+	private transient Double[] doubleSeries;
 	private String nome;
 	private String description;
 	private long timestamp;
@@ -36,7 +36,7 @@ public class Chart extends JToggleButton implements Serializable{
 	public Chart(/*Double[] doubleSeries, */String name, String description, int numberOfSamples, long timestamp, XYSeries series) {
 		setBorderPainted(false);
 		setBackground(new Color(0, 0, 51));
-		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(102, 204, 204), new Color(102, 204, 204), null, null));
+		setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(102, 204, 204), new Color(102, 204, 204), Color.CYAN, Color.CYAN));
 		//this.setDoubleSeries(doubleSeries);
 		this.xyseries = series;
 		this.setName(name);
@@ -78,9 +78,10 @@ public class Chart extends JToggleButton implements Serializable{
 			dataset.addSeries(xyseries);
 			((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.white);
 			//picture = new JLabel(new ImageIcon(resizeImg(jfreechart.createBufferedImage( 640, 480, null), 112, 84)));
-			picture =new JLabel(new ImageIcon(jfreechart.createBufferedImage(640,  480).getScaledInstance(112, 84, 2)));
+			//picture =new JLabel(new ImageIcon(jfreechart.createBufferedImage(640,  480).getScaledInstance(112, 84, 2)));
 			
-			add(picture);
+			//add(picture);
+			setIcon(new ImageIcon(jfreechart.createBufferedImage(640,  480).getScaledInstance(112, 84, 2)));
 			//JFrame frame = new JFrame();
 			//frame.setVisible(true);
 			//frame.setBounds(100, 100, 112, 112);

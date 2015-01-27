@@ -212,7 +212,7 @@ public class DBHandler {
         while ((line=bf.readLine())!=null) {
           outStr += line;
         }
-        //System.out.println("Output String lenght : " + outStr.length());
+        //System.out.println("Output String length : " + outStr.length());
         return outStr;
      }
 
@@ -232,6 +232,11 @@ public class DBHandler {
 
 	public static void setDBFileCollection(String dBFileCollection) {
 		DBFileCollection = dBFileCollection;
+	}
+
+	public static void saveChartCollection(DBChartCollection chartCollection,String mainDBFileName) {
+		System.out.println(chartCollection.count());		
+		//DBZip.fecharZip();
 	}	
 
 }

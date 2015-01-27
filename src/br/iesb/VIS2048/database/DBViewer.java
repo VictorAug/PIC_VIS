@@ -76,10 +76,10 @@ public class DBViewer extends JDialog {
 							Chart chart = DBCollection.getChartQueue().get(i);
 							chart.setToolTipText(
 									"<html>"
-									+ "<p><b>Nome:</b> " + chart.getName() + "</p>"
+									//+ "<p><b>Nome:</b> " + chart.getName() + "</p>"
 									+ "<p><b>Data:</b> " + new java.util.Date((long)chart.getTimestamp()) + "</p>"
-									+ "<p><b>Resolução:</b> " + chart.getNumberOfSamples() + "</p>"
-									+ "<p><b>Descrição:</b> " + chart.getDescription() + "</p>"
+									//+ "<p><b>Resoluï¿½ï¿½o:</b> " + chart.getNumberOfSamples() + "</p>"
+									//+ "<p><b>Descriï¿½ï¿½o:</b> " + chart.getDescription() + "</p>"
 									+ "</html>");
 							panel.add(chart, "cell " + j++ + " " + k);
 							panel.updateUI();
