@@ -22,5 +22,11 @@ public abstract class BaseFrame {
     
     protected static final String INDISPONIVEL = "Indisponível";
     
+    protected static final String CALIBRACAO = "Calibração";
+    
+    protected static final String CONFIGURACOES_DE_PORTA = "Configuações de Porta";
+    
+    protected static final String PROTOCOLO = "Protocolo";
+    
     
 }
