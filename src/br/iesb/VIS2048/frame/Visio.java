@@ -729,7 +729,10 @@ public class Visio extends BaseFrame {
 	sliderPanel = new JPanel();
 	sliderPanel.setBackground(new Color(0, 0, 51));
 	scrollPane.setViewportView(sliderPanel);
-	sliderPanel.setLayout(new MigLayout("", "[]", "[]"));
+	sliderPanel.setLayout(new MigLayout("", "0[grow]0", "0[25px:n:25px][0px:n:n]"));
+	
+	JPanel panel_1 = new JPanel();
+	sliderPanel.add(panel_1, "cell 0 0,grow");
     }
 
     /**
@@ -1395,9 +1398,9 @@ public class Visio extends BaseFrame {
 		for(int i = chartCollection.count(); i>0; i--){
 			Component comp = chartCollection.getChart(i-1);
 			sliderPanel.remove(comp);
-			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+1));
+			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+2) + ", alignx center, aligny top");
 		}
-		sliderPanel.add(chart, "cell 0 0");
+		sliderPanel.add(chart, "cell 0 1, alignx center, aligny top");
 		sliderPanel.updateUI();
 		if (readOnce) {
 		    setGet(false);
