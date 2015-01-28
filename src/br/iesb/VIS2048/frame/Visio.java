@@ -1359,11 +1359,6 @@ public class Visio extends BaseFrame {
 			sliderPanel.remove(comp);
 			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+1));
 		}
-		for(int i = chartCollection.count(); i>0; i--){
-			Component comp = chartCollection.getChart(i-1);
-			sliderPanel.remove(comp);
-			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+1));
-		}
 		sliderPanel.add(chart, "cell 0 0");// + k++);
 		sliderPanel.updateUI();
 		if (readOnce) {
