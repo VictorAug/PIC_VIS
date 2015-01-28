@@ -312,14 +312,14 @@ public class Visio extends BaseFrame {
 	panel_1.add(panel_2, "cell 0 0 5 1,grow");
 	panel_2.setLayout(new MigLayout("", "[][][][][][][][][][grow][][][][][][][]", "[][][][]"));
 
-	JLabel label_3 = new JLabel("Boud Rate");
-	label_3.setOpaque(true);
-	label_3.setHorizontalAlignment(SwingConstants.CENTER);
-	label_3.setForeground(new Color(211, 211, 211));
-	label_3.setFont(new Font("Dialog", Font.PLAIN, 12));
-	label_3.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-	label_3.setBackground(new Color(0, 0, 102));
-	panel_2.add(label_3, "cell 0 0 17 1,growx");
+	JLabel lblBaudRate = new JLabel("Baud Rate");
+	lblBaudRate.setOpaque(true);
+	lblBaudRate.setHorizontalAlignment(SwingConstants.CENTER);
+	lblBaudRate.setForeground(new Color(211, 211, 211));
+	lblBaudRate.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblBaudRate.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblBaudRate.setBackground(new Color(0, 0, 102));
+	panel_2.add(lblBaudRate, "cell 0 0 17 1,growx");
 
 	textField = new JTextField();
 	textField.setHorizontalAlignment(SwingConstants.CENTER);
