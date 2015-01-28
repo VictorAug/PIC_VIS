@@ -190,6 +190,9 @@ public class Visio extends BaseFrame {
 
     /** Atributo conexao panel. */
     private JPanel conexaoPanel;
+    
+    /** Atributo numero amostras. */
+    protected int numeroAmostras;
 
     // ///////////////////////////////////////
     // ///////// MÉTODOS /////////////////////
@@ -327,7 +330,7 @@ public class Visio extends BaseFrame {
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 		try {
 		    int key = Integer.parseInt(textField.getText());
-		    harvester.setBaudRate(key);
+		    baudRate = key;
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -367,7 +370,7 @@ public class Visio extends BaseFrame {
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 		try {
 		    int key = Integer.parseInt(textField_1.getText());
-		    harvester.setDataBits(key);
+		    dataBits = key;
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -406,7 +409,7 @@ public class Visio extends BaseFrame {
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 		try {
 		    int key = Integer.parseInt(textField_2.getText());
-		    harvester.setStopBits(key);
+		    stopBits = key;
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -446,7 +449,7 @@ public class Visio extends BaseFrame {
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 		try {
 		    int key = Integer.parseInt(textField_3.getText());
-		    harvester.setParity(key);
+		    parity = key;
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -493,7 +496,7 @@ public class Visio extends BaseFrame {
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 		try {
 		    int key = Integer.parseInt(textField_4.getText());
-		    harvester.setParity(key);
+		    numeroAmostras = key;
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -646,8 +649,16 @@ public class Visio extends BaseFrame {
 	radioButton_3.setActionCommand("Unico");
 	panel_14.add(radioButton_3, "cell 9 1");
 
-	JButton btnCancelar = new JButton("Cancelar");
-	conexaoPanel.add(btnCancelar, "cell 2 6");
+	JButton btnLimpar = new JButton("Limpar");
+	conexaoPanel.add(btnLimpar, "cell 2 6");
+	btnLimpar.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		limpar();
+	    }
+
+	});
 
 	JButton btnA = new JButton("Aplicar");
 	conexaoPanel.add(btnA, "cell 3 6");
@@ -656,6 +667,33 @@ public class Visio extends BaseFrame {
 	JLabel labTabCalibracao = new JLabel(CONEXAO);
 	labTabCalibracao.setUI(new VerticalLabelUI(false));
 	tabbedPane.setTabComponentAt(2, labTabCalibracao);
+	btnA.addActionListener(new ActionListener() {
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		int showConfirmDialog = JOptionPane.showConfirmDialog(frame, "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?");
+		if (showConfirmDialog > 0) {
+		    harvester.updatePortSettings(baudRate, dataBits, stopBits, parity);
+		    JOptionPane.showMessageDialog(frame, "Parâmetros alterados com sucesso!");
+		}
+	    }
+	});
+    }
+
+    /**
+     * Limpar.
+     */
+    private void limpar() {
+	baudRate = 0;
+	dataBits = 0;
+	stopBits = 0;
+	parity = 0;
+	textField.setText(null);
+	textField_1.setText(null);
+	textField_2.setText(null);
+	textField_3.setText(null);
+	textField_4.setText(null);
+	textField_5.setText(null);
     }
 
     /**
@@ -1354,12 +1392,7 @@ public class Visio extends BaseFrame {
 			// + "</p>" + "<p><b>Descrição:</b> " +
 			// chart.getDescription() + "</p>"
 			+ "</html>");
-		for(int i = chartCollection.count(); i>0; i--){
-			Component comp = chartCollection.getChart(i-1);
-			sliderPanel.remove(comp);
-			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+1));
-		}
-		sliderPanel.add(chart, "cell 0 0");// + k++);
+		sliderPanel.add(chart, "cell 0 " + k++);
 		sliderPanel.updateUI();
 		if (readOnce) {
 		    setGet(false);
@@ -1476,7 +1509,11 @@ public class Visio extends BaseFrame {
 
     /** Atributo background color. */
     private Color backgroundColor;
+    
+    /** Atributo text field_4. */
     private JTextField textField_4;
+    
+    /** Atributo text field_5. */
     private JTextField textField_5;
 
     /**
