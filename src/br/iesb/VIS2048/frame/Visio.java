@@ -732,7 +732,19 @@ public class Visio extends BaseFrame {
 	sliderPanel.setLayout(new MigLayout("", "0[grow]0", "0[25px:n:25px][0px:n:n]"));
 	
 	JPanel panel_1 = new JPanel();
+	panel_1.setBackground(new Color(0, 0, 51));
 	sliderPanel.add(panel_1, "cell 0 0,grow");
+	panel_1.setLayout(new MigLayout("", "[grow][grow]", "[grow]0"));
+	
+	JButton btnEditar = new JButton("Editar");
+	btnEditar.setMargin(new Insets(2, 3, 2, 3));
+	btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 9));
+	panel_1.add(btnEditar, "cell 0 0,alignx center,growy");
+	
+	JButton btnRemover = new JButton("Remover");
+	btnRemover.setMargin(new Insets(2, 3, 2, 3));
+	btnRemover.setFont(new Font("Tahoma", Font.PLAIN, 9));
+	panel_1.add(btnRemover, "cell 1 0,alignx center,growy");
     }
 
     /**
@@ -1395,6 +1407,7 @@ public class Visio extends BaseFrame {
 			// + "</p>" + "<p><b>Descrição:</b> " +
 			// chart.getDescription() + "</p>"
 			+ "</html>");
+		counts.setRange(0, 2500);
 		for(int i = chartCollection.count(); i>0; i--){
 			Component comp = chartCollection.getChart(i-1);
 			sliderPanel.remove(comp);
