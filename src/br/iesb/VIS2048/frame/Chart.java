@@ -33,6 +33,7 @@ public class Chart extends JToggleButton implements Serializable{
 	private XYSeries xyseries;
 	private JLabel picture;
 	public transient Thread Image = new Thread(new genImage(), "Spectrometer");
+	private boolean miliVolt = false;
 	public Chart(/*Double[] doubleSeries, */String name, String description, int numberOfSamples, long timestamp, XYSeries series) {
 		setBorderPainted(false);
 		setBackground(new Color(0, 0, 51));
@@ -158,6 +159,10 @@ public class Chart extends JToggleButton implements Serializable{
 
 	public void setXyseries(XYSeries xyseries) {
 		this.xyseries = xyseries;
+	}
+
+	public void setMiliVolt(boolean b) {
+		this.miliVolt  = b;		
 	}
 
 

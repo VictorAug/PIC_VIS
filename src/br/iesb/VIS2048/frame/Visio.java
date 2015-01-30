@@ -1006,8 +1006,16 @@ public class Visio extends BaseFrame {
 	rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		if ("Counts".equals(event.getActionCommand()) && flag) {
-		    counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
-		    counts.setRange(0, (mV.getUpperBound() / 3300) * 4096);
+		    //counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		    counts.setRange(0, (counts.getUpperBound() * 1.24121212) );
+		    for(int i=0; i<chartCollection.count();i++){
+		    	for(int j=0; j<chartCollection.getChart(i).getXyseries().getItemCount(); j++){
+		    		XYSeries serie = chartCollection.getChart(i).getXyseries();
+		    		serie.updateByIndex(j, (serie.getY(j)).doubleValue() *1.24121212 );
+		    		chartCollection.getChart(i).setMiliVolt(false);
+		    	}
+		    }
+		    (jfreechart.getXYPlot()).getRangeAxis().setLabel("Counts");
 		    flag = false;
 		}
 	    }
@@ -1023,9 +1031,17 @@ public class Visio extends BaseFrame {
 	rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		if ("mV".equals(event.getActionCommand()) && !flag) {
-		    mV = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
-		    mV.setRange(0, (counts.getUpperBound() / 4096) * 3300);
+		    //mV = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		    counts.setRange(0, (counts.getUpperBound()) * 0.8056640625);
+		    for(int i=0; i<chartCollection.count();i++){
+		    	for(int j=0; j<chartCollection.getChart(i).getXyseries().getItemCount(); j++){
+		    		XYSeries serie = chartCollection.getChart(i).getXyseries();
+		    		serie.updateByIndex(j, (serie.getY(j)).doubleValue() *0.8056640625 );
+		    		chartCollection.getChart(i).setMiliVolt(true);
+		    	}
+		    }
 		    flag = true;
+		    (jfreechart.getXYPlot()).getRangeAxis().setLabel("mV");
 		}
 	    }
 	});
