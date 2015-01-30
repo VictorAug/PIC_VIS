@@ -28,5 +28,4 @@ public abstract class BaseFrame {
     
     protected static final String PROTOCOLO = "Protocolo";
     
-    
 }
