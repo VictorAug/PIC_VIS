@@ -3,9 +3,12 @@ package br.iesb.VIS2048.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -14,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -29,10 +33,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -740,6 +746,19 @@ public class Visio extends BaseFrame {
 	btnEditar.setMargin(new Insets(2, 3, 2, 3));
 	btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 9));
 	panel_1.add(btnEditar, "cell 0 0,alignx center,growy");
+	btnEditar.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent arg0) {
+	    	if(dataset.getSeriesCount() > 0)
+				try {
+				    ChartEditor editor = new ChartEditor();
+				    editor.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				    editor.setVisible(true);
+				} catch (Exception e) {
+				    e.printStackTrace();
+				}
+	    }
+	});
 	
 	JButton btnRemover = new JButton("Remover");
 	btnRemover.setMargin(new Insets(2, 3, 2, 3));
@@ -1679,4 +1698,113 @@ public class Visio extends BaseFrame {
 	}
 
     }
+    public class ChartEditor extends JDialog {
+
+    	/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8641924255282780050L;
+		private final JPanel contentPanel = new JPanel();
+    	private JTextField textField;
+    	private JTextField textField_1;
+    	private JTextField textField_2;
+
+    	/**
+    	 * Launch the application.
+    	 */
+    	
+    	/**
+    	 * Create the dialog.
+    	 */
+    	public ChartEditor() {
+    		setBounds(100, 100, 504, 250);
+    		getContentPane().setLayout(new BorderLayout());
+    		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+    		getContentPane().add(contentPanel, BorderLayout.CENTER);
+    		contentPanel.setLayout(new MigLayout("", "[][grow]", "[grow]"));
+    		{
+    			JPanel panel = new JPanel();
+    			panel.setMinimumSize(new Dimension(125, 85));
+    			panel.setMaximumSize(new Dimension(125, 85));
+    			contentPanel.add(panel, "cell 0 0,alignx center,growy");
+    		}
+    		{
+    			JPanel panel = new JPanel();
+    			contentPanel.add(panel, "cell 1 0,grow");
+    			panel.setLayout(new MigLayout("", "[][grow]", "[][][][grow]"));
+    			{
+    				JLabel lblNome = new JLabel("Timestamp");
+    				panel.add(lblNome, "cell 0 0,alignx trailing,aligny center");
+    			}
+    			{
+    				textField = new JTextField();
+    				textField.setEditable(false);
+    				panel.add(textField, "cell 1 0,growx");
+    				textField.setColumns(10);
+    			}
+    			{
+    				JLabel lblNewLabel = new JLabel("Nome");
+    				panel.add(lblNewLabel, "cell 0 1,alignx trailing");
+    			}
+    			{
+    				textField_1 = new JTextField();
+    				panel.add(textField_1, "cell 1 1,growx");
+    				textField_1.setColumns(10);
+    			}
+    			{
+    				JLabel lblPonto = new JLabel("Ponto");
+    				panel.add(lblPonto, "cell 0 2,alignx right");
+    			}
+    			{
+    				JSpinner spinner = new JSpinner();
+    				spinner.setMaximumSize(new Dimension(60, 20));
+    				spinner.setMinimumSize(new Dimension(60, 20));
+    				spinner.setBounds(new Rectangle(0, 0, 10, 0));
+    				panel.add(spinner, "flowx,cell 1 2,growx");
+    			}
+    			{
+    				JLabel lblDescrio = new JLabel("Descrição");
+    				panel.add(lblDescrio, "cell 0 3,alignx right");
+    			}
+    			{
+    				JScrollPane scrollPane = new JScrollPane();
+    				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    				panel.add(scrollPane, "cell 1 3,grow");
+    				{
+    					JTextArea textArea = new JTextArea();
+    					textArea.setLineWrap(true);
+    					textArea.setWrapStyleWord(true);
+    					textArea.setDropMode(DropMode.INSERT);
+    					scrollPane.setViewportView(textArea);
+    				}
+    			}
+    			{
+    				textField_2 = new JTextField();
+    				panel.add(textField_2, "cell 1 2,growx");
+    				textField_2.setColumns(10);
+    			}
+    		}
+    		{
+    			JPanel buttonPane = new JPanel();
+    			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+    			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+    			{
+    				JButton btnRemover = new JButton("Remover");
+    				buttonPane.add(btnRemover);
+    			}
+    			{
+    				JButton okButton = new JButton("Salvar");
+    				okButton.setActionCommand("Salvar");
+    				buttonPane.add(okButton);
+    				getRootPane().setDefaultButton(okButton);
+    			}
+    			{
+    				JButton cancelButton = new JButton("Cancelar");
+    				buttonPane.add(cancelButton);
+    			}
+    		}
+    	}
+
+    }
+
 }
