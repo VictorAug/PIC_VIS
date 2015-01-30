@@ -200,6 +200,7 @@ public class Visio extends BaseFrame {
     /** Atributo numero amostras. */
     protected int numeroAmostras;
 
+    //private Chart selectedChart = null; 
     // ///////////////////////////////////////
     // ///////// MÉTODOS /////////////////////
     // ///////////////////////////////////////
@@ -751,7 +752,7 @@ public class Visio extends BaseFrame {
 	    public void actionPerformed(ActionEvent arg0) {
 	    	if(dataset.getSeriesCount() > 0)
 				try {
-				    ChartEditor editor = new ChartEditor(chartCollection);
+				    ChartEditor editor = new ChartEditor(chartCollection, 0);
 				    editor.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				    editor.setVisible(true);
 				} catch (Exception e) {
