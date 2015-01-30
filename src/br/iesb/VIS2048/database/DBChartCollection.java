@@ -41,5 +41,7 @@ public class DBChartCollection implements Serializable{
 	public void setChartQueue(ArrayList<Chart> chartQueue) {
 		this.chartQueue = chartQueue;
 	}
-
+	public void removeChart(int i){
+		getChartQueue().remove(i);
+	}
 }
