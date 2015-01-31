@@ -1240,6 +1240,7 @@ public class Visio {
      */
     public void traduzir() {
 	if (tradutorIngles) {
+	    stringVersao = "Version";
 	    stringInstrucoes = "Instructions for use";
 	    stringExportar = "Export...";
 	    subMenuExportar = "Coming soon...";
@@ -1305,6 +1306,7 @@ public class Visio {
 	    lblSerialPort.setText("Serial Port");
 	    tradutorIngles = false;
 	} else if (tradutorPortugues) {
+	    stringVersao = "Versão";
 	    stringInstrucoes = "Instruções de uso";
 	    stringExportar = "Exportar...";
 	    subMenuExportar = "Em breve...";
@@ -1392,9 +1394,10 @@ public class Visio {
 
 	versaoItem = new JMenuItem("Versão");
 	versao = "VIS2048 - beta_v1.0";
+	stringVersao = "Versão";
 	versaoItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, versao, "Versão", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(frame, versao, stringVersao, JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
@@ -1958,6 +1961,8 @@ public class Visio {
     private String stringExportar;
 
     private String stringInstrucoes;
+
+    private String stringVersao;
 
     /**
      * Atribui o valor comm event.
