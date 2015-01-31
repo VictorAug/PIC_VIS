@@ -1,7 +1,5 @@
 package br.iesb.VIS2048.comm;
 
-import java.text.DecimalFormat;
-
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -189,7 +187,7 @@ public class Harvester {
 			}
 			time = System.nanoTime() - time;
 			System.out.println("Full Harvesting Time: "+time/1000000.0 + " elapsed");
-			Chart chart = new Chart(/*leitura,*/ "Teste", "Teste", getNumberOfSamples(), timestamp, series);
+			Chart chart = new Chart(/*leitura,*/ "", "", getNumberOfSamples(), timestamp, series);
 			
 			chart.setXyseries(series);
 			return chart;
@@ -208,14 +206,14 @@ public class Harvester {
 	}
 	private class Reader implements SerialPortEventListener {
         private String str = "";
-        double readingTime = 0;
-        double spentTime = 0;
+        //double readingTime = 0;
+        //double spentTime = 0;
         byte[] buffer = null;
 		@Override
 		public void serialEvent(SerialPortEvent spe) {
 			if(spe.isRXCHAR() || spe.isRXFLAG()){
                 if(spe.getEventValue() > 0){
-                	spentTime += (System.nanoTime()-readingTime);
+                	//spentTime += (System.nanoTime()-readingTime);
                     try {                   	
                         str = "";
                         //System.out.println(serialPort.getInputBufferBytesCount());
@@ -228,7 +226,7 @@ public class Harvester {
                         	pos = 0; 
                         	reading = "";
                         	//System.out.println("Spent Time: " + (spentTime)/1000000.0);
-                        	spentTime = 0;
+                        	//spentTime = 0;
                         	readyToGet(true);
                         }
                         //readingTime = System.nanoTime();

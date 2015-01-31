@@ -45,6 +45,7 @@ public class ChartEditor extends JDialog {
 	private DBChartCollection chartCollection;
 	private int selectedChart;
 	private Chart selected;
+	private JSpinner spinner;
 	/**
 	 * Launch the application.
 	 */
@@ -136,7 +137,7 @@ public class ChartEditor extends JDialog {
 				panel2.add(lblPonto, "cell 0 2,alignx right");
 			}
 			{
-				JSpinner spinner = new JSpinner(new SpinnerNumberModel(selectedChart, 0, 2047, 1));
+				spinner = new JSpinner(new SpinnerNumberModel(selectedChart, 0, 2047, 1));
 				spinner.setMaximumSize(new Dimension(60, 20));
 				spinner.setMinimumSize(new Dimension(60, 20));
 				spinner.setBounds(new Rectangle(0, 0, 10, 0));
@@ -214,44 +215,26 @@ public class ChartEditor extends JDialog {
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(ChartEditor.this.selectedChart < 1) return;
-				if( ChartEditor.this.selectedChart >= 1) 
-					ChartEditor.this.selectedChart--;
-				else if(chartCollection.count() > 0){
-					ChartEditor.this.selectedChart = 0;
-				}else if(chartCollection.count() == 0){
-					dispose();
-				}
-				if(chartCollection.count() > 0)
-					updateView();
+				ChartEditor.this.selectedChart--;
+				//else if()
+				updateView();
 			}
 		});
 		btnNewButton_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(ChartEditor.this.selectedChart >= chartCollection.count()-1) return;
-				if( ChartEditor.this.selectedChart >= 1) 
-					ChartEditor.this.selectedChart--;
-				else if(chartCollection.count() > 0){
-					ChartEditor.this.selectedChart = 0;
-				}else if(chartCollection.count() == 0){
-					dispose();
-				}
-				if(chartCollection.count() > 0)
-					updateView();
+				ChartEditor.this.selectedChart++;
+				//else if()
+				updateView();
 			}
 		});
 		textField_3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(ChartEditor.this.selectedChart < 1 || ChartEditor.this.selectedChart >= chartCollection.count()-1) return;
-				if( ChartEditor.this.selectedChart >= 1) 
-					ChartEditor.this.selectedChart--;
-				else if(chartCollection.count() > 0){
-					ChartEditor.this.selectedChart = 0;
-				}else if(chartCollection.count() == 0){
-					dispose();
-				}
+				int value = Integer.parseInt(textField_3.getText()) -1;
+				if(value < 0) return;
+				else if(value >= chartCollection.count()) return;
+				else ChartEditor.this.selectedChart = value;
 				if(chartCollection.count() > 0)
 					updateView();
 			}
@@ -262,12 +245,23 @@ public class ChartEditor extends JDialog {
 		panel.remove(selected);
 		selected = chartCollection.getChart(selectedChart);
 		textArea.setText(selected.getDescription());
-		textField_3.setText(selectedChart+"");
+		textField_3.setText((selectedChart+1)+"");
 		textField_1.setText(selected.getName());
 		textField.setText("" + new java.util.Date(selected.getTimestamp()));
 		txtDeXxx.setText("de " + chartCollection.count());
 		selected.setMaximumSize(new Dimension(112, 84));
 		selected.setMinimumSize(new Dimension(112, 84));
+		
+		if(ChartEditor.this.selectedChart == 0) 
+			btnNewButton.setEnabled(false);
+		else
+			btnNewButton.setEnabled(true);
+		if(ChartEditor.this.selectedChart == chartCollection.count()-1) 
+			btnNewButton_1.setEnabled(false);
+		else
+			btnNewButton_1.setEnabled(true);
+		
+		textField_2.setText(""+selected.getXyseries().getY((int) spinner.getValue()));
 		panel.add(selected, "cell 0 0 3 1,alignx center,growy");
 		panel.updateUI();
 	}
