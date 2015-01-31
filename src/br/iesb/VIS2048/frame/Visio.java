@@ -61,52 +61,53 @@ import br.iesb.VIS2048.database.DBViewer;
 /**
  * Class Visio.
  */
-public class Visio extends BaseFrame {
+public class Visio {
 
     // ///////////////////////////////////////
     // ///////// ATRIBUTOS ///////////////////
     // ///////////////////////////////////////
     /** Atributo btn conectar. */
-    JButton btnConectar = new JButton("Conectar");
+    private JButton btnConectar = new JButton("Conectar");
+
     /** Atributo lbl conectado. */
-    JLabel commLabel;
+    private JLabel commLabel;
 
     /** Atributo label. */
-    JLabel label;
+    private JLabel label;
 
     /** Atributo btn adquirir. */
-    JButton btnAdquirir;
+    private JButton btnAdquirir;
 
     /** Atributo combo box. */
-    JComboBox<String> commComboBox = new JComboBox<String>();
+    private JComboBox<String> commComboBox = new JComboBox<String>();
 
     /** Atributo harvester. */
-    Harvester harvester = new Harvester();
+    private Harvester harvester = new Harvester();
 
     /** Atributo baud rate. */
-    protected int baudRate = 225200;
+    private int baudRate = 225200;
 
     /** Atributo data bits. */
-    protected int dataBits = 8;
+    private int dataBits = 8;
 
     /** Atributo stop bits. */
-    protected int stopBits = 0;
+    private int stopBits = 0;
 
     /** Atributo parity. */
-    protected int parity = 0;
+    private int parity = 0;
 
     /** Atributo frame. */
     private JFrame frame;
 
     /** Atributo R spec. */
-    public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
+    private Thread RSpec = new Thread(new updateChart(), "Spectrometer");
 
     /** Atributo read once. */
     private boolean readOnce = false;
 
     /** Atributo get. */
     private boolean get = false;
-    // public Thread RSpec = new Thread(new updateChart(), "Spectrometer");
+
     /** Atributo dataset. */
     private XYSeriesCollection dataset;
 
@@ -116,9 +117,6 @@ public class Visio extends BaseFrame {
     /** Atributo counts. */
     private NumberAxis counts = new NumberAxis();
 
-    /** Atributo m v. */
-    protected NumberAxis mV = new NumberAxis();
-
     /** Atributo chart collection. */
     private DBChartCollection chartCollection;
     // private String port;
@@ -126,7 +124,7 @@ public class Visio extends BaseFrame {
     private JScrollPane scrollPane;
 
     /** The collection name. */
-    private String collectionName = COUNTS;
+    private String collectionName = "Counts";
 
     /** The file name. */
     private String fileName;
@@ -183,25 +181,46 @@ public class Visio extends BaseFrame {
     private JPanel solucaoFieldSet;
 
     /** Atributo group modo op. */
-    ButtonGroup groupModoOp = new ButtonGroup();
+    private ButtonGroup groupModoOp = new ButtonGroup();
 
     /** Atributo flag. */
     private boolean flag;
 
     /** Atributo conexao panel. */
     private JPanel conexaoPanel;
-    
+
     /** Atributo numero amostras. */
     protected int numeroAmostras;
+
+    /** Atributo radio button. */
     private JRadioButton radioButton;
+
+    /** Atributo rdbtn new radio button. */
     private JRadioButton rdbtnNewRadioButton;
+
+    /** Atributo rdbtn new radio button_1. */
     private JRadioButton rdbtnNewRadioButton_1;
+
+    /** Atributo rdbtn new radio button_2. */
     private JRadioButton rdbtnNewRadioButton_2;
+
+    /** Atributo slider. */
     private JSlider slider;
+
+    /** Atributo slider_1. */
     private JSlider slider_1;
+
+    /** Atributo spinner. */
     private JSpinner spinner;
+
+    /** Atributo spinner_1. */
     private JSpinner spinner_1;
-    //private Chart selectedChart = null; 
+
+    private String confirmDialogText;
+
+    private boolean tradutorPortugues = true;
+
+    // private Chart selectedChart = null;
     // ///////////////////////////////////////
     // ///////// MÉTODOS /////////////////////
     // ///////////////////////////////////////
@@ -305,19 +324,22 @@ public class Visio extends BaseFrame {
 	conexaoPanel = new JPanel();
 	backgroundColor = new Color(0, 0, 51);
 	conexaoPanel.setBackground(backgroundColor);
-	tabbedPane.addTab(CONEXAO, null, conexaoPanel, null);
+	tabbedPane.addTab("Conexão", null, conexaoPanel, null);
 	conexaoPanel.setLayout(new MigLayout("", "[][100px][][100px][][grow]", "[][][][][][grow][grow]"));
 
-	JPanel panel_1 = new JPanel();
-	panel_1.setForeground(new Color(211, 211, 211));
-	panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), CONFIGURACOES_DE_PORTA, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
-	panel_1.setBackground(backgroundColor);
-	conexaoPanel.add(panel_1, "cell 0 0 4 6,grow");
-	panel_1.setLayout(new MigLayout("", "[62px][62px][62px][86px][86px,grow]", "[21px][21px][21px][21px][21px]"));
+	JPanel portSettingsFieldSet = new JPanel();
+	portSettingsFieldSet.setForeground(new Color(211, 211, 211));
+
+	titledBorder = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Configurações de Porta", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	portSettingsFieldSet.setBorder(titledBorder);
+
+	portSettingsFieldSet.setBackground(backgroundColor);
+	conexaoPanel.add(portSettingsFieldSet, "cell 0 0 4 6,grow");
+	portSettingsFieldSet.setLayout(new MigLayout("", "[62px][62px][62px][86px][86px,grow]", "[21px][21px][21px][21px][21px]"));
 
 	JPanel panel_2 = new JPanel();
 	panel_2.setBackground(backgroundColor);
-	panel_1.add(panel_2, "cell 0 0 5 1,grow");
+	portSettingsFieldSet.add(panel_2, "cell 0 0 5 1,grow");
 	panel_2.setLayout(new MigLayout("", "[][][][][][][][][][grow][][][][][][][]", "[][][][]"));
 
 	JLabel lblBaudRate = new JLabel("Baud Rate");
@@ -357,7 +379,7 @@ public class Visio extends BaseFrame {
 
 	JPanel panel_3 = new JPanel();
 	panel_3.setBackground(backgroundColor);
-	panel_1.add(panel_3, "cell 0 1 5 1,grow");
+	portSettingsFieldSet.add(panel_3, "cell 0 1 5 1,grow");
 	panel_3.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][grow][][]", "[][][][][]"));
 
 	JLabel label_2 = new JLabel("Data Bits");
@@ -396,7 +418,7 @@ public class Visio extends BaseFrame {
 
 	JPanel panel_4 = new JPanel();
 	panel_4.setBackground(backgroundColor);
-	panel_1.add(panel_4, "cell 0 2 5 1,grow");
+	portSettingsFieldSet.add(panel_4, "cell 0 2 5 1,grow");
 	panel_4.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][][]", "[][][]"));
 
 	JLabel lblStopBits = new JLabel("Stop Bits");
@@ -436,10 +458,10 @@ public class Visio extends BaseFrame {
 
 	JPanel panel_5 = new JPanel();
 	panel_5.setBackground(backgroundColor);
-	panel_1.add(panel_5, "cell 0 3 5 1,grow");
+	portSettingsFieldSet.add(panel_5, "cell 0 3 5 1,grow");
 	panel_5.setLayout(new MigLayout("", "[][][][][][][][][][][][][grow][][]", "[][][]"));
 
-	JLabel lblParity = new JLabel("Parity");
+	lblParity = new JLabel("Paridade");
 	lblParity.setOpaque(true);
 	lblParity.setHorizontalAlignment(SwingConstants.CENTER);
 	lblParity.setForeground(new Color(211, 211, 211));
@@ -476,7 +498,8 @@ public class Visio extends BaseFrame {
 
 	JPanel panel_6 = new JPanel();
 	panel_6.setForeground(new Color(211, 211, 211));
-	panel_6.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), PROTOCOLO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+	protocoloBorder = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocolo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	panel_6.setBorder(protocoloBorder);
 	panel_6.setBackground(backgroundColor);
 	conexaoPanel.add(panel_6, "cell 4 1 2 3,grow");
 	panel_6.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][grow]", "[][][][][][][][][][][]"));
@@ -486,7 +509,7 @@ public class Visio extends BaseFrame {
 	panel_6.add(panel_7, "cell 0 0 15 5,grow");
 	panel_7.setLayout(new MigLayout("", "[][][][][][][][][][][][][][][grow][]", "[][][]"));
 
-	JLabel lblNmeroDeAmostras = new JLabel("Número de Amostras");
+	lblNmeroDeAmostras = new JLabel("Número de Amostras");
 	lblNmeroDeAmostras.setOpaque(true);
 	lblNmeroDeAmostras.setHorizontalAlignment(SwingConstants.CENTER);
 	lblNmeroDeAmostras.setForeground(new Color(211, 211, 211));
@@ -542,7 +565,9 @@ public class Visio extends BaseFrame {
 
 	JPanel panel_9 = new JPanel();
 	panel_9.setForeground(new Color(211, 211, 211));
-	panel_9.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Vari\u00E1veis de Estado", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+
+	titledBorderVariavelEstado = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Vari\u00E1veis de Estado", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	panel_9.setBorder(titledBorderVariavelEstado);
 	panel_9.setBackground(new Color(0, 0, 51));
 	conexaoPanel.add(panel_9, "cell 4 4 2 3,grow");
 	panel_9.setLayout(new MigLayout("", "[][][][][][grow][grow]", "[][grow][grow][grow][grow]"));
@@ -552,7 +577,7 @@ public class Visio extends BaseFrame {
 	panel_9.add(panel_10, "cell 0 0 7 1,grow");
 	panel_10.setLayout(new MigLayout("", "[][][][grow][][][][37.00][][][][grow][][grow]", "[28.00][]"));
 
-	JLabel lblSerialPort = new JLabel("Serial Port");
+	lblSerialPort = new JLabel("Porta Serial");
 	lblSerialPort.setOpaque(true);
 	lblSerialPort.setHorizontalAlignment(SwingConstants.CENTER);
 	lblSerialPort.setForeground(new Color(211, 211, 211));
@@ -564,7 +589,7 @@ public class Visio extends BaseFrame {
 	JComboBox<String> comboBox = new JComboBox<String>();
 	panel_10.add(comboBox, "cell 7 1 2 1,alignx right");
 
-	JButton button = new JButton("Conectar");
+	button = new JButton("Conectar");
 	button.setMargin(new Insets(2, 5, 2, 5));
 	panel_10.add(button, "cell 9 1 2 1");
 
@@ -578,7 +603,7 @@ public class Visio extends BaseFrame {
 	panel_11.add(panel_12, "cell 0 0 7 1,grow");
 	panel_12.setLayout(new MigLayout("", "[][][][][][grow][][][][][][][grow][][][grow][]", "[][]"));
 
-	JLabel lblConectado = new JLabel("Conectar");
+	lblConectado = new JLabel("Conectar");
 	lblConectado.setOpaque(true);
 	lblConectado.setHorizontalAlignment(SwingConstants.CENTER);
 	lblConectado.setForeground(new Color(211, 211, 211));
@@ -587,14 +612,14 @@ public class Visio extends BaseFrame {
 	lblConectado.setBackground(new Color(0, 0, 102));
 	panel_12.add(lblConectado, "cell 0 0 17 1,growx");
 
-	JRadioButton rdbtnSim = new JRadioButton("Sim");
+	rdbtnSim = new JRadioButton("Sim");
 	rdbtnSim.setForeground(new Color(211, 211, 211));
 	rdbtnSim.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnSim.setBackground(new Color(0, 0, 51));
 	rdbtnSim.setActionCommand("Unico");
 	panel_12.add(rdbtnSim, "cell 6 1");
 
-	JRadioButton rdbtnNo = new JRadioButton("Não");
+	rdbtnNo = new JRadioButton("Não");
 	rdbtnNo.setForeground(new Color(211, 211, 211));
 	rdbtnNo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnNo.setBackground(new Color(0, 0, 51));
@@ -606,7 +631,7 @@ public class Visio extends BaseFrame {
 	panel_9.add(panel_13, "cell 0 2 7 1,grow");
 	panel_13.setLayout(new MigLayout("", "[][][][][grow][][][][][][][grow][]", "[][]"));
 
-	JLabel lblOpenPort = new JLabel("Abrir Porta");
+	lblOpenPort = new JLabel("Abrir Porta");
 	lblOpenPort.setOpaque(true);
 	lblOpenPort.setHorizontalAlignment(SwingConstants.CENTER);
 	lblOpenPort.setForeground(new Color(211, 211, 211));
@@ -615,14 +640,14 @@ public class Visio extends BaseFrame {
 	lblOpenPort.setBackground(new Color(0, 0, 102));
 	panel_13.add(lblOpenPort, "cell 0 0 13 1,growx");
 
-	JRadioButton radioButton = new JRadioButton("Sim");
-	radioButton.setForeground(new Color(211, 211, 211));
-	radioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	radioButton.setBackground(new Color(0, 0, 51));
-	radioButton.setActionCommand("Unico");
-	panel_13.add(radioButton, "cell 6 1");
+	radioButton2 = new JRadioButton("Sim");
+	radioButton2.setForeground(new Color(211, 211, 211));
+	radioButton2.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	radioButton2.setBackground(new Color(0, 0, 51));
+	radioButton2.setActionCommand("Unico");
+	panel_13.add(radioButton2, "cell 6 1");
 
-	JRadioButton radioButton_1 = new JRadioButton("Não");
+	radioButton_1 = new JRadioButton("Não");
 	radioButton_1.setForeground(new Color(211, 211, 211));
 	radioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	radioButton_1.setBackground(new Color(0, 0, 51));
@@ -643,21 +668,21 @@ public class Visio extends BaseFrame {
 	lblReadyToGet.setBackground(new Color(0, 0, 102));
 	panel_14.add(lblReadyToGet, "cell 0 0 15 1,growx");
 
-	JRadioButton radioButton_2 = new JRadioButton("Sim");
-	radioButton_2.setForeground(new Color(211, 211, 211));
-	radioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	radioButton_2.setBackground(new Color(0, 0, 51));
-	radioButton_2.setActionCommand("Unico");
-	panel_14.add(radioButton_2, "cell 6 1");
+	radioButtonSim = new JRadioButton("Sim");
+	radioButtonSim.setForeground(new Color(211, 211, 211));
+	radioButtonSim.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	radioButtonSim.setBackground(new Color(0, 0, 51));
+	radioButtonSim.setActionCommand("Unico");
+	panel_14.add(radioButtonSim, "cell 6 1");
 
-	JRadioButton radioButton_3 = new JRadioButton("Não");
-	radioButton_3.setForeground(new Color(211, 211, 211));
-	radioButton_3.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	radioButton_3.setBackground(new Color(0, 0, 51));
-	radioButton_3.setActionCommand("Unico");
-	panel_14.add(radioButton_3, "cell 9 1");
+	radioButtonNao = new JRadioButton("Não");
+	radioButtonNao.setForeground(new Color(211, 211, 211));
+	radioButtonNao.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	radioButtonNao.setBackground(new Color(0, 0, 51));
+	radioButtonNao.setActionCommand("Unico");
+	panel_14.add(radioButtonNao, "cell 9 1");
 
-	JButton btnLimpar = new JButton("Limpar");
+	btnLimpar = new JButton("Limpar");
 	conexaoPanel.add(btnLimpar, "cell 2 6");
 	btnLimpar.addActionListener(new ActionListener() {
 
@@ -668,18 +693,19 @@ public class Visio extends BaseFrame {
 
 	});
 
-	JButton btnA = new JButton("Aplicar");
-	conexaoPanel.add(btnA, "cell 3 6");
+	btnAplicar = new JButton("Aplicar");
+	conexaoPanel.add(btnAplicar, "cell 3 6");
 	tabbedPane.setEnabledAt(1, true);
 	tabbedPane.setBackgroundAt(1, backgroundColor);
-	JLabel labTabCalibracao = new JLabel(CONEXAO);
-	labTabCalibracao.setUI(new VerticalLabelUI(false));
-	tabbedPane.setTabComponentAt(2, labTabCalibracao);
-	btnA.addActionListener(new ActionListener() {
+	labTabConexao = new JLabel("Conexão");
+	labTabConexao.setUI(new VerticalLabelUI(false));
+	tabbedPane.setTabComponentAt(2, labTabConexao);
+	btnAplicar.addActionListener(new ActionListener() {
 
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
-		int showConfirmDialog = JOptionPane.showConfirmDialog(frame, "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?");
+		confirmDialogText = "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?";
+		int showConfirmDialog = JOptionPane.showConfirmDialog(frame, confirmDialogText);
 		if (showConfirmDialog > 0) {
 		    harvester.updatePortSettings(baudRate, dataBits, stopBits, parity);
 		    JOptionPane.showMessageDialog(frame, "Parâmetros alterados com sucesso!");
@@ -738,43 +764,43 @@ public class Visio extends BaseFrame {
 	sliderPanel.setBackground(new Color(0, 0, 51));
 	scrollPane.setViewportView(sliderPanel);
 	sliderPanel.setLayout(new MigLayout("", "0[grow]0", "0[25px:n:25px][0px:n:n]"));
-	
+
 	JPanel panel_1 = new JPanel();
 	panel_1.setBackground(new Color(0, 0, 51));
 	sliderPanel.add(panel_1, "cell 0 0,grow");
 	panel_1.setLayout(new MigLayout("", "[grow][grow]", "[grow]0"));
-	
-	JButton btnEditar = new JButton("Editar");
+
+	btnEditar = new JButton("Editar");
 	btnEditar.setMargin(new Insets(2, 3, 2, 3));
 	btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 9));
 	panel_1.add(btnEditar, "cell 0 0,alignx center,growy");
 	btnEditar.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
-	    	if(dataset.getSeriesCount() > 0)
-				try {
-				    ChartEditor editor = new ChartEditor(chartCollection, 0);
-				    editor.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				    editor.setVisible(true);
-				} catch (Exception e) {
-				    e.printStackTrace();
-				}
+		if (dataset.getSeriesCount() > 0)
+		    try {
+			ChartEditor editor = new ChartEditor(chartCollection, 0);
+			editor.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			editor.setVisible(true);
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
 	    }
 	});
-	
-	JButton btnRemover = new JButton("Remover");
+
+	btnRemover = new JButton("Remover");
 	btnRemover.setMargin(new Insets(2, 3, 2, 3));
 	btnRemover.setFont(new Font("Tahoma", Font.PLAIN, 9));
 	panel_1.add(btnRemover, "cell 1 0,alignx center,growy");
-	
+
 	JPanel panel_2 = new JPanel();
 	panel_2.setBackground(new Color(105, 105, 105));
 	espectroPanel.add(panel_2, "cell 0 1 3 1,grow");
-	
-	JLabel lblNewLabel_1 = new JLabel("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
-	lblNewLabel_1.setForeground(new Color(255, 255, 255));
-	lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
-	panel_2.add(lblNewLabel_1);
+
+	lblEspectrometroEmissao = new JLabel("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
+	lblEspectrometroEmissao.setForeground(new Color(255, 255, 255));
+	lblEspectrometroEmissao.setFont(new Font("Tahoma", Font.PLAIN, 17));
+	panel_2.add(lblEspectrometroEmissao);
     }
 
     /**
@@ -794,11 +820,11 @@ public class Visio extends BaseFrame {
     private void addPcaTab() {
 	pcaPanel = new JPanel();
 	pcaPanel.setBackground(new Color(0, 0, 51));
-	tabbedPane.addTab(PCA, null, pcaPanel, null);
+	tabbedPane.addTab("PCA", null, pcaPanel, null);
 	tabbedPane.setEnabledAt(1, true);
 	tabbedPane.setBackgroundAt(1, new Color(255, 255, 255));
 
-	JLabel labTab2 = new JLabel(PCA);
+	JLabel labTab2 = new JLabel("PCA");
 	labTab2.setUI(new VerticalLabelUI(false));
 	tabbedPane.setTabComponentAt(1, labTab2);
     }
@@ -817,7 +843,7 @@ public class Visio extends BaseFrame {
 	primeChart.setBackground(Color.black);
 	primeChart.setAlignmentY(0.0f);
 	dataset = new XYSeriesCollection();
-	jfreechart = ChartFactory.createXYLineChart(VISIO, "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
+	jfreechart = ChartFactory.createXYLineChart("Visio", "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
 	counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
 	counts.setRange(0, 2500);
 	panel = new ChartPanel(jfreechart);
@@ -848,9 +874,9 @@ public class Visio extends BaseFrame {
 	tabbedPane.setBackgroundAt(0, new Color(255, 255, 255));
 	espectroPanel.setLayout(new MigLayout("", "0[245px:245px:245px,grow]0[grow]0[142px:142px:142px]0", "0[grow]0[30px:30px:30px]0"));
 
-	JLabel labTab1 = new JLabel(ESPECTRO);
-	labTab1.setUI(new VerticalLabelUI(false));
-	tabbedPane.setTabComponentAt(0, labTab1);
+	labTabEspectro = new JLabel("Espectro");
+	labTabEspectro.setUI(new VerticalLabelUI(false));
+	tabbedPane.setTabComponentAt(0, labTabEspectro);
     }
 
     /**
@@ -905,15 +931,18 @@ public class Visio extends BaseFrame {
 	panel_1.add(espectroFieldset, "cell 0 0,grow");
 	espectroFieldset.setBackground(new Color(0, 0, 51));
 	espectroFieldset.setForeground(new Color(211, 211, 211));
-	espectroFieldset.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), ESPECTRO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+
+	titledBorderEspectro = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Espectro", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	espectroFieldset.setBorder(titledBorderEspectro);
 	espectroFieldset.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px]"));
 
-	btnAdquirir = new JButton(ADQUIRIR);
+	btnAdquirir = new JButton("Adquirir");
+
 	btnAdquirir.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	btnAdquirir.setEnabled(false);
 	espectroFieldset.add(btnAdquirir, "cell 0 0,grow");
 
-	btnParar = new JButton(PARAR);
+	btnParar = new JButton("Parar");
 	btnParar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	espectroFieldset.add(btnParar, "cell 1 0,grow");
 
@@ -942,27 +971,31 @@ public class Visio extends BaseFrame {
 	});
 
 	btnAdquirir.setActionCommand("enable");
-	btnAdquirir.setToolTipText(ADQUIRIR_LEITURAS);
+	btnAdquirir.setToolTipText("Adquirir Leituras");
 	connectionFieldSet = new JPanel();
 	panel_1.add(connectionFieldSet, "cell 0 1,growx");
 	connectionFieldSet.setBackground(new Color(0, 0, 51));
 	connectionFieldSet.setForeground(new Color(211, 211, 211));
-	connectionFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), CONEXAO, TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+
+	titledBorderConexao = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Conexão", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	connectionFieldSet.setBorder(titledBorderConexao);
 	connectionFieldSet.setLayout(new MigLayout("", "[70px:70px:70px][70px:70px:70px][60px:60px:60px]", "[25px:25px:25px]"));
 
 	connectionFieldSet.add(commComboBox, "cell 0 0,grow");
 	btnConectar.setMargin(new Insets(2, 5, 2, 5));
 	connectionFieldSet.add(btnConectar, "cell 1 0,grow");
 
-	commLabel = new JLabel(INDISPONIVEL);
+	commLabel = new JLabel("Indisponível");
 	connectionFieldSet.add(commLabel, "cell 2 0,alignx center,growy");
 	opcoesFieldSet = new JPanel();
 	panel_1.add(opcoesFieldSet, "cell 0 2,growx");
 	opcoesFieldSet.setBackground(new Color(0, 0, 51));
-	opcoesFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+
+	titledBorderOpcoes = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Op\u00E7\u00F5es", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	opcoesFieldSet.setBorder(titledBorderOpcoes);
 	opcoesFieldSet.setLayout(new MigLayout("", "[100px,grow][100px,grow]", "[20px:20px:20px][20px][20px:20px:20px][20px][20px:20px:20px][20px][20px:20px:20px][30px][20px:20px:20px][20px]"));
 
-	JLabel lblModoDeOperao = new JLabel("Modo de Operação");
+	lblModoDeOperao = new JLabel("Modo de Operação");
 	lblModoDeOperao.setHorizontalAlignment(SwingConstants.CENTER);
 	lblModoDeOperao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	opcoesFieldSet.add(lblModoDeOperao, "cell 0 0 2 1,grow");
@@ -971,25 +1004,25 @@ public class Visio extends BaseFrame {
 	lblModoDeOperao.setBackground(new Color(0, 0, 102));
 	lblModoDeOperao.setOpaque(true);
 
-	radioButton = new JRadioButton("\u00DAnico");
-	opcoesFieldSet.add(radioButton, "cell 0 1,alignx center,growy");
-	radioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	radioButton.setForeground(new Color(211, 211, 211));
-	radioButton.setBackground(new Color(0, 0, 51));
+	rdbtnUnico = new JRadioButton("\u00DAnico");
+	opcoesFieldSet.add(rdbtnUnico, "cell 0 1,alignx center,growy");
+	rdbtnUnico.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	rdbtnUnico.setForeground(new Color(211, 211, 211));
+	rdbtnUnico.setBackground(new Color(0, 0, 51));
 
-	rdbtnNewRadioButton = new JRadioButton("Cont\u00EDnuo");
-	opcoesFieldSet.add(rdbtnNewRadioButton, "cell 1 1,alignx center,growy");
-	rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	rdbtnNewRadioButton.setForeground(new Color(211, 211, 211));
-	rdbtnNewRadioButton.setBackground(new Color(0, 0, 51));
+	rdbtnContinuo = new JRadioButton("Cont\u00EDnuo");
+	opcoesFieldSet.add(rdbtnContinuo, "cell 1 1,alignx center,growy");
+	rdbtnContinuo.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	rdbtnContinuo.setForeground(new Color(211, 211, 211));
+	rdbtnContinuo.setBackground(new Color(0, 0, 51));
 
-	groupModoOp.add(radioButton);
-	groupModoOp.add(rdbtnNewRadioButton);
+	groupModoOp.add(rdbtnUnico);
+	groupModoOp.add(rdbtnContinuo);
 
-	radioButton.setActionCommand("Unico");
-	rdbtnNewRadioButton.setActionCommand("Continuo");
-	rdbtnNewRadioButton.setSelected(true);
-	radioButton.addActionListener(new ActionListener() {
+	rdbtnUnico.setActionCommand("Unico");
+	rdbtnContinuo.setActionCommand("Continuo");
+	rdbtnContinuo.setSelected(true);
+	rdbtnUnico.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent event) {
 		if ("Unico".equals(event.getActionCommand())) {
@@ -1002,7 +1035,7 @@ public class Visio extends BaseFrame {
 		}
 	    }
 	});
-	rdbtnNewRadioButton.addActionListener(new ActionListener() {
+	rdbtnContinuo.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		if ("Continuo".equals(event.getActionCommand())) {
 		    btnParar.setEnabled(true);
@@ -1015,16 +1048,16 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JLabel lblNewLabel = new JLabel("Unidade");
-	lblNewLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-	lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblNewLabel, "cell 0 2 2 1,grow");
-	lblNewLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-	lblNewLabel.setForeground(new Color(211, 211, 211));
-	lblNewLabel.setBackground(new Color(0, 0, 102));
-	lblNewLabel.setOpaque(true);
+	lblUnidade = new JLabel("Unidade");
+	lblUnidade.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblUnidade.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblUnidade, "cell 0 2 2 1,grow");
+	lblUnidade.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblUnidade.setForeground(new Color(211, 211, 211));
+	lblUnidade.setBackground(new Color(0, 0, 102));
+	lblUnidade.setOpaque(true);
 
-	rdbtnNewRadioButton_1 = new JRadioButton("Counts");
+	JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Counts");
 	opcoesFieldSet.add(rdbtnNewRadioButton_1, "cell 0 3,alignx center,growy");
 	rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnNewRadioButton_1.setForeground(new Color(211, 211, 211));
@@ -1036,14 +1069,15 @@ public class Visio extends BaseFrame {
 	rdbtnNewRadioButton_1.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		if ("Counts".equals(event.getActionCommand()) && flag) {
-		    //counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
-		    counts.setRange(0, (counts.getUpperBound() * 1.24121212) );
-		    for(int i=0; i<chartCollection.count();i++){
-		    	for(int j=0; j<chartCollection.getChart(i).getXyseries().getItemCount(); j++){
-		    		XYSeries serie = chartCollection.getChart(i).getXyseries();
-		    		serie.updateByIndex(j, (serie.getY(j)).doubleValue() *1.24121212 );
-		    		chartCollection.getChart(i).setMiliVolt(false);
-		    	}
+		    // counts = (NumberAxis) ((XYPlot)
+		    // jfreechart.getPlot()).getRangeAxis();
+		    counts.setRange(0, (counts.getUpperBound() * 1.24121212));
+		    for (int i = 0; i < chartCollection.count(); i++) {
+			for (int j = 0; j < chartCollection.getChart(i).getXyseries().getItemCount(); j++) {
+			    XYSeries serie = chartCollection.getChart(i).getXyseries();
+			    serie.updateByIndex(j, (serie.getY(j)).doubleValue() * 1.24121212);
+			    chartCollection.getChart(i).setMiliVolt(false);
+			}
 		    }
 		    (jfreechart.getXYPlot()).getRangeAxis().setLabel("Counts");
 		    flag = false;
@@ -1051,7 +1085,7 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	rdbtnNewRadioButton_2 = new JRadioButton("mV");
+	JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("mV");
 	opcoesFieldSet.add(rdbtnNewRadioButton_2, "cell 1 3,alignx center,growy");
 	rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	rdbtnNewRadioButton_2.setForeground(new Color(211, 211, 211));
@@ -1061,14 +1095,15 @@ public class Visio extends BaseFrame {
 	rdbtnNewRadioButton_2.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		if ("mV".equals(event.getActionCommand()) && !flag) {
-		    //mV = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
+		    // mV = (NumberAxis) ((XYPlot)
+		    // jfreechart.getPlot()).getRangeAxis();
 		    counts.setRange(0, (counts.getUpperBound()) * 0.8056640625);
-		    for(int i=0; i<chartCollection.count();i++){
-		    	for(int j=0; j<chartCollection.getChart(i).getXyseries().getItemCount(); j++){
-		    		XYSeries serie = chartCollection.getChart(i).getXyseries();
-		    		serie.updateByIndex(j, (serie.getY(j)).doubleValue() *0.8056640625 );
-		    		chartCollection.getChart(i).setMiliVolt(true);
-		    	}
+		    for (int i = 0; i < chartCollection.count(); i++) {
+			for (int j = 0; j < chartCollection.getChart(i).getXyseries().getItemCount(); j++) {
+			    XYSeries serie = chartCollection.getChart(i).getXyseries();
+			    serie.updateByIndex(j, (serie.getY(j)).doubleValue() * 0.8056640625);
+			    chartCollection.getChart(i).setMiliVolt(true);
+			}
 		    }
 		    flag = true;
 		    (jfreechart.getXYPlot()).getRangeAxis().setLabel("mV");
@@ -1076,16 +1111,16 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JLabel lblFaixaEspectral = new JLabel("N\u00FAmero de Amostras");
-	lblFaixaEspectral.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-	lblFaixaEspectral.setHorizontalAlignment(SwingConstants.CENTER);
-	opcoesFieldSet.add(lblFaixaEspectral, "cell 0 4 2 1,grow");
-	lblFaixaEspectral.setFont(new Font("Dialog", Font.PLAIN, 12));
-	lblFaixaEspectral.setForeground(new Color(211, 211, 211));
-	lblFaixaEspectral.setBackground(new Color(0, 0, 102));
-	lblFaixaEspectral.setOpaque(true);
+	lblNumeroAmostras = new JLabel("N\u00FAmero de Amostras");
+	lblNumeroAmostras.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+	lblNumeroAmostras.setHorizontalAlignment(SwingConstants.CENTER);
+	opcoesFieldSet.add(lblNumeroAmostras, "cell 0 4 2 1,grow");
+	lblNumeroAmostras.setFont(new Font("Dialog", Font.PLAIN, 12));
+	lblNumeroAmostras.setForeground(new Color(211, 211, 211));
+	lblNumeroAmostras.setBackground(new Color(0, 0, 102));
+	lblNumeroAmostras.setOpaque(true);
 
-	slider = new JSlider(0, 2048, 2048);
+	JSlider slider = new JSlider(0, 2048, 2048);
 	opcoesFieldSet.add(slider, "flowx,cell 0 5 2 1,grow");
 	slider.setBackground(new Color(0, 0, 51));
 	slider.addChangeListener(new ChangeListener() {
@@ -1096,7 +1131,7 @@ public class Visio extends BaseFrame {
 	});
 	slider.setSnapToTicks(true);
 
-	JLabel lblTempoDeIntegrao = new JLabel("Tempo de Integra\u00E7\u00E3o");
+	lblTempoDeIntegrao = new JLabel("Tempo de Integra\u00E7\u00E3o");
 	lblTempoDeIntegrao.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblTempoDeIntegrao.setHorizontalAlignment(SwingConstants.CENTER);
 	opcoesFieldSet.add(lblTempoDeIntegrao, "cell 0 6 2 1,grow");
@@ -1104,13 +1139,13 @@ public class Visio extends BaseFrame {
 	lblTempoDeIntegrao.setForeground(new Color(211, 211, 211));
 	lblTempoDeIntegrao.setBackground(new Color(0, 0, 102));
 	lblTempoDeIntegrao.setOpaque(true);
-	
+
 	slider_1 = new JSlider(0, 2048, 2048);
 	slider_1.setSnapToTicks(true);
 	slider_1.setBackground(new Color(0, 0, 51));
 	opcoesFieldSet.add(slider_1, "cell 0 7 2 1,grow");
-	
-	JLabel lblFaixaEspectral_1 = new JLabel("Faixa Espectral");
+
+	lblFaixaEspectral_1 = new JLabel("Faixa Espectral");
 	lblFaixaEspectral_1.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 	lblFaixaEspectral_1.setHorizontalAlignment(SwingConstants.CENTER);
 	opcoesFieldSet.add(lblFaixaEspectral_1, "cell 0 8 2 1,grow");
@@ -1119,13 +1154,13 @@ public class Visio extends BaseFrame {
 	lblFaixaEspectral_1.setBackground(new Color(0, 0, 102));
 	lblFaixaEspectral_1.setOpaque(true);
 
-	spinner = new JSpinner();
+	JSpinner spinner = new JSpinner();
 	opcoesFieldSet.add(spinner, "flowx,cell 0 9,grow");
 	spinner.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	spinner.setBackground(new Color(0, 0, 51));
 	spinner.setForeground(new Color(211, 211, 211));
 
-	spinner_1 = new JSpinner();
+	JSpinner spinner_1 = new JSpinner();
 	opcoesFieldSet.add(spinner_1, "flowx,cell 1 9,grow");
 	spinner_1.setFont(new Font("Dialog", Font.PLAIN, 11));
 	spinner_1.setBackground(new Color(0, 0, 51));
@@ -1136,7 +1171,7 @@ public class Visio extends BaseFrame {
 	label.setForeground(new Color(211, 211, 211));
 	opcoesFieldSet.add(label, "cell 0 5 2 1,grow");
 
-	JLabel lblA = new JLabel("a");
+	lblA = new JLabel("a");
 	opcoesFieldSet.add(lblA, "cell 0 9,alignx right,growy");
 	lblA.setFont(new Font("Dialog", Font.PLAIN, 11));
 	lblA.setForeground(new Color(211, 211, 211));
@@ -1145,7 +1180,7 @@ public class Visio extends BaseFrame {
 	opcoesFieldSet.add(lblNm, "cell 1 9,alignx right,growy");
 	lblNm.setFont(new Font("Dialog", Font.PLAIN, 11));
 	lblNm.setForeground(new Color(211, 211, 211));
-	
+
 	JLabel label_1 = new JLabel("2048");
 	label_1.setForeground(new Color(211, 211, 211));
 	label_1.setFont(new Font("Dialog", Font.PLAIN, 11));
@@ -1154,26 +1189,27 @@ public class Visio extends BaseFrame {
 	panel_1.add(solucaoFieldSet, "cell 0 3,growx");
 	solucaoFieldSet.setForeground(new Color(211, 211, 211));
 	solucaoFieldSet.setBackground(new Color(0, 0, 51));
-	solucaoFieldSet.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211)));
+
+	titledBorderSolucao = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	solucaoFieldSet.setBorder(titledBorderSolucao);
 	solucaoFieldSet.setLayout(new MigLayout("", "[grow][grow]", "0[20px:20px:20px][20px:20px:20px]"));
-	
+
 	slider_1.addChangeListener(new ChangeListener() {
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
 		label_1.setText("" + slider_1.getValue());
 	    }
 	});
-	
+
 	JLabel lblConjunto = new JLabel(db.getMainDB());
 	lblConjunto.setForeground(new Color(211, 211, 211));
 	lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
 	solucaoFieldSet.add(lblConjunto, "flowx,cell 0 0 2 1,growx,aligny center");
 
-	JButton btnEscolher = new JButton("Abrir");
+	btnEscolher = new JButton("Abrir");
 	solucaoFieldSet.add(btnEscolher, "cell 0 1,growx");
 	btnEscolher.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
-	btnEscolher.setToolTipText("");
 	btnEscolher.addActionListener(new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent arg0) {
@@ -1187,7 +1223,7 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JButton btnSalvar = new JButton("Salvar");
+	btnSalvar = new JButton("Salvar");
 	btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 	solucaoFieldSet.add(btnSalvar, "cell 1 1,growx");
 	btnSalvar.addActionListener(new ActionListener() {
@@ -1198,7 +1234,144 @@ public class Visio extends BaseFrame {
 	});
 	disableSpecPanel();
     }
-    
+
+    /**
+     * Traduzir.
+     */
+    public void traduzir() {
+	if (tradutorIngles) {
+	    stringInstrucoes = "Instructions for use";
+	    stringExportar = "Export...";
+	    subMenuExportar = "Coming soon...";
+	    instrucoesDeUso = "Coming soon...";
+	    menuArquivo.setText("File");
+	    menuOpcoes.setText("Options");
+	    ajudaMenu.setText("Help");
+	    abrirItem.setText("Open... (Alt+a)");
+	    salvarItem.setText("Save... (Alt+s)");
+	    exportarItem.setText("Export(csv)... (Alt+e)");
+	    exportarImagemItem.setText("Export image(jpeg, PNG)... (Alt+i)");
+	    sairItem.setText("Exit (Alt+F4)");
+	    graficoMenu.setText("Graphics (Alt+g)");
+	    idiomaMenu.setText("Language (Alt+i)");
+	    curvaItem.setText("- Curve (color)");
+	    fundoItem.setText("- Background (color)");
+	    instrucoesItem.setText("Instructions for use");
+	    versaoItem.setText("Version");
+	    autoEscalarItem.setText("- Auto-scalar");
+	    lblNumeroAmostras.setText("Number of Samples");
+	    lblParity.setText("Parity");
+	    lblNmeroDeAmostras.setText("Number of Samples");
+	    button.setText("Connect");
+	    lblConectado.setText("Connect");
+	    btnAdquirir.setText("Acquire");
+	    btnAdquirir.setToolTipText("Acquire Readings");
+	    tabbedPane.setTitleAt(2, "Connection");
+	    btnParar.setText("Stop");
+	    btnConectar.setText("Connect");
+	    titledBorder.setTitle("Port Settings");
+	    commLabel.setText("Unavailable");
+	    protocoloBorder.setTitle("Protocol");
+	    lblNumeroAmostras.setText("Number of Samples");
+	    btnEscolher.setText("Open");
+	    btnSalvar.setText("Save");
+	    titledBorderSolucao.setTitle("Solution");
+	    lblA.setText("to");
+	    lblFaixaEspectral_1.setText("Spectral Range");
+	    lblTempoDeIntegrao.setText("Integration Time");
+	    lblUnidade.setText("Unit");
+	    rdbtnUnico.setText("Single");
+	    rdbtnContinuo.setText("Continuous");
+	    lblModoDeOperao.setText("Operation Mode");
+	    titledBorderConexao.setTitle("Connection");
+	    titledBorderOpcoes.setTitle("Options");
+	    lblEspectrometroEmissao.setText("<html><b>VIS2048</b> - Spectrometer of Emission</html>");
+	    titledBorderEspectro.setTitle("Spectrum");
+	    labTabEspectro.setText("Spectrum");
+	    btnRemover.setText("Remove");
+	    btnEditar.setText("Edit");
+	    labTabConexao.setText("Connection");
+	    confirmDialogText = "The modified settings can severely alter the functioning of the software. Would you like to proceed?";
+	    btnLimpar.setText("Clean");
+	    btnAplicar.setText("Apply");
+	    radioButtonNao.setText("No");
+	    radioButtonSim.setText("Yes");
+	    radioButton_1.setText("No");
+	    radioButton2.setText("Yes");
+	    lblOpenPort.setText("Open Port");
+	    rdbtnNo.setText("No");
+	    rdbtnSim.setText("Yes");
+	    titledBorderVariavelEstado.setTitle("State Variables");
+	    lblSerialPort.setText("Serial Port");
+	    tradutorIngles = false;
+	} else if (tradutorPortugues) {
+	    stringInstrucoes = "Instruções de uso";
+	    stringExportar = "Exportar...";
+	    subMenuExportar = "Em breve...";
+	    instrucoesDeUso = "Em breve...";
+	    menuArquivo.setText("Arquivo");
+	    menuOpcoes.setText("Opções");
+	    ajudaMenu.setText("Ajuda");
+	    abrirItem.setText("Abrir... (Alt+a)");
+	    salvarItem.setText("Salvar... (Alt+s)");
+	    exportarItem.setText("Exportar(csv)... (Alt+e)");
+	    exportarImagemItem.setText("Exportar imagem(jpeg, PNG)... (Alt+i)");
+	    sairItem.setText("Sair (Alt+F4)");
+	    graficoMenu.setText("Gráficos (Alt+g)");
+	    idiomaMenu.setText("Idioma (Alt+i)");
+	    curvaItem.setText("- Curva (color)");
+	    fundoItem.setText("- Fundo (color)");
+	    instrucoesItem.setText("Instruções de uso");
+	    versaoItem.setText("Versão");
+	    lblNumeroAmostras.setText("N\u00FAmero de Amostras");
+	    lblParity.setText("Paridade");
+	    lblNmeroDeAmostras.setText("Número de Amostras");
+	    lblSerialPort.setText("Porta Serial");
+	    button.setText("Conectar");
+	    lblConectado.setText("Conectar");
+	    btnAdquirir.setText("Adquirir");
+	    btnAdquirir.setToolTipText("Adquirir Leituras");
+	    tabbedPane.setTitleAt(2, "Conexão");
+	    btnParar.setText("Parar");
+	    btnConectar.setText("Conectar");
+	    titledBorder.setTitle("Configurações de Porta");
+	    commLabel.setText("Indisponível");
+	    protocoloBorder.setTitle("Protocolo");
+	    lblNumeroAmostras.setText("N\u00FAmero de Amostras");
+	    btnEscolher.setText("Abrir");
+	    btnSalvar.setText("Salvar");
+	    titledBorderSolucao.setTitle("Solução");
+	    lblA.setText("a");
+	    lblFaixaEspectral_1.setText("Faixa Espectral");
+	    lblTempoDeIntegrao.setText("Tempo de Integra\u00E7\u00E3o");
+	    lblUnidade.setText("Unidade");
+	    rdbtnUnico.setText("Único");
+	    rdbtnContinuo.setText("Contínuo");
+	    lblModoDeOperao.setText("Modo de Operação");
+	    titledBorderConexao.setTitle("Conexão");
+	    titledBorderOpcoes.setTitle("Opções");
+	    lblEspectrometroEmissao.setText("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
+	    titledBorderEspectro.setTitle("Espectro");
+	    labTabEspectro.setText("Espectro");
+	    btnRemover.setText("Remover");
+	    btnEditar.setText("Editar");
+	    labTabConexao.setText("Conexão");
+	    confirmDialogText = "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?";
+	    btnLimpar.setText("Limpar");
+	    btnAplicar.setText("Aplicar");
+	    radioButtonNao.setText("Não");
+	    radioButtonSim.setText("Sim");
+	    radioButton_1.setText("Não");
+	    radioButton2.setText("Sim");
+	    lblOpenPort.setText("Abrir Porta");
+	    rdbtnNo.setText("Não");
+	    rdbtnSim.setText("Sim");
+	    titledBorderVariavelEstado.setTitle("Variáveis de Estado");
+	    tradutorPortugues = false;
+	}
+
+    }
+
     // ////////////////////////////
     // // MÉTODOS DO MENU BAR /////
     // ////////////////////////////
@@ -1208,21 +1381,24 @@ public class Visio extends BaseFrame {
      * @return the j menu
      */
     private JMenu ajudaMenu() {
-	JMenuItem instrucoesItem = new JMenuItem("Instru��es de uso");
+	instrucoesItem = new JMenuItem("Instruções de uso");
+	instrucoesDeUso = "Em breve...";
+	stringInstrucoes = "Instruções de uso";
 	instrucoesItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este � o submenu 'instru��es de uso'", "Instru��es de uso", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(frame, instrucoesDeUso, stringInstrucoes, JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem versaoItem = new JMenuItem("Vers�o");
+	versaoItem = new JMenuItem("Versão");
+	versao = "VIS2048 - beta_v1.0";
 	versaoItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este � o submenu 'vers�o'.", "Vers�o", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(frame, versao, "Versão", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenu ajudaMenu = new JMenu("Ajuda");
+	ajudaMenu = new JMenu("Ajuda");
 	ajudaMenu.setForeground(Color.BLACK);
 	ajudaMenu.setMnemonic('h');
 	ajudaMenu.add(instrucoesItem);
@@ -1237,7 +1413,7 @@ public class Visio extends BaseFrame {
      */
     private JMenu opcoesMenu() {
 
-	JMenuItem fundoItem = new JMenuItem("- Fundo (cor)");
+	fundoItem = new JMenuItem("- Fundo (cor)");
 	fundoItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		// specPanel.setBackgroundPaint(JColorChooser.showDialog(specPanel,
@@ -1246,59 +1422,64 @@ public class Visio extends BaseFrame {
 	    }
 	});
 
-	JMenuItem curvaItem = new JMenuItem("- Curva (cor)");
+	curvaItem = new JMenuItem("- Curva (cor)");
 	curvaItem.setMnemonic('c');
 
 	curvaItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este � o submenu 'Curva'.", "- Curva (cor)", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem gridItem = new JMenuItem("- Grid");
+	gridItem = new JMenuItem("- Grid");
 	gridItem.setMnemonic('g');
 	gridItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este � o submenu 'Grid'.", "- Grid", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem autoEscalarItem = new JMenuItem("- Autoescalar");
+	autoEscalarItem = new JMenuItem("- Autoescalar");
 	autoEscalarItem.setMnemonic('a');
 	autoEscalarItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este � o submenu 'Autoescalar'.", "- Autoescalar", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenu graficoMenu = new JMenu("Gráficos (Alt+g)");
+	graficoMenu = new JMenu("Gráficos (Alt+g)");
 	graficoMenu.setMnemonic('g');
 	graficoMenu.add(fundoItem);
 	graficoMenu.add(curvaItem);
 	graficoMenu.add(gridItem);
 	graficoMenu.add(autoEscalarItem);
 
-	JMenuItem portuguesItem = new JMenuItem("- Português");
+	portuguesItem = new JMenuItem("- Português");
 	portuguesItem.setMnemonic('p');
 	portuguesItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este é o submenu 'Exportar imagem...'. Em breve você poderá visualizar em português.", "Português	(Alt+)", JOptionPane.PLAIN_MESSAGE);
+		tradutorPortugues = true;
+		traduzir();
+		// JOptionPane.showMessageDialog(frame,
+		// "Este é o submenu 'Exportar imagem...'. Em breve você poderá visualizar em português.",
+		// "Português	(Alt+)", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem englishItem = new JMenuItem("- English");
+	englishItem = new JMenuItem("- English");
 	englishItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este é o submenu 'English'. Em breve você poderá visualizar em inglês.", "English	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
+		tradutorIngles = true;
+		traduzir();
+		// JOptionPane.showMessageDialog(frame,
+		// "Este é o submenu 'English'. Em breve você poderá visualizar em inglês.",
+		// "English	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenu idiomaMenu = new JMenu("Idioma (Alt+i)");
+	idiomaMenu = new JMenu("Idioma (Alt+i)");
 	idiomaMenu.setMnemonic('i');
 	idiomaMenu.add(portuguesItem);
 	idiomaMenu.add(englishItem);
 
-	JMenu menuOpcoes = new JMenu("Opções");
+	menuOpcoes = new JMenu("Opções");
 	menuOpcoes.setForeground(new Color(0, 0, 0));
 	menuOpcoes.setMnemonic('o');
 	menuOpcoes.add(graficoMenu);
@@ -1312,38 +1493,40 @@ public class Visio extends BaseFrame {
      * @return the j menu
      */
     private JMenu arquivoMenu() {
-	JMenuItem abrirItem = new JMenuItem("Abrir... (Alt+a)");
+	abrirItem = new JMenuItem("Abrir... (Alt+a)");
 	abrirItem.setMnemonic('a');
 	abrirItem.addActionListener(new AbrirAction());
 
-	JMenuItem salvarItem = new JMenuItem("Salvar... (Alt+s)");
+	salvarItem = new JMenuItem("Salvar... (Alt+s)");
 	salvarItem.setMnemonic('s');
 	salvarItem.addActionListener(new SalvarAction(frame));
 
-	JMenuItem exportarItem = new JMenuItem("Exportar (csv)... (Alt+s)");
+	exportarItem = new JMenuItem("Exportar (csv)... (Alt+e)");
 	exportarItem.setMnemonic('e');
+	subMenuExportar = "Este é o submenu 'Exportar...'. Em breve você poderá exportar arquivos csv.";
+	stringExportar = "Exportar...";
 	exportarItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este é o submenu 'Exportar...'. Em breve voc� poder� exportar arquivos csv.", "Exportar...	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(frame, subMenuExportar, stringExportar, JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem exportarImagemItem = new JMenuItem("Exportar imagem (jpeg, PNG)... (Alt+i)");
+	exportarImagemItem = new JMenuItem("Exportar imagem (jpeg, PNG)... (Alt+i)");
 	exportarImagemItem.setMnemonic('i');
 	exportarImagemItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
-		JOptionPane.showMessageDialog(frame, "Este é o submenu 'Exportar imagem...'. Em breve voc� poder� exportar arquivos jpeg, PNG.", "Exportar...	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
+		JOptionPane.showMessageDialog(frame, subMenuExportar, stringExportar, JOptionPane.PLAIN_MESSAGE);
 	    }
 	});
 
-	JMenuItem sairItem = new JMenuItem("Sair");
+	sairItem = new JMenuItem("Sair");
 	sairItem.addActionListener(new ActionListener() {
 	    public void actionPerformed(ActionEvent event) {
 		System.exit(0);
 	    }
 	});
 
-	JMenu menuArquivo = new JMenu("Arquivo");
+	menuArquivo = new JMenu("Arquivo");
 	menuArquivo.add(abrirItem);
 	menuArquivo.add(salvarItem);
 	menuArquivo.add(exportarItem);
@@ -1351,26 +1534,69 @@ public class Visio extends BaseFrame {
 	menuArquivo.add(sairItem);
 	return menuArquivo;
     }
-    void disableSpecPanel(){
-    	radioButton.setEnabled(false);
-    	rdbtnNewRadioButton.setEnabled(false);
-    	rdbtnNewRadioButton_1.setEnabled(false);
-    	rdbtnNewRadioButton_2.setEnabled(false);
-    	slider.setEnabled(false);
-    	slider_1.setEnabled(false);
-    	spinner.setEnabled(false);
-    	spinner_1.setEnabled(false);
+
+    /**
+     * Disable spec panel.
+     */
+    void disableSpecPanel() {
+	if (radioButton != null) {
+	    radioButton.setEnabled(false);
+	}
+	if (rdbtnNewRadioButton != null) {
+	    rdbtnNewRadioButton.setEnabled(false);
+	}
+	if (rdbtnNewRadioButton_1 != null) {
+	    rdbtnNewRadioButton_1.setEnabled(false);
+	}
+	if (rdbtnNewRadioButton_2 != null) {
+	    rdbtnNewRadioButton_2.setEnabled(false);
+	}
+	if (slider != null) {
+	    slider.setEnabled(false);
+	}
+	if (slider_1 != null) {
+	    slider_1.setEnabled(false);
+	}
+	if (spinner != null) {
+	    spinner.setEnabled(false);
+	}
+	if (spinner_1 != null) {
+	    spinner_1.setEnabled(false);
+	}
+
     }
-    void enableSpecPanel(){
-    	radioButton.setEnabled(true);
-    	rdbtnNewRadioButton.setEnabled(true);
-    	rdbtnNewRadioButton_1.setEnabled(true);
-    	rdbtnNewRadioButton_2.setEnabled(true);
-    	slider.setEnabled(true);
-    	slider_1.setEnabled(true);
-    	spinner.setEnabled(true);
-    	spinner_1.setEnabled(true);
+
+    /**
+     * Enable spec panel.
+     */
+    void enableSpecPanel() {
+	if (radioButton != null) {
+	    radioButton.setEnabled(true);
+	}
+	if (rdbtnNewRadioButton != null) {
+	    rdbtnNewRadioButton.setEnabled(true);
+	}
+	if (rdbtnNewRadioButton_1 != null) {
+	    rdbtnNewRadioButton_1.setEnabled(true);
+	}
+	if (rdbtnNewRadioButton_2 != null) {
+	    rdbtnNewRadioButton_2.setEnabled(true);
+	}
+	if (slider != null) {
+	    slider.setEnabled(true);
+	}
+	if (slider_1 != null) {
+	    slider_1.setEnabled(true);
+	}
+	if (spinner != null) {
+	    spinner.setEnabled(true);
+	}
+	if (spinner_1 != null) {
+	    spinner_1.setEnabled(true);
+	}
+
     }
+
     // //////////////////////////////////
     // ////// GRÁFICO ///////////////////
     // //////////////////////////////////
@@ -1477,17 +1703,13 @@ public class Visio extends BaseFrame {
 		    }
 		});
 		chart.setPicture();
-		chart.setToolTipText("<html>"
-			+ "<p><b>Nome:</b> " + chart.getName()
-			+ "</p>" + "<p><b>Data:</b> " + new java.util.Date((long) chart.getTimestamp())
-			+ "</p>" + "<p><b>Resolução:</b> " + chart.getNumberOfSamples()
-			+ "</p>" + "<p><b>Descrição:</b> " + chart.getDescription() + "</p>"
-			+ "</html>");
+		chart.setToolTipText("<html>" + "<p><b>Nome:</b> " + chart.getName() + "</p>" + "<p><b>Data:</b> " + new java.util.Date((long) chart.getTimestamp()) + "</p>" + "<p><b>Resolução:</b> "
+			+ chart.getNumberOfSamples() + "</p>" + "<p><b>Descrição:</b> " + chart.getDescription() + "</p>" + "</html>");
 		counts.setRange(0, 2500);
-		for(int i = chartCollection.count(); i>0; i--){
-			Component comp = chartCollection.getChart(i-1);
-			sliderPanel.remove(comp);
-			sliderPanel.add(comp, "cell 0 " + (chartCollection.count()-i+2) + ", alignx center, aligny top");
+		for (int i = chartCollection.count(); i > 0; i--) {
+		    Component comp = chartCollection.getChart(i - 1);
+		    sliderPanel.remove(comp);
+		    sliderPanel.add(comp, "cell 0 " + (chartCollection.count() - i + 2) + ", alignx center, aligny top");
 		}
 		sliderPanel.add(chart, "cell 0 1, alignx center, aligny top");
 		sliderPanel.updateUI();
@@ -1562,15 +1784,15 @@ public class Visio extends BaseFrame {
 		}
 		if (harvester != null)
 		    if (harvester.tryConnection(((String) commComboBox.getSelectedItem()))) {
-				commLabel.setText("Conectado");
-				commLabel.setForeground(Color.GREEN);
-				conectado = true;
-				setCommEvent(false);
-				launchThread();
-				RSpec.setDaemon(true);
-				RSpec.start();
-				btnAdquirir.setEnabled(true);
-				enableSpecPanel();
+			commLabel.setText("Conectado");
+			commLabel.setForeground(Color.GREEN);
+			conectado = true;
+			setCommEvent(false);
+			launchThread();
+			RSpec.setDaemon(true);
+			RSpec.start();
+			btnAdquirir.setEnabled(true);
+			enableSpecPanel();
 		    }
 	    }
 	}
@@ -1607,12 +1829,135 @@ public class Visio extends BaseFrame {
 
     /** Atributo background color. */
     private Color backgroundColor;
-    
+
     /** Atributo text field_4. */
     private JTextField textField_4;
-    
+
     /** Atributo text field_5. */
     private JTextField textField_5;
+
+    /** Atributo tradutor. */
+    private boolean tradutorIngles = false;
+
+    /** Atributo titled border. */
+    private TitledBorder titledBorder;
+
+    /** Atributo protocolo border. */
+    private TitledBorder protocoloBorder;
+
+    private JLabel lblNumeroAmostras;
+
+    private JButton btnEscolher;
+
+    private JButton btnSalvar;
+
+    private TitledBorder titledBorderSolucao;
+
+    private JLabel lblA;
+
+    private JLabel lblFaixaEspectral_1;
+
+    private JLabel lblTempoDeIntegrao;
+
+    private JLabel lblUnidade;
+
+    private JRadioButton rdbtnUnico;
+
+    private JRadioButton rdbtnContinuo;
+
+    private JLabel lblModoDeOperao;
+
+    private TitledBorder titledBorderConexao;
+
+    private TitledBorder titledBorderOpcoes;
+
+    private JLabel lblEspectrometroEmissao;
+
+    private TitledBorder titledBorderEspectro;
+
+    private JLabel labTabEspectro;
+
+    private JButton btnRemover;
+
+    private JButton btnEditar;
+
+    private JLabel labTabConexao;
+
+    private JButton btnLimpar;
+
+    private JButton btnAplicar;
+
+    private JRadioButton radioButtonNao;
+
+    private JRadioButton radioButtonSim;
+
+    private JRadioButton radioButton_1;
+
+    private JRadioButton radioButton2;
+
+    private JLabel lblOpenPort;
+
+    private JRadioButton rdbtnNo;
+
+    private JRadioButton rdbtnSim;
+
+    private JLabel lblConectado;
+
+    private JButton button;
+
+    private TitledBorder titledBorderVariavelEstado;
+
+    private JLabel lblSerialPort;
+
+    private JLabel lblNmeroDeAmostras;
+
+    private JLabel lblParity;
+
+    private JMenuItem instrucoesItem;
+
+    private JMenuItem versaoItem;
+
+    private JMenu ajudaMenu;
+
+    private JMenuItem fundoItem;
+
+    private JMenuItem curvaItem;
+
+    private JMenuItem gridItem;
+
+    private JMenuItem autoEscalarItem;
+
+    private JMenu graficoMenu;
+
+    private JMenuItem portuguesItem;
+
+    private JMenuItem englishItem;
+
+    private JMenu idiomaMenu;
+
+    private JMenu menuOpcoes;
+
+    private JMenuItem abrirItem;
+
+    private JMenuItem salvarItem;
+
+    private JMenuItem exportarItem;
+
+    private JMenuItem exportarImagemItem;
+
+    private JMenuItem sairItem;
+
+    private JMenu menuArquivo;
+
+    private String instrucoesDeUso;
+
+    private String versao;
+
+    private String subMenuExportar;
+
+    private String stringExportar;
+
+    private String stringInstrucoes;
 
     /**
      * Atribui o valor comm event.
@@ -1625,6 +1970,25 @@ public class Visio extends BaseFrame {
 	this.commEvent = commEvent;
 	if (this.commEvent)
 	    notifyAll();
+    }
+
+    /**
+     * Retorna numero amostras.
+     *
+     * @return numero amostras
+     */
+    public int getNumeroAmostras() {
+	return numeroAmostras;
+    }
+
+    /**
+     * Atribui o valor numero amostras.
+     *
+     * @param numeroAmostras
+     *            novo numero amostras
+     */
+    public void setNumeroAmostras(int numeroAmostras) {
+	this.numeroAmostras = numeroAmostras;
     }
 
     /**
@@ -1683,7 +2047,6 @@ public class Visio extends BaseFrame {
 			    if (harvester != null)
 				harvester.closeComm();
 			    conectado = false;
-			    disableSpecPanel();
 			}
 			commLabel.setText("Indisponível");
 			commLabel.setForeground(new Color(255, 0, 0));
@@ -1691,78 +2054,78 @@ public class Visio extends BaseFrame {
 		}
 	    });
 	    while (true) {
-			String portList[] = SerialPortList.getPortNames();
-	
-			if (portList.length == 0) {
-			    btnConectar.setEnabled(false);
-			    commComboBox.removeAllItems();
+		String portList[] = SerialPortList.getPortNames();
+
+		if (portList.length == 0) {
+		    btnConectar.setEnabled(false);
+		    commComboBox.removeAllItems();
+		    portaAtual = null;
+		    System.out.println("Nenhuma porta encontrada");
+		    commLabel.setText("Indisponível");
+		    commLabel.setForeground(new Color(255, 0, 0));
+		    if (conectado) {
+			System.out.println("Encerra conexão");
+			if (harvester != null)
+			    harvester.closeComm();
+			conectado = false;
+			disableSpecPanel();
+		    }
+		} else {
+		    if (!conectado) {
+			btnConectar.setEnabled(true);
+		    }
+		    commComboBox.removeAllItems();
+		    for (String port : portList) {
+			commComboBox.addItem(port);
+		    }
+		    if (portaAtual != null) {
+			System.out.println("Há valor");
+			if (findItem(portaAtual)) {
+			    commComboBox.setSelectedItem(portaAtual);
+			} else {
+			    System.out.println("Perdeu porta");
 			    portaAtual = null;
-			    System.out.println("Nenhuma porta encontrada");
+			    if (conectado) {
+				System.out.println("Encerra conexão");
+				conectado = false;
+			    }
 			    commLabel.setText("Indisponível");
 			    commLabel.setForeground(new Color(255, 0, 0));
-			    if (conectado) {
-					System.out.println("Encerra conexão");
-					if (harvester != null)
-					    harvester.closeComm();
-					conectado = false;
-					disableSpecPanel();
-			    }
-			} else {
-			    if (!conectado) {
-					btnConectar.setEnabled(true);
-				}
-			    commComboBox.removeAllItems();
-			    for (String port : portList) {
-			    	commComboBox.addItem(port);
-			    }
-			    if (portaAtual != null) {
-			    	System.out.println("Há valor");
-			    	if (findItem(portaAtual)) {
-			    		commComboBox.setSelectedItem(portaAtual);
-			    	} else {
-			    		System.out.println("Perdeu porta");
-			    		portaAtual = null;
-			    		if (conectado) {
-			    			System.out.println("Encerra conexão");
-			    			conectado = false;
-			    		}
-			    		commLabel.setText("Indisponível");
-			    		commLabel.setForeground(new Color(255, 0, 0));
-					}
-				} else {
-					System.out.println(">> Recebeu um valor");
-					portaAtual = (String) commComboBox.getSelectedItem();
-			    }
 			}
-			try {
-			    Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			    e.printStackTrace();
-			}
+		    } else {
+			System.out.println(">> Recebeu um valor");
+			portaAtual = (String) commComboBox.getSelectedItem();
+		    }
+		}
+		try {
+		    Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		    e.printStackTrace();
+		}
 	    }
 	}
 
     }
-//    public class ChartEditor extends JDialog {
-//
-//    	/**
-//		 * 
-//		 */
-//		private static final long serialVersionUID = -8641924255282780050L;
-//		private final JPanel contentPanel = new JPanel();
-//    	private JTextField textField;
-//    	private JTextField textField_1;
-//    	private JTextField textField_2;
-//
-//    	/**
-//    	 * Launch the application.
-//    	 */
-//    	
-//    	/**
-//    	 * Create the dialog.
-//    	 */
-//    	public cl
-//
-//    }
+    // public class ChartEditor extends JDialog {
+    //
+    // /**
+    // *
+    // */
+    // private static final long serialVersionUID = -8641924255282780050L;
+    // private final JPanel contentPanel = new JPanel();
+    // private JTextField textField;
+    // private JTextField textField_1;
+    // private JTextField textField_2;
+    //
+    // /**
+    // * Launch the application.
+    // */
+    //
+    // /**
+    // * Create the dialog.
+    // */
+    // public cl
+    //
+    // }
 
 }
