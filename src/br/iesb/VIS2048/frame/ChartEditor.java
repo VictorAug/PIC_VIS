@@ -1,48 +1,50 @@
 package br.iesb.VIS2048.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.DropMode;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
-
 import br.iesb.VIS2048.database.DBChartCollection;
-
-import java.awt.Rectangle;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JToggleButton;
-
-import java.awt.Insets;
 
 public class ChartEditor extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6356283623484026659L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField txtDeXxx;
-
+	private JTextArea textArea;
+	private JPanel panel;
+	private JButton btnNewButton;
+	private JButton btnNewButton_1;
+	private DBChartCollection chartCollection;
+	private int selectedChart;
+	private Chart selected;
 	/**
 	 * Launch the application.
 	 */
@@ -52,22 +54,28 @@ public class ChartEditor extends JDialog {
 	 * @param chartCollection 
 	 */
 	public ChartEditor(DBChartCollection chartCollection, int selectedChart) {
+		if(chartCollection == null) return;
+		else{
+			this.chartCollection = chartCollection;
+			this.selectedChart = selectedChart;
+		}
 		setBounds(100, 100, 504, 250);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new MigLayout("", "[grow][grow]", "[grow]"));
 		{
-			JPanel panel = new JPanel();
+			panel = new JPanel();
 			contentPanel.add(panel, "cell 0 0,alignx center,growy");
 			panel.setLayout(new MigLayout("", "[][][]", "[grow][25]"));
 			{
-				chartCollection.getChart(selectedChart).setMaximumSize(new Dimension(112, 84));
-				chartCollection.getChart(selectedChart).setMinimumSize(new Dimension(112, 84));
-				panel.add(chartCollection.getChart(selectedChart), "cell 0 0 3 1,alignx center,growy");
+				selected = chartCollection.getChart(selectedChart);
+				selected.setMaximumSize(new Dimension(112, 84));
+				selected.setMinimumSize(new Dimension(112, 84));
+				panel.add(selected, "cell 0 0 3 1,alignx center,growy");
 			}
 			{
-				JButton btnNewButton = new JButton("<");
+				btnNewButton = new JButton("<");
 				btnNewButton.setPreferredSize(new Dimension(25, 25));
 				btnNewButton.setMinimumSize(new Dimension(25, 25));
 				btnNewButton.setMargin(new Insets(2, 2, 2, 2));
@@ -76,13 +84,12 @@ public class ChartEditor extends JDialog {
 			}
 			{
 				textField_3 = new JTextField();
-				textField_3.setText(selectedChart+"");
 				textField_3.setMaximumSize(new Dimension(60, 60));
 				panel.add(textField_3, "flowx,cell 1 1,grow");
 				textField_3.setColumns(10);
 			}
 			{
-				JButton btnNewButton_1 = new JButton(">");
+				btnNewButton_1 = new JButton(">");
 				btnNewButton_1.setMinimumSize(new Dimension(25, 25));
 				btnNewButton_1.setMaximumSize(new Dimension(25, 25));
 				btnNewButton_1.setPreferredSize(new Dimension(25, 25));
@@ -97,65 +104,60 @@ public class ChartEditor extends JDialog {
 				txtDeXxx.setSize(new Dimension(6, 25));
 				txtDeXxx.setPreferredSize(new Dimension(6, 25));
 				txtDeXxx.setMinimumSize(new Dimension(6, 25));
-				txtDeXxx.setText("de " + chartCollection.count());
 				panel.add(txtDeXxx, "cell 1 1,alignx left");
 				txtDeXxx.setColumns(10);
 			}
 		}
 		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel, "cell 1 0,grow");
-			panel.setLayout(new MigLayout("", "[][grow]", "[][][][grow]"));
+			JPanel panel2 = new JPanel();
+			contentPanel.add(panel2, "cell 1 0,grow");
+			panel2.setLayout(new MigLayout("", "[][grow]", "[][][][grow]"));
 			{
 				JLabel lblNome = new JLabel("Data");
-				panel.add(lblNome, "cell 0 0,alignx trailing,aligny baseline");
+				panel2.add(lblNome, "cell 0 0,alignx trailing,aligny baseline");
 			}
 			{
 				textField = new JTextField();
 				textField.setEditable(false);
-				textField.setText("" + new java.util.Date(chartCollection.getChart(selectedChart).getTimestamp()));
-				panel.add(textField, "cell 1 0,growx");
+				panel2.add(textField, "cell 1 0,growx");
 				textField.setColumns(10);
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Nome");
-				panel.add(lblNewLabel, "cell 0 1,alignx trailing");
+				panel2.add(lblNewLabel, "cell 0 1,alignx trailing");
 			}
 			{
 				textField_1 = new JTextField();
-				textField_1.setText(chartCollection.getChart(selectedChart).getName());
-				panel.add(textField_1, "cell 1 1,growx");
+				panel2.add(textField_1, "cell 1 1,growx");
 				textField_1.setColumns(10);
 			}
 			{
 				JLabel lblPonto = new JLabel("Ponto");
-				panel.add(lblPonto, "cell 0 2,alignx right");
+				panel2.add(lblPonto, "cell 0 2,alignx right");
 			}
 			{
 				JSpinner spinner = new JSpinner(new SpinnerNumberModel(selectedChart, 0, 2047, 1));
 				spinner.setMaximumSize(new Dimension(60, 20));
 				spinner.setMinimumSize(new Dimension(60, 20));
 				spinner.setBounds(new Rectangle(0, 0, 10, 0));
-				panel.add(spinner, "flowx,cell 1 2,growx");
+				panel2.add(spinner, "flowx,cell 1 2,growx");
 				spinner.addChangeListener(new ChangeListener() {
-					
 					@Override
 					public void stateChanged(ChangeEvent arg0) {
-						System.out.println(spinner.getValue());
-						textField_2.setText(""+chartCollection.getChart(selectedChart).getXyseries().getY((int) spinner.getValue()));
+						textField_2.setText(""+selected.getXyseries().getY((int) spinner.getValue()));
 					}
 				});
 			}
 			{
 				JLabel lblDescrio = new JLabel("Descrição");
-				panel.add(lblDescrio, "cell 0 3,alignx right");
+				panel2.add(lblDescrio, "cell 0 3,alignx right");
 			}
 			{
 				JScrollPane scrollPane = new JScrollPane();
 				scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-				panel.add(scrollPane, "cell 1 3,grow");
+				panel2.add(scrollPane, "cell 1 3,grow");
 				{
-					JTextArea textArea = new JTextArea();
+					textArea = new JTextArea();
 					textArea.setLineWrap(true);
 					textArea.setWrapStyleWord(true);
 					textArea.setDropMode(DropMode.INSERT);
@@ -165,7 +167,7 @@ public class ChartEditor extends JDialog {
 			}
 			{
 				textField_2 = new JTextField();
-				panel.add(textField_2, "cell 1 2,growx");
+				panel2.add(textField_2, "cell 1 2,growx");
 				textField_2.setColumns(10);
 			}
 			
@@ -177,12 +179,26 @@ public class ChartEditor extends JDialog {
 			{
 				JButton btnRemover = new JButton("Remover");
 				buttonPane.add(btnRemover);
+				btnRemover.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						chartCollection.getChartQueue().remove(selectedChart);
+						if( selectedChart >= 1) 
+							ChartEditor.this.selectedChart--;
+						else if(chartCollection.count() > 0){
+							ChartEditor.this.selectedChart = 0;
+						}else if(chartCollection.count() == 0){
+							dispose();
+						}
+						if(chartCollection.count() > 0)
+							updateView();
+					}
+				});
 			}
 			{
 				JButton okButton = new JButton("Salvar");
 				okButton.setActionCommand("Salvar");
 				buttonPane.add(okButton);
-				//getRootPane().setDefaultButton(okButton);
 			}
 			{
 				JButton cancelButton = new JButton("Cancelar");
@@ -190,12 +206,69 @@ public class ChartEditor extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						dispose();
-						
+						dispose();						
 					}
 				});
 			}
 		}
+		btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(ChartEditor.this.selectedChart < 1) return;
+				if( ChartEditor.this.selectedChart >= 1) 
+					ChartEditor.this.selectedChart--;
+				else if(chartCollection.count() > 0){
+					ChartEditor.this.selectedChart = 0;
+				}else if(chartCollection.count() == 0){
+					dispose();
+				}
+				if(chartCollection.count() > 0)
+					updateView();
+			}
+		});
+		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(ChartEditor.this.selectedChart >= chartCollection.count()-1) return;
+				if( ChartEditor.this.selectedChart >= 1) 
+					ChartEditor.this.selectedChart--;
+				else if(chartCollection.count() > 0){
+					ChartEditor.this.selectedChart = 0;
+				}else if(chartCollection.count() == 0){
+					dispose();
+				}
+				if(chartCollection.count() > 0)
+					updateView();
+			}
+		});
+		textField_3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(ChartEditor.this.selectedChart < 1 || ChartEditor.this.selectedChart >= chartCollection.count()-1) return;
+				if( ChartEditor.this.selectedChart >= 1) 
+					ChartEditor.this.selectedChart--;
+				else if(chartCollection.count() > 0){
+					ChartEditor.this.selectedChart = 0;
+				}else if(chartCollection.count() == 0){
+					dispose();
+				}
+				if(chartCollection.count() > 0)
+					updateView();
+			}
+		});
+		updateView();
 	}
-
+	void updateView(){
+		panel.remove(selected);
+		selected = chartCollection.getChart(selectedChart);
+		textArea.setText(selected.getDescription());
+		textField_3.setText(selectedChart+"");
+		textField_1.setText(selected.getName());
+		textField.setText("" + new java.util.Date(selected.getTimestamp()));
+		txtDeXxx.setText("de " + chartCollection.count());
+		selected.setMaximumSize(new Dimension(112, 84));
+		selected.setMinimumSize(new Dimension(112, 84));
+		panel.add(selected, "cell 0 0 3 1,alignx center,growy");
+		panel.updateUI();
+	}
 }
