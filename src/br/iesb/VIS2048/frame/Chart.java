@@ -23,6 +23,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 
+@SuppressWarnings("unused")
 public class Chart extends JToggleButton implements Serializable{
 	private static final long serialVersionUID = -914154144556108519L;
 	private transient Double[] doubleSeries;
