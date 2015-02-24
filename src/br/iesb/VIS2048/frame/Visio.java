@@ -2111,26 +2111,4 @@ public class Visio {
 	}
 
     }
-    // public class ChartEditor extends JDialog {
-    //
-    // /**
-    // *
-    // */
-    // private static final long serialVersionUID = -8641924255282780050L;
-    // private final JPanel contentPanel = new JPanel();
-    // private JTextField textField;
-    // private JTextField textField_1;
-    // private JTextField textField_2;
-    //
-    // /**
-    // * Launch the application.
-    // */
-    //
-    // /**
-    // * Create the dialog.
-    // */
-    // public cl
-    //
-    // }
-
 }
