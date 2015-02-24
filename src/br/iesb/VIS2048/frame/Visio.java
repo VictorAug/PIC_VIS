@@ -234,7 +234,7 @@ public class Visio {
      */
     public static void main(String[] args) {
 	System.setProperty("sun.java2d.d3d", "false");
-	System.out.println(Protocol.getParameter());
+	System.out.println(Protocol.getParameter(16, 1000, 1, -1));
 	return;
 //	EventQueue.invokeLater(new Runnable() {
 //	    public void run() {

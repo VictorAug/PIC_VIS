@@ -10,14 +10,43 @@ public class Protocol {
 	private static int LEITURA_CCD = 0x04;
 	private static int CRC = 0x00;
 	
-	public static String getParameter(){
+	public static String getParameter(int qtPro, int tmInt, int led, int ccd){
 		String protocolString = "";
-		protocolString += BEGIN_PACKET;
+		String data = "";
+		protocolString += Integer.toHexString(BEGIN_PACKET);
 		
+		int i = 0;
 		
-		protocolString += CRC;
-		protocolString += END_PACKET;
-		return protocolString;
+		if(qtPro >= 0){
+			data += " "+QTDE_PROMEDIACOES;
+			data += Integer.toHexString(qtPro).length()/2 + 1;
+			data += Integer.toHexString(qtPro);
+			i++;
+		}	
+		if(tmInt >= 0){
+			data += " "+TEMPO_INTEGRACAO;
+			data += Integer.toHexString(tmInt).length()/2 + 1;
+			data += Integer.toHexString(tmInt);
+			i++;
+		}	
+		if(led >= 0){
+			data += " "+LED_STATUS;
+			data += Integer.toHexString(led).length()/2 + 1;
+			data += Integer.toHexString(led);
+			i++;
+		}	
+		if(ccd >= 0){
+			data += " "+LEITURA_CCD;
+			data += Integer.toHexString(ccd).length()/2 + 1;
+			data += Integer.toHexString(ccd);
+			i++;
+		}	
+		
+		protocolString += " "+Integer.toHexString(i);
+		protocolString += data;		
+		protocolString += " "+Integer.toHexString(CRC);
+		protocolString += " "+Integer.toHexString(END_PACKET);
+		return protocolString.toUpperCase();
 	}
 
 }
