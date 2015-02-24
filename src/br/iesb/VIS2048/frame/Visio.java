@@ -53,6 +53,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
+import br.iesb.VIS2048.comm.Protocol;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBViewer;
@@ -219,7 +220,7 @@ public class Visio {
     private String confirmDialogText;
 
     private boolean tradutorPortugues = true;
-
+    private String protocolString = "+";
     // private Chart selectedChart = null;
     // ///////////////////////////////////////
     // ///////// MÉTODOS /////////////////////
@@ -233,16 +234,18 @@ public class Visio {
      */
     public static void main(String[] args) {
 	System.setProperty("sun.java2d.d3d", "false");
-	EventQueue.invokeLater(new Runnable() {
-	    public void run() {
-		try {
-		    Visio window = new Visio();
-		    window.frame.setVisible(true);
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-	    }
-	});
+	System.out.println(Protocol.getParameter());
+	return;
+//	EventQueue.invokeLater(new Runnable() {
+//	    public void run() {
+//		try {
+//		    Visio window = new Visio();
+//		    window.frame.setVisible(true);
+//		} catch (Exception e) {
+//		    e.printStackTrace();
+//		}
+//	    }
+//	});
     }
 
     /**
@@ -1682,7 +1685,7 @@ public class Visio {
 		    e.printStackTrace();
 		}
 		series = new XYSeries(collectionName);
-		Chart chart = harvester.getDataset("+");
+		Chart chart = harvester.getDataset(protocolString);
 		series = chart.getXyseries();
 		chartCollection.addChart(chart);
 		System.out.println(chartCollection.count());
