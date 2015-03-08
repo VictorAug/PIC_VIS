@@ -234,18 +234,18 @@ public class Visio {
      */
     public static void main(String[] args) {
 	System.setProperty("sun.java2d.d3d", "false");
-	System.out.println(Protocol.getParameter(16, 1000, 1, -1));
-	return;
-//	EventQueue.invokeLater(new Runnable() {
-//	    public void run() {
-//		try {
-//		    Visio window = new Visio();
-//		    window.frame.setVisible(true);
-//		} catch (Exception e) {
-//		    e.printStackTrace();
-//		}
-//	    }
-//	});
+	//System.out.println(Protocol.getParameter(16, 1000, 1, -1));
+	//return;
+	EventQueue.invokeLater(new Runnable() {
+	    public void run() {
+		try {
+		    Visio window = new Visio();
+		    window.frame.setVisible(true);
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	    }
+	});
     }
 
     /**
@@ -1129,7 +1129,8 @@ public class Visio {
 	slider.addChangeListener(new ChangeListener() {
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
-		label.setText("" + slider.getValue());
+	    	label.setText("" + slider.getValue());
+			protocolString = Protocol.getParameter(slider.getValue(), slider_1.getValue(), 0, 0);
 	    }
 	});
 	slider.setSnapToTicks(true);
@@ -1200,7 +1201,8 @@ public class Visio {
 	slider_1.addChangeListener(new ChangeListener() {
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
-		label_1.setText("" + slider_1.getValue());
+	    	label_1.setText("" + slider_1.getValue());
+	    	protocolString = Protocol.getParameter(slider.getValue(), slider_1.getValue(), 0, 0);
 	    }
 	});
 
