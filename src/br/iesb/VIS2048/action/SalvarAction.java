@@ -59,7 +59,7 @@ public class SalvarAction extends AbstractAction {
 		System.out.println("Nome do arquivo escolhido: " + arq.getPath());
 
 	    } catch (IOException ioe) {
-		JOptionPane.showMessageDialog(null, "N�o foi poss�vel salvar arquivo!");
+		JOptionPane.showMessageDialog(null, "Não foi possível salvar o arquivo!");
 	    }
 	}
     }

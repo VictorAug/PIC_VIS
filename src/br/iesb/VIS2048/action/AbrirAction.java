@@ -36,8 +36,9 @@ public class AbrirAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
 	JFileChooser fileChooser = new JFileChooser();
 	int resp = fileChooser.showOpenDialog(textArea);
-	if (resp != JFileChooser.APPROVE_OPTION)
+	if (resp != JFileChooser.APPROVE_OPTION) {
 	    return;
+	}
 	openFile(fileChooser.getSelectedFile());
     }
 
