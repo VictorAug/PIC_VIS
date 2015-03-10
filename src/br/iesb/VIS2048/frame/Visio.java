@@ -53,12 +53,10 @@ import org.jfree.data.xy.XYSeriesCollection;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
-import br.iesb.VIS2048.comm.Protocol;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBViewer;
 
-// TODO: Auto-generated Javadoc
 /**
  * Class Visio.
  */
@@ -1129,8 +1127,7 @@ public class Visio {
 	slider.addChangeListener(new ChangeListener() {
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
-	    	label.setText("" + slider.getValue());
-			protocolString = Protocol.getParameter(slider.getValue(), slider_1.getValue(), 0, 0);
+		label.setText("" + slider.getValue());
 	    }
 	});
 	slider.setSnapToTicks(true);
@@ -1201,8 +1198,7 @@ public class Visio {
 	slider_1.addChangeListener(new ChangeListener() {
 	    @Override
 	    public void stateChanged(ChangeEvent e) {
-	    	label_1.setText("" + slider_1.getValue());
-	    	protocolString = Protocol.getParameter(slider.getValue(), slider_1.getValue(), 0, 0);
+		label_1.setText("" + slider_1.getValue());
 	    }
 	});
 
