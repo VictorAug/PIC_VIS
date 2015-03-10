@@ -62,9 +62,6 @@ import br.iesb.VIS2048.database.DBViewer;
  */
 public class Visio {
 
-    // ///////////////////////////////////////
-    // ///////// ATRIBUTOS ///////////////////
-    // ///////////////////////////////////////
     /** Atributo btn conectar. */
     private JButton btnConectar = new JButton("Conectar");
 
@@ -126,7 +123,7 @@ public class Visio {
     private String collectionName = "Counts";
 
     /** The file name. */
-    private String fileName;
+    String fileName;
 
     /** The slider panel. */
     private JPanel sliderPanel;
@@ -1724,47 +1721,6 @@ public class Visio {
 	}
     }
 
-    // ////////////////////////
-    // /// BANCO DE DADOS /////
-    // ////////////////////////
-    /**
-     * Retorna file name.
-     *
-     * @return file name
-     */
-    public String getFileName() {
-	return fileName;
-    }
-
-    /**
-     * Sets the file name.
-     *
-     * @param fileName
-     *            the new file name
-     */
-    public void setFileName(String fileName) {
-	this.fileName = fileName;
-    }
-
-    /**
-     * Retorna db.
-     *
-     * @return db
-     */
-    public DBHandler getDb() {
-	return db;
-    }
-
-    /**
-     * Atribui o valor db.
-     *
-     * @param db
-     *            novo db
-     */
-    public void setDb(DBHandler db) {
-	this.db = db;
-    }
-
     // ///////////////////////////////////
     // ///// COMUNICAÇÃO /////////////////
     // ///////////////////////////////////
@@ -1974,27 +1930,9 @@ public class Visio {
     public synchronized void setCommEvent(boolean commEvent) { // Controla ordem
 							       // de adquirir
 	this.commEvent = commEvent;
-	if (this.commEvent)
+	if (this.commEvent){
 	    notifyAll();
-    }
-
-    /**
-     * Retorna numero amostras.
-     *
-     * @return numero amostras
-     */
-    public int getNumeroAmostras() {
-	return numeroAmostras;
-    }
-
-    /**
-     * Atribui o valor numero amostras.
-     *
-     * @param numeroAmostras
-     *            novo numero amostras
-     */
-    public void setNumeroAmostras(int numeroAmostras) {
-	this.numeroAmostras = numeroAmostras;
+	}
     }
 
     /**
@@ -2003,7 +1941,7 @@ public class Visio {
     private class checkForPorts implements Runnable {
 
 	/** Atributo porta atual. */
-	String portaAtual = null;
+	private String portaAtual = null;
 
 	/**
 	 * Find item.

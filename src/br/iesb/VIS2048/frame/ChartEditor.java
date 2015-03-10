@@ -26,28 +26,62 @@ import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.database.DBChartCollection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Class ChartEditor.
+ */
 public class ChartEditor extends JDialog {
 
-	/**
-	 * 
-	 */
+	/** Constante serialVersionUID. */
 	private static final long serialVersionUID = 6356283623484026659L;
+	
+	/** Atributo content panel. */
 	private final JPanel contentPanel = new JPanel();
+	
+	/** Atributo text field. */
 	private JTextField textField;
+	
+	/** Atributo text field_1. */
 	private JTextField textField_1;
+	
+	/** Atributo text field_2. */
 	private JTextField textField_2;
+	
+	/** Atributo text field_3. */
 	private JTextField textField_3;
+	
+	/** Atributo txt de xxx. */
 	private JTextField txtDeXxx;
+	
+	/** Atributo text area. */
 	private JTextArea textArea;
+	
+	/** Atributo panel. */
 	private JPanel panel;
+	
+	/** Atributo btn new button. */
 	private JButton btnNewButton;
+	
+	/** Atributo btn new button_1. */
 	private JButton btnNewButton_1;
+	
+	/** Atributo chart collection. */
 	private DBChartCollection chartCollection;
+	
+	/** Atributo selected chart. */
 	private int selectedChart;
+	
+	/** Atributo selected. */
 	private Chart selected;
+	
+	/** Atributo spinner. */
 	private JSpinner spinner;
+	
 	/**
 	 * Launch the application.
+	 *
+	 * @param chartCollection the chart collection
+	 * @param selectedChart the selected chart
 	 */
 	
 	/**
@@ -241,6 +275,10 @@ public class ChartEditor extends JDialog {
 		});
 		updateView();
 	}
+	
+	/**
+	 * Update view.
+	 */
 	void updateView(){
 		panel.remove(selected);
 		selected = chartCollection.getChart(selectedChart);
