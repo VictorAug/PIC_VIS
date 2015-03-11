@@ -62,7 +62,7 @@ public class DBHandler {
 
 	for (int i = 1; i < collection.size() + 2; i++) {
 	    if (!collection.contains(("solucao" + i + ".vis").toLowerCase())) {
-		mainDB += "solucao" + i + ".vis";
+		mainDB = "solucao" + i + ".vis";
 		break;
 	    }
 	}
