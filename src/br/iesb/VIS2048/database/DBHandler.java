@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,7 +25,7 @@ import java.util.zip.GZIPOutputStream;
  */
 public class DBHandler {
 	private final static String appPathString = "./Vis/";
-	private final static String DBPathString = appPathString + "DB/";
+	private final static String DBPathString = appPathString + "NewDB/";
 	private static String DBFileConfig = DBPathString + "config/";
 	private static String DBFileCollection = DBPathString + "collection/";
 	private ArrayList<String> collection = new ArrayList<String>();
@@ -35,19 +36,19 @@ public class DBHandler {
 		createDir(appPathString);
 		createDir(DBPathString);
 		createDir(DBFileConfig);
-		createDir(getDBFileCollection());
-		for (File file : getFilesList(getDBFileCollection()))
-			if (file.getName().endsWith(".vis")) {
-				collection.add(file.getName().toLowerCase());
-			}
+		createDir(DBFileCollection);
+		for (File file : getFilesList(DBFileCollection))
+			collection.add(file.getName().toLowerCase());
+			
 		for (int i = 1; i < collection.size() + 2; i++) {
-			if (!collection.contains(("solucao" + i + ".vis").toLowerCase())) {
-				mainDB = "solucao" + i + ".vis";
+			if (!collection.contains(("solucao" + i).toLowerCase())) {
+				mainDB = DBFileCollection + "solucao" + i;
+				createDir(mainDB);
 				break;
 			}
 		}
-		System.err.print(getDBFileCollection() + getMainDB());
-		DBChart = new DBChartCollection();
+		System.err.print(mainDB);
+		//DBChart = new DBChartCollection();
 		System.out.println(" Ready");
 	}
 
@@ -56,7 +57,7 @@ public class DBHandler {
 	}
 
 	public void saveChartCollection() {
-		saveGZipObject(DBChart, getDBFileCollection() + getMainDB());
+		saveGZipObject(DBChart, mainDB);
 	}
 
 	private static void createDir(String path) {
@@ -89,6 +90,28 @@ public class DBHandler {
 		File[] fList = directory.listFiles();
 		Arrays.asList(fList).stream().filter(file -> file.isFile())
 				.forEach(file -> System.out.println(file.getName()));
+	}
+	public boolean insert(DBChartCollection col) {
+		String name = col.getChart(0).getTimestamp() + "-" + col.getChart(col.count()-1).getTimestamp();
+		
+		try {
+			OutputStream outputStream = new FileOutputStream(new File(mainDB + "/" + "index.txt"));
+			outputStream.write(name.getBytes(), 0, name.length());
+			outputStream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		saveGZipObject(col, mainDB + "/" + name + ".vis");
+		return false;
+	}
+
+	public boolean update() {
+		return false;
+	}
+
+	public boolean remove() {
+		return false;
 	}
 
 	public static boolean saveGZipObject(Object vlo, String fileName) {
@@ -202,7 +225,7 @@ public class DBHandler {
 	}
 
 	public String getMainDBFileName() {
-		return DBFileCollection.concat(mainDB);
+		return mainDB;
 	}
 
 	public void setMainDB(String mainDB) {
