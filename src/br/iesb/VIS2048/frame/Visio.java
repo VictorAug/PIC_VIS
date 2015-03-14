@@ -11,6 +11,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Date;
+import java.util.Random;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -45,6 +46,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -55,6 +57,8 @@ import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBTree;
 import br.iesb.VIS2048.database.DBViewer;
+
+import java.awt.SystemColor;
 
 /**
  * Class Visio.
@@ -838,6 +842,45 @@ public class Visio {
 		pcaPanel = new JPanel();
 		pcaPanel.setBackground(new Color(0, 0, 51));
 		tabbedPane.addTab("PCA", null, pcaPanel, null);
+		pcaPanel.setLayout(new MigLayout("", "0[245px:245px:245px,grow]0[grow]0", "0[grow]0[30px:30px:30px]0"));
+		
+		panel_8 = new JPanel();
+		panel_8.setBackground(new Color(0, 0, 51));
+		pcaPanel.add(panel_8, "cell 0 0,grow");
+		
+		panel_13 = new JPanel();
+		panel_13.setBackground(new Color(0, 0, 0));
+		pcaPanel.add(panel_13, "cell 1 0,grow");
+		panel_13.setAlignmentY(0.0f);
+		XYDataset PCAdataSet = createDataset();
+		JFreeChart PCAjfreechart = ChartFactory.createScatterPlot("Visio", "",
+				collectionName, PCAdataSet, PlotOrientation.VERTICAL, true, true,
+				false);
+		counts = (NumberAxis) ((XYPlot) PCAjfreechart.getPlot()).getRangeAxis();
+		//counts.setRange(0, 2500);
+		ChartPanel PCApanel = new ChartPanel(PCAjfreechart);
+		PCApanel.setBackground(Color.black);
+		((XYPlot) PCAjfreechart.getPlot()).setRangeGridlinePaint(Color.white);
+		((XYPlot) PCAjfreechart.getPlot()).setBackgroundPaint(Color.black);
+		panel_13.setLayout(new BorderLayout());
+		panel_13.add(PCApanel, BorderLayout.CENTER);
+
+		PCAjfreechart.setBackgroundPaint(Color.black);
+		((XYPlot) PCAjfreechart.getPlot()).getRenderer().setSeriesPaint(0,
+				Color.green);
+		((XYPlot) PCAjfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
+		((XYPlot) PCAjfreechart.getPlot()).setDomainGridlinePaint(Color.white);
+
+		chartCollection = new DBChartCollection();
+		
+		panel_14 = new JPanel();
+		panel_14.setBackground(SystemColor.controlDkShadow);
+		pcaPanel.add(panel_14, "cell 0 1 2 1,grow");
+		
+		lblvisPca = new JLabel("<html><b>VIS2048</b> - PCA</html>");
+		lblvisPca.setForeground(Color.WHITE);
+		lblvisPca.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		panel_14.add(lblvisPca);
 		tabbedPane.setEnabledAt(1, true);
 		tabbedPane.setBackgroundAt(1, new Color(255, 255, 255));
 
@@ -845,7 +888,19 @@ public class Visio {
 		labTab2.setUI(new VerticalLabelUI(false));
 		tabbedPane.setTabComponentAt(1, labTab2);
 	}
+	private static final Random r = new Random();
 
+	private static XYDataset createDataset() {
+	    XYSeriesCollection result = new XYSeriesCollection();
+	    XYSeries series = new XYSeries("Random");
+	    for (int i = 0; i <= 100; i++) {
+	        double x = r.nextDouble();
+	        double y = r.nextDouble();
+	        series.add(x, y);
+	    }
+	    result.addSeries(series);
+	    return result;
+	}
 	/**
 	 * Inits the visio panel.
 	 */
@@ -1940,6 +1995,10 @@ public class Visio {
 	private String stringInstrucoes;
 
 	private String stringVersao;
+	private JPanel panel_8;
+	private JPanel panel_13;
+	private JPanel panel_14;
+	private JLabel lblvisPca;
 
 	/**
 	 * Atribui o valor comm event.

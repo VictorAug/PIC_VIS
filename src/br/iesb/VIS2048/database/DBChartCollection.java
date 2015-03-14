@@ -37,10 +37,7 @@ public class DBChartCollection implements Serializable {
 		chartQueue.add(chart);
 		// DBHandler.saveGZipObject(this, "teste.gz");
 	}
-	public void addAll(DBChartCollection col) {
-		chartQueue.addAll((Collection<? extends Chart>) col);
-		// DBHandler.saveGZipObject(this, "teste.gz");
-	}
+
 	/**
 	 * Retorna chart.
 	 *
