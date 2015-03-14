@@ -1715,9 +1715,10 @@ public class Visio {
 						+ "<p><b>Resolução:</b> " + chart.getNumberOfSamples()
 						+ "</p>" + "<p><b>Descrição:</b> "
 						+ chart.getDescription() + "</p>" + "</html>");
+				
 				if(chartCollection.count() == 20){
 					oldCharts = chartCollection;
-					chartCollection = null;
+					chartCollection = new DBChartCollection();
 					db.insert(oldCharts);
 				}
 				//counts.setRange(0, 2500);
