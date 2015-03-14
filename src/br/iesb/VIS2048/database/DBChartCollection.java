@@ -2,6 +2,7 @@ package br.iesb.VIS2048.database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import br.iesb.VIS2048.frame.Chart;
 
@@ -36,7 +37,10 @@ public class DBChartCollection implements Serializable {
 		chartQueue.add(chart);
 		// DBHandler.saveGZipObject(this, "teste.gz");
 	}
-
+	public void addAll(DBChartCollection col) {
+		chartQueue.addAll((Collection<? extends Chart>) col);
+		// DBHandler.saveGZipObject(this, "teste.gz");
+	}
 	/**
 	 * Retorna chart.
 	 *

@@ -1,6 +1,7 @@
 package br.iesb.VIS2048.database;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -95,9 +96,12 @@ public class DBHandler {
 		String name = col.getChart(0).getTimestamp() + "-" + col.getChart(col.count()-1).getTimestamp();
 		
 		try {
-			OutputStream outputStream = new FileOutputStream(new File(mainDB + "/" + "index.txt"));
-			outputStream.write(name.getBytes(), 0, name.length());
-			outputStream.close();
+			//OutputStream outputStream = new FileOutputStream(new File(mainDB + "/" + "index.txt"));
+			//outputStream.write(name.getBytes(), 0, name.length());
+			//outputStream.close();
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(mainDB + "/" +"index.txt", true)));
+		    out.println(name);
+		    out.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,7 +109,13 @@ public class DBHandler {
 		saveGZipObject(col, mainDB + "/" + name + ".vis");
 		return false;
 	}
-
+	public DBChartCollection select(){
+		File directory = new File(mainDB);
+		File[] fList = directory.listFiles();
+		Arrays.asList(fList).stream().filter(file -> file.isFile())
+				.forEach(file -> System.out.println(file.getName()));
+		return null;
+	}
 	public boolean update() {
 		return false;
 	}
