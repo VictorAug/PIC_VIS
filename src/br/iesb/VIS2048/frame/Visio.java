@@ -846,33 +846,26 @@ public class Visio {
 		
 		panel_8 = new JPanel();
 		panel_8.setBackground(new Color(0, 0, 51));
-		pcaPanel.add(panel_8, "cell 0 0,grow");
+		pcaPanel.add(panel_8, "cell 0 0,growx,aligny top");
+		panel_8.setLayout(new MigLayout("", "[grow]", "[70px,grow]"));
 		
-		panel_13 = new JPanel();
+		panel_15 = new JPanel();
+		panel_15.setForeground(new Color(211, 211, 211));
+		panel_15.setBorder(titledBorderSolucao);
+		panel_15.setBackground(new Color(0, 0, 51));
+		panel_8.add(panel_15, "cell 0 0,grow");
+		panel_15.setLayout(new MigLayout("", "[][]", "[]"));
+		
+		btnNewButton = new JButton("New button");
+		panel_15.add(btnNewButton, "cell 0 0");
+		
+		btnAbrir = new JButton("Abrir");
+		panel_15.add(btnAbrir, "cell 1 0");
+		
+		panel_13 = new PCAPanel();
 		panel_13.setBackground(new Color(0, 0, 0));
 		pcaPanel.add(panel_13, "cell 1 0,grow");
-		panel_13.setAlignmentY(0.0f);
-		XYDataset PCAdataSet = createDataset();
-		JFreeChart PCAjfreechart = ChartFactory.createScatterPlot("Visio", "",
-				collectionName, PCAdataSet, PlotOrientation.VERTICAL, true, true,
-				false);
-		counts = (NumberAxis) ((XYPlot) PCAjfreechart.getPlot()).getRangeAxis();
-		//counts.setRange(0, 2500);
-		ChartPanel PCApanel = new ChartPanel(PCAjfreechart);
-		PCApanel.setBackground(Color.black);
-		((XYPlot) PCAjfreechart.getPlot()).setRangeGridlinePaint(Color.white);
-		((XYPlot) PCAjfreechart.getPlot()).setBackgroundPaint(Color.black);
-		panel_13.setLayout(new BorderLayout());
-		panel_13.add(PCApanel, BorderLayout.CENTER);
-
-		PCAjfreechart.setBackgroundPaint(Color.black);
-		((XYPlot) PCAjfreechart.getPlot()).getRenderer().setSeriesPaint(0,
-				Color.green);
-		((XYPlot) PCAjfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
-		((XYPlot) PCAjfreechart.getPlot()).setDomainGridlinePaint(Color.white);
-
-		chartCollection = new DBChartCollection();
-		
+				
 		panel_14 = new JPanel();
 		panel_14.setBackground(SystemColor.controlDkShadow);
 		pcaPanel.add(panel_14, "cell 0 1 2 1,grow");
@@ -888,19 +881,7 @@ public class Visio {
 		labTab2.setUI(new VerticalLabelUI(false));
 		tabbedPane.setTabComponentAt(1, labTab2);
 	}
-	private static final Random r = new Random();
-
-	private static XYDataset createDataset() {
-	    XYSeriesCollection result = new XYSeriesCollection();
-	    XYSeries series = new XYSeries("Random");
-	    for (int i = 0; i <= 100; i++) {
-	        double x = r.nextDouble();
-	        double y = r.nextDouble();
-	        series.add(x, y);
-	    }
-	    result.addSeries(series);
-	    return result;
-	}
+	
 	/**
 	 * Inits the visio panel.
 	 */
@@ -1999,6 +1980,9 @@ public class Visio {
 	private JPanel panel_13;
 	private JPanel panel_14;
 	private JLabel lblvisPca;
+	private JPanel panel_15;
+	private JButton btnNewButton;
+	private JButton btnAbrir;
 
 	/**
 	 * Atribui o valor comm event.
