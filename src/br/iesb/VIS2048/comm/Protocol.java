@@ -13,7 +13,19 @@ public class Protocol {
     private static final int LEITURA_CCD = 0x04;
     private static final int CRC = 0x00;
 
-    public static String getParameter(int qtPro, int tmInt, int led, int ccd) {
+    private static Protocol protocolo;
+    
+    private Protocol() {
+    }
+    
+    public static synchronized Protocol getInstance() {
+	if (protocolo == null) {
+	    protocolo = new Protocol();
+	}
+	return protocolo;
+    }
+    
+    public static String setParameter(int qtPro, int tmInt, int led, int ccd) {
 	StringBuilder protocolString = new StringBuilder();
 	StringBuilder data = new StringBuilder();
 	protocolString.append(Integer.toHexString(BEGIN_PACKET));
