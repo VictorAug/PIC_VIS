@@ -53,9 +53,9 @@ public class DBViewer extends JDialog {
 		{
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane
-					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPane
-					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			getContentPane().add(scrollPane, "cell 0 0,grow");
 			DBHandler db = new DBHandler();
 			DefaultMutableTreeNode mutableTreeNode = new DefaultMutableTreeNode(
@@ -76,41 +76,38 @@ public class DBViewer extends JDialog {
 						try {
 							br = new BufferedReader(new FileReader(path + "\\" + "index.txt"));
 							while ((sCurrentLine = br.readLine()) != null) {
-								System.out.println();
-								//if (sCurrentLine.matches(".*\\.vis$")) {
 								panel.removeAll();
 								dbBuffer = (DBChartCollection) DBHandler.loadGZipObject(path +"\\"+ sCurrentLine+".vis");
 								for(int i=0; i<dbBuffer.count(); i++){
 									dbCollection.addChart(dbBuffer.getChart(i));
-								}									
-								int j = 0, k = 0;
-								for (int i = 0; i < dbCollection.count(); i++) {
-									Chart chart = dbCollection.getChartQueue().get(i);
-									chart.setToolTipText("<html>"
-											// + "<p><b>Nome:</b> " +
-											// chart.getName() +
-											// "</p>"
-											+ "<p><b>Data:</b> "
-											+ new Date(chart.getTimestamp()
-													.longValue()) + "</p>"
-											// + "<p><b>Resolu��o:</b> " +
-											// chart.getNumberOfSamples() +
-											// "</p>"
-											// + "<p><b>Descri��o:</b> " +
-											// chart.getDescription() + "</p>"
-											+ "</html>");
-									panel.add(chart, "cell " + j++ + " " + k);
-									panel.updateUI();
-									if (j == 6) {
-										j = 0;
-										k++;
-									}
+									int j = 0, k = 0;
+									for (int l = 0; l < dbCollection.count(); l++) {
+										Chart chart = dbCollection.getChartQueue().get(l);
+										chart.setToolTipText("<html>"
+												// + "<p><b>Nome:</b> " +
+												// chart.getName() +
+												// "</p>"
+												+ "<p><b>Data:</b> "
+												+ new Date(chart.getTimestamp()
+														.longValue()) + "</p>"
+														// + "<p><b>Resolu��o:</b> " +
+														// chart.getNumberOfSamples() +
+														// "</p>"
+														// + "<p><b>Descri��o:</b> " +
+														// chart.getDescription() + "</p>"
+														+ "</html>");
+										panel.add(chart, "cell " + j++ + " " + k);
+										panel.updateUI();
+										if (j == 6) {
+											j = 0;
+											k++;
+										}
+									}									
 								}
-								//}
 							}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 
 				}
 			});
@@ -121,7 +118,7 @@ public class DBViewer extends JDialog {
 		{
 			JScrollPane scrollPane = new JScrollPane();
 			scrollPane
-					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			getContentPane().add(scrollPane, "cell 1 0,grow");
 			{
 				panel = new JPanel();
