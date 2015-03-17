@@ -52,7 +52,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
-import br.iesb.VIS2048.comm.Protocol;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBViewer;
@@ -221,8 +220,6 @@ public class Visio {
 
     private boolean tradutorPortugues = true;
     private String protocolString = "+";
-    
-    private Protocol protocol = Protocol.getInstance();
 
     // private static DBTree dbtree;
 
@@ -240,8 +237,6 @@ public class Visio {
     public static void main(String[] args) {
 	System.setProperty("sun.java2d.d3d", "false");
 	// System.out.println(Protocol.getParameter(16, 1000, 1, -1));
-	// return;
-	// dbtree = new DBTree();
 	EventQueue.invokeLater(() -> {
 	    try {
 		Visio window = new Visio();
@@ -306,17 +301,12 @@ public class Visio {
     private void syncronizeBtnAdquirir() {
 	checkPort = new Thread(new CheckForPorts());
 	btnAdquirir.addActionListener((ActionEvent actionEvent) -> {
-	    if ("enable".equals(actionEvent.getActionCommand())) {
-		setGet(true);
-		if (isReadOnce())
-		    btnParar.setEnabled(false);
-		else {
-		    btnParar.setEnabled(true);
-		    btnAdquirir.setEnabled(false);
-		}
-	    } else {
-		btnAdquirir.setEnabled(true);
+	    setGet(true);
+	    if (isReadOnce())
 		btnParar.setEnabled(false);
+	    else {
+		btnParar.setEnabled(true);
+		btnAdquirir.setEnabled(false);
 	    }
 	});
     }
@@ -334,8 +324,8 @@ public class Visio {
 	JPanel portSettingsFieldSet = new JPanel();
 	portSettingsFieldSet.setForeground(new Color(211, 211, 211));
 
-	titledBorder = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Configurações de Porta", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
-	portSettingsFieldSet.setBorder(titledBorder);
+	titledBorderPortSettings = new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Configurações de Porta", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(211, 211, 211));
+	portSettingsFieldSet.setBorder(titledBorderPortSettings);
 
 	portSettingsFieldSet.setBackground(backgroundColor);
 	conexaoPanel.add(portSettingsFieldSet, "cell 0 0 4 6,grow");
@@ -355,11 +345,11 @@ public class Visio {
 	lblBaudRate.setBackground(new Color(0, 0, 102));
 	panel_2.add(lblBaudRate, "cell 0 0 17 1,growx");
 
-	textField = new JTextField();
-	textField.setHorizontalAlignment(SwingConstants.CENTER);
-	textField.setText(String.valueOf(baudRate));
-	panel_2.add(textField, "cell 1 3 16 1,alignx center,growy");
-	textField.addKeyListener(new KeyListener() {
+	textFieldBaudRate = new JTextField();
+	textFieldBaudRate.setHorizontalAlignment(SwingConstants.CENTER);
+	textFieldBaudRate.setText(String.valueOf(baudRate));
+	panel_2.add(textFieldBaudRate, "cell 1 3 16 1,alignx center,growy");
+	textFieldBaudRate.addKeyListener(new KeyListener() {
 
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
@@ -368,8 +358,7 @@ public class Visio {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
 		try {
-		    baudRate = Integer.parseInt(textField.getText());
-		    System.out.println(baudRate);
+		    baudRate = Integer.parseInt(textFieldBaudRate.getText());
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -379,9 +368,8 @@ public class Visio {
 	    public void keyPressed(KeyEvent arg0) {
 	    }
 	});
-	baudRate = Integer.parseInt(textField.getText());
-	System.out.println(baudRate);
-	textField.setColumns(10);
+	baudRate = Integer.parseInt(textFieldBaudRate.getText());
+	textFieldBaudRate.setColumns(10);
 
 	JPanel panel_3 = new JPanel();
 	panel_3.setBackground(backgroundColor);
@@ -397,11 +385,11 @@ public class Visio {
 	label_2.setBackground(new Color(0, 0, 102));
 	panel_3.add(label_2, "cell 0 1 17 1,growx");
 
-	textField_1 = new JTextField();
-	textField_1.setHorizontalAlignment(SwingConstants.CENTER);
-	textField_1.setColumns(10);
-	textField_1.setText(String.valueOf(dataBits));
-	textField_1.addKeyListener(new KeyListener() {
+	textFieldDataBits = new JTextField();
+	textFieldDataBits.setHorizontalAlignment(SwingConstants.CENTER);
+	textFieldDataBits.setColumns(10);
+	textFieldDataBits.setText(String.valueOf(dataBits));
+	textFieldDataBits.addKeyListener(new KeyListener() {
 
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
@@ -410,8 +398,7 @@ public class Visio {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
 		try {
-		    dataBits = Integer.parseInt(textField_1.getText());
-		    System.out.println(dataBits);
+		    dataBits = Integer.parseInt(textFieldDataBits.getText());
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -421,7 +408,7 @@ public class Visio {
 	    public void keyPressed(KeyEvent arg0) {
 	    }
 	});
-	panel_3.add(textField_1, "cell 0 4 17 1,alignx center");
+	panel_3.add(textFieldDataBits, "cell 0 4 17 1,alignx center");
 
 	JPanel panel_4 = new JPanel();
 	panel_4.setBackground(backgroundColor);
@@ -437,11 +424,11 @@ public class Visio {
 	lblStopBits.setBackground(new Color(0, 0, 102));
 	panel_4.add(lblStopBits, "cell 0 0 15 1,growx");
 
-	textField_2 = new JTextField();
-	textField_2.setHorizontalAlignment(SwingConstants.CENTER);
-	textField_2.setColumns(10);
-	textField_2.setText(String.valueOf(stopBits));
-	textField_2.addKeyListener(new KeyListener() {
+	textFieldStopBits = new JTextField();
+	textFieldStopBits.setHorizontalAlignment(SwingConstants.CENTER);
+	textFieldStopBits.setColumns(10);
+	textFieldStopBits.setText(String.valueOf(stopBits));
+	textFieldStopBits.addKeyListener(new KeyListener() {
 
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
@@ -450,8 +437,7 @@ public class Visio {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
 		try {
-		    stopBits = Integer.parseInt(textField_2.getText());
-		    System.out.println(stopBits);
+		    stopBits = Integer.parseInt(textFieldStopBits.getText());
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -461,7 +447,7 @@ public class Visio {
 	    public void keyPressed(KeyEvent arg0) {
 	    }
 	});
-	panel_4.add(textField_2, "cell 0 2 15 1,alignx center,aligny center");
+	panel_4.add(textFieldStopBits, "cell 0 2 15 1,alignx center,aligny center");
 
 	JPanel panel_5 = new JPanel();
 	panel_5.setBackground(backgroundColor);
@@ -477,11 +463,11 @@ public class Visio {
 	lblParity.setBackground(new Color(0, 0, 102));
 	panel_5.add(lblParity, "cell 0 0 15 1,grow");
 
-	textField_3 = new JTextField();
-	textField_3.setHorizontalAlignment(SwingConstants.CENTER);
-	textField_3.setColumns(10);
-	textField_3.setText(String.valueOf(parity));
-	textField_3.addKeyListener(new KeyListener() {
+	textFieldParity = new JTextField();
+	textFieldParity.setHorizontalAlignment(SwingConstants.CENTER);
+	textFieldParity.setColumns(10);
+	textFieldParity.setText(String.valueOf(parity));
+	textFieldParity.addKeyListener(new KeyListener() {
 
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
@@ -490,8 +476,7 @@ public class Visio {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
 		try {
-		    parity = Integer.parseInt(textField_3.getText());
-		    System.out.println(parity);
+		    parity = Integer.parseInt(textFieldParity.getText());
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -501,7 +486,7 @@ public class Visio {
 	    public void keyPressed(KeyEvent arg0) {
 	    }
 	});
-	panel_5.add(textField_3, "cell 0 2 15 1,alignx center");
+	panel_5.add(textFieldParity, "cell 0 2 15 1,alignx center");
 
 	JPanel panel_6 = new JPanel();
 	panel_6.setForeground(new Color(211, 211, 211));
@@ -525,11 +510,11 @@ public class Visio {
 	lblNmeroDeAmostras.setBackground(new Color(0, 0, 102));
 	panel_7.add(lblNmeroDeAmostras, "cell 0 0 16 1,grow");
 
-	textField_4 = new JTextField();
-	textField_4.setHorizontalAlignment(SwingConstants.CENTER);
-	textField_4.setColumns(10);
-	textField_4.setText(String.valueOf(numeroAmostras));
-	textField_4.addKeyListener(new KeyListener() {
+	textFieldNumeroAmostras = new JTextField();
+	textFieldNumeroAmostras.setHorizontalAlignment(SwingConstants.CENTER);
+	textFieldNumeroAmostras.setColumns(10);
+	textFieldNumeroAmostras.setText(String.valueOf(numeroAmostras));
+	textFieldNumeroAmostras.addKeyListener(new KeyListener() {
 
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
@@ -538,8 +523,7 @@ public class Visio {
 	    @Override
 	    public void keyReleased(KeyEvent arg0) {
 		try {
-		    numeroAmostras = Integer.parseInt(textField_4.getText());
-		    System.out.println(numeroAmostras);
+		    numeroAmostras = Integer.parseInt(textFieldNumeroAmostras.getText());
 		} catch (Exception e) {
 		    System.out.println("Not an integer number");
 		}
@@ -549,49 +533,7 @@ public class Visio {
 	    public void keyPressed(KeyEvent arg0) {
 	    }
 	});
-	panel_7.add(textField_4, "cell 0 2 16 1,alignx center");
-	//
-	// JPanel panel_8 = new JPanel();
-	// panel_8.setBackground(new Color(0, 0, 51));
-	// panel_6.add(panel_8, "cell 0 5 15 6,grow");
-	// panel_8.setLayout(new MigLayout("",
-	// "[][][][][][][][][grow][][][][][][grow]", "[][][]"));
-	//
-	// JLabel lblData = new JLabel("Data");
-	// lblData.setOpaque(true);
-	// lblData.setHorizontalAlignment(SwingConstants.CENTER);
-	// lblData.setForeground(new Color(211, 211, 211));
-	// lblData.setFont(new Font("Dialog", Font.PLAIN, 12));
-	// lblData.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-	// null));
-	// lblData.setBackground(new Color(0, 0, 102));
-	// panel_8.add(lblData, "cell 0 0 15 1,growx");
-	//
-	// textField_5 = new JTextField();
-	// textField_5.setHorizontalAlignment(SwingConstants.CENTER);
-	// textField_5.setText(data);
-	// textField_5.setColumns(10);
-	// textField_5.addKeyListener(new KeyListener() {
-	//
-	// @Override
-	// public void keyTyped(KeyEvent event) throws NullPointerException {
-	// }
-	//
-	// @Override
-	// public void keyReleased(KeyEvent arg0) {
-	// try {
-	// data = textField_4.getText();
-	// System.out.println(data);
-	// } catch (Exception e) {
-	// System.out.println("Not an integer number");
-	// }
-	// }
-	//
-	// @Override
-	// public void keyPressed(KeyEvent arg0) {
-	// }
-	// });
-	// panel_8.add(textField_5, "cell 0 2 15 1,alignx center");
+	panel_7.add(textFieldNumeroAmostras, "cell 0 2 16 1,alignx center");
 
 	JPanel panel_9 = new JPanel();
 	panel_9.setForeground(new Color(211, 211, 211));
@@ -616,84 +558,6 @@ public class Visio {
 	panel_12.setBackground(new Color(0, 0, 51));
 	panel_11.add(panel_12, "cell 0 0 7 1,grow");
 	panel_12.setLayout(new MigLayout("", "[][][][][][grow][][][][][][][grow][][][grow][]", "[][]"));
-
-	// lblConectado = new JLabel("Conectar");
-	// lblConectado.setOpaque(true);
-	// lblConectado.setHorizontalAlignment(SwingConstants.CENTER);
-	// lblConectado.setForeground(new Color(211, 211, 211));
-	// lblConectado.setFont(new Font("Dialog", Font.PLAIN, 12));
-	// lblConectado.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-	// null));
-	// lblConectado.setBackground(new Color(0, 0, 102));
-	// panel_12.add(lblConectado, "cell 0 0 17 1,growx");
-	//
-	// rdbtnSim = new JRadioButton("Sim");
-	// rdbtnSim.setForeground(new Color(211, 211, 211));
-	// rdbtnSim.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// rdbtnSim.setBackground(new Color(0, 0, 51));
-	// panel_12.add(rdbtnSim, "cell 6 1");
-	//
-	// rdbtnNo = new JRadioButton("Não");
-	// rdbtnNo.setForeground(new Color(211, 211, 211));
-	// rdbtnNo.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// rdbtnNo.setBackground(new Color(0, 0, 51));
-	// panel_12.add(rdbtnNo, "cell 9 1");
-
-	// JPanel panel_13 = new JPanel();
-	// panel_13.setBackground(new Color(0, 0, 51));
-	// panel_9.add(panel_13, "cell 0 2 7 1,grow");
-	// panel_13.setLayout(new MigLayout("",
-	// "[][][][][grow][][][][][][][grow][]", "[][]"));
-	//
-	// lblOpenPort = new JLabel("Abrir Porta");
-	// lblOpenPort.setOpaque(true);
-	// lblOpenPort.setHorizontalAlignment(SwingConstants.CENTER);
-	// lblOpenPort.setForeground(new Color(211, 211, 211));
-	// lblOpenPort.setFont(new Font("Dialog", Font.PLAIN, 12));
-	// lblOpenPort.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-	// null));
-	// lblOpenPort.setBackground(new Color(0, 0, 102));
-	// panel_13.add(lblOpenPort, "cell 0 0 13 1,growx");
-	//
-	// radioButton2 = new JRadioButton("Sim");
-	// radioButton2.setForeground(new Color(211, 211, 211));
-	// radioButton2.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// radioButton2.setBackground(new Color(0, 0, 51));
-	// panel_13.add(radioButton2, "cell 8 1");
-	//
-	// radioButton_1 = new JRadioButton("Não");
-	// radioButton_1.setForeground(new Color(211, 211, 211));
-	// radioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// radioButton_1.setBackground(new Color(0, 0, 51));
-	// panel_13.add(radioButton_1, "cell 11 1");
-
-	// JPanel panel_14 = new JPanel();
-	// panel_14.setBackground(new Color(0, 0, 51));
-	// panel_9.add(panel_14, "cell 0 3 7 2,grow");
-	// panel_14.setLayout(new MigLayout("",
-	// "[][][][][][grow][][][][][][][][grow][]", "[][][]"));
-	//
-	// JLabel lblReadyToGet = new JLabel("Ready To Get");
-	// lblReadyToGet.setOpaque(true);
-	// lblReadyToGet.setHorizontalAlignment(SwingConstants.CENTER);
-	// lblReadyToGet.setForeground(new Color(211, 211, 211));
-	// lblReadyToGet.setFont(new Font("Dialog", Font.PLAIN, 12));
-	// lblReadyToGet.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null,
-	// null));
-	// lblReadyToGet.setBackground(new Color(0, 0, 102));
-	// panel_14.add(lblReadyToGet, "cell 0 0 15 1,growx");
-	//
-	// radioButtonSim = new JRadioButton("Sim");
-	// radioButtonSim.setForeground(new Color(211, 211, 211));
-	// radioButtonSim.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// radioButtonSim.setBackground(new Color(0, 0, 51));
-	// panel_14.add(radioButtonSim, "cell 6 1");
-	//
-	// radioButtonNao = new JRadioButton("Não");
-	// radioButtonNao.setForeground(new Color(211, 211, 211));
-	// radioButtonNao.setFont(new Font("Tahoma", Font.PLAIN, 11));
-	// radioButtonNao.setBackground(new Color(0, 0, 51));
-	// panel_14.add(radioButtonNao, "cell 9 1");
 
 	btnLimpar = new JButton("Limpar");
 	conexaoPanel.add(btnLimpar, "cell 2 6");
@@ -727,12 +591,11 @@ public class Visio {
 	dataBits = 0;
 	stopBits = 0;
 	parity = 0;
-	textField.setText(null);
-	textField_1.setText(null);
-	textField_2.setText(null);
-	textField_3.setText(null);
-	textField_4.setText(null);
-	textField_5.setText(null);
+	textFieldBaudRate.setText(null);
+	textFieldDataBits.setText(null);
+	textFieldStopBits.setText(null);
+	textFieldParity.setText(null);
+	textFieldNumeroAmostras.setText(null);
     }
 
     /**
@@ -810,33 +673,33 @@ public class Visio {
 	tabbedPane.addTab("PCA", null, pcaPanel, null);
 	pcaPanel.setLayout(new MigLayout("", "0[245px:245px:245px,grow]0[grow]0", "0[grow]0[30px:30px:30px]0"));
 
-	panel_8 = new JPanel();
+	JPanel panel_8 = new JPanel();
 	panel_8.setBackground(new Color(0, 0, 51));
 	pcaPanel.add(panel_8, "cell 0 0,growx,aligny top");
 	panel_8.setLayout(new MigLayout("", "[grow]", "[70px,grow]"));
 
-	panel_15 = new JPanel();
+	JPanel panel_15 = new JPanel();
 	panel_15.setForeground(new Color(211, 211, 211));
 	panel_15.setBorder(titledBorderSolucao);
 	panel_15.setBackground(new Color(0, 0, 51));
 	panel_8.add(panel_15, "cell 0 0,grow");
 	panel_15.setLayout(new MigLayout("", "[][]", "[]"));
 
-	btnNewButton = new JButton("New button");
+	JButton btnNewButton = new JButton("New button");
 	panel_15.add(btnNewButton, "cell 0 0");
 
-	btnAbrir = new JButton("Abrir");
+	JButton btnAbrir = new JButton("Abrir");
 	panel_15.add(btnAbrir, "cell 1 0");
 
-	panel_13 = new PCAPanel();
+	PCAPanel panel_13 = new PCAPanel();
 	panel_13.setBackground(new Color(0, 0, 0));
 	pcaPanel.add(panel_13, "cell 1 0,grow");
 
-	panel_14 = new JPanel();
+	JPanel panel_14 = new JPanel();
 	panel_14.setBackground(SystemColor.controlDkShadow);
 	pcaPanel.add(panel_14, "cell 0 1 2 1,grow");
 
-	lblvisPca = new JLabel("<html><b>VIS2048</b> - PCA</html>");
+	JLabel lblvisPca = new JLabel("<html><b>VIS2048</b> - PCA</html>");
 	lblvisPca.setForeground(Color.WHITE);
 	lblvisPca.setFont(new Font("Tahoma", Font.PLAIN, 17));
 	panel_14.add(lblvisPca);
@@ -883,24 +746,30 @@ public class Visio {
 	    while (true) {
 		try {
 		    checkCommEvent();
+		    tryConnection();
 		} catch (InterruptedException e) {
 		    e.printStackTrace();
-		}
-		if (harvester != null && harvester.tryConnection(((String) commComboBox.getSelectedItem()))) {
-		    commLabel.setText("Conectado");
-		    commLabel.setForeground(Color.GREEN);
-		    conectado = true;
-		    setCommEvent(false);
-		    RSpec = launchThread();
-		    RSpec.setDaemon(true);
-		    RSpec.start();
-		    btnAdquirir.setEnabled(true);
-		    enableSpecPanel();
+		    btnConectar.setEnabled(false);
+		    commComboBox.removeAllItems();
 		}
 	    }
 	});
 	cleaner.setDaemon(true);
 	cleaner.start();
+    }
+
+    private void tryConnection() {
+	if (harvester != null && harvester.tryConnection(((String) commComboBox.getSelectedItem()))) {
+	    commLabel.setText("Conectado");
+	    commLabel.setForeground(Color.GREEN);
+	    conectado = true;
+	    setCommEvent(false);
+	    RSpec = launchThread();
+	    RSpec.setDaemon(true);
+	    RSpec.start();
+	    btnAdquirir.setEnabled(true);
+	    enableSpecPanel();
+	}
     }
 
     /**
@@ -985,26 +854,18 @@ public class Visio {
 	espectroFieldset.add(btnParar, "cell 1 0,grow");
 
 	btnParar.setAlignmentX(Component.RIGHT_ALIGNMENT);
-	btnParar.setActionCommand("disable");
 	btnParar.setEnabled(false);
 	btnParar.requestFocus();
 	btnParar.addActionListener((ActionEvent actionEvent) -> {
-	    if ("disable".equals(actionEvent.getActionCommand())) {
-		btnAdquirir.setEnabled(true);
-		btnParar.setEnabled(false);
-		btnParar.setFocusable(false);
-		setGet(false);
-		double time = System.nanoTime();
-		time = System.nanoTime() - time;
-		System.out.println("Time elapsed: " + time + ". Number of Charts: " + chartCollection.count());
-	    } else {
-		btnAdquirir.setEnabled(false);
-		btnParar.setEnabled(true);
-		btnParar.setFocusable(true);
-	    }
+	    btnAdquirir.setEnabled(true);
+	    btnParar.setEnabled(false);
+	    btnParar.setFocusable(false);
+	    setGet(false);
+	    double time = System.nanoTime();
+	    time = System.nanoTime() - time;
+	    System.out.println("Time elapsed: " + time + ". Number of Charts: " + chartCollection.count());
 	});
 
-	btnAdquirir.setActionCommand("enable");
 	btnAdquirir.setToolTipText("Adquirir Leituras");
 	connectionFieldSet = new JPanel();
 	panel_1.add(connectionFieldSet, "cell 0 1,growx");
@@ -1134,8 +995,7 @@ public class Visio {
 	opcoesFieldSet.add(sliderNumeroDeAmostras, "flowx,cell 0 5 2 1,grow");
 	sliderNumeroDeAmostras.setBackground(new Color(0, 0, 51));
 	sliderNumeroDeAmostras.addChangeListener(e -> {
-	    Protocol.setParameter(slider.getValue(), 0, 0, 0);
-	    label.setText("" + slider.getValue());
+	    label.setText("" + sliderNumeroDeAmostras.getValue());
 	});
 	sliderNumeroDeAmostras.setSnapToTicks(true);
 
@@ -1266,7 +1126,7 @@ public class Visio {
 	    tabbedPane.setTitleAt(2, "Connection");
 	    btnParar.setText("Stop");
 	    btnConectar.setText("Connect");
-	    titledBorder.setTitle("Port Settings");
+	    titledBorderPortSettings.setTitle("Port Settings");
 	    commLabel.setText("Unavailable");
 	    protocoloBorder.setTitle("Protocol");
 	    lblNumeroAmostras.setText("Number of Samples");
@@ -1332,7 +1192,7 @@ public class Visio {
 	    tabbedPane.setTitleAt(2, "Conexão");
 	    btnParar.setText("Parar");
 	    btnConectar.setText("Conectar");
-	    titledBorder.setTitle("Configurações de Porta");
+	    titledBorderPortSettings.setTitle("Configurações de Porta");
 	    commLabel.setText("Indisponível");
 	    protocoloBorder.setTitle("Protocolo");
 	    lblNumeroAmostras.setText("N\u00FAmero de Amostras");
@@ -1617,9 +1477,10 @@ public class Visio {
 	    XYSeries series;
 	    while (true) {
 		try {
-		    System.out.println("CheckIfGet");
+		    System.out.println("checkIfGet() → launchThread()");
 		    checkIfGet();
 		} catch (InterruptedException e) {
+		    System.out.println(e.getMessage());
 		    e.printStackTrace();
 		}
 		series = new XYSeries(collectionName);
@@ -1679,6 +1540,8 @@ public class Visio {
     // ///////////////////////////////////
     /**
      * Check comm event.
+     * 
+     * while (!commEvent) wait();
      *
      * @throws InterruptedException
      *             the interrupted exception
@@ -1695,31 +1558,28 @@ public class Visio {
     boolean conectado = false;
 
     /** Atributo text field. */
-    private JTextField textField;
+    private JTextField textFieldBaudRate;
 
     /** Atributo text field_1. */
-    private JTextField textField_1;
+    private JTextField textFieldDataBits;
 
     /** Atributo text field_2. */
-    private JTextField textField_2;
+    private JTextField textFieldStopBits;
 
     /** Atributo text field_3. */
-    private JTextField textField_3;
+    private JTextField textFieldParity;
 
     /** Atributo background color. */
     private Color backgroundColor;
 
     /** Atributo text field_4. */
-    private JTextField textField_4;
-
-    /** Atributo text field_5. */
-    private JTextField textField_5;
+    private JTextField textFieldNumeroAmostras;
 
     /** Atributo tradutor. */
     private boolean tradutorIngles = false;
 
     /** Atributo titled border. */
-    private TitledBorder titledBorder;
+    private TitledBorder titledBorderPortSettings;
 
     /** Atributo protocolo border. */
     private TitledBorder protocoloBorder;
@@ -1839,13 +1699,6 @@ public class Visio {
     private String stringInstrucoes;
 
     private String stringVersao;
-    private JPanel panel_8;
-    private JPanel panel_13;
-    private JPanel panel_14;
-    private JLabel lblvisPca;
-    private JPanel panel_15;
-    private JButton btnNewButton;
-    private JButton btnAbrir;
 
     /**
      * Atribui o valor comm event.
@@ -1876,7 +1729,7 @@ public class Visio {
 	 *            the port
 	 * @return true, se bem-sucedido
 	 */
-	boolean findItem(String port) {
+	private boolean findItem(String port) {
 	    for (int i = 0; i < commComboBox.getItemCount(); i++) {
 		if (commComboBox.getItemAt(i).equals(port))
 		    return true;
@@ -1944,6 +1797,7 @@ public class Visio {
 			commComboBox.addItem(port);
 		    }
 		    if (portaAtual != null) {
+			// verifica a porta de comunicação
 			if (findItem(portaAtual)) {
 			    commComboBox.setSelectedItem(portaAtual);
 			} else {

@@ -356,7 +356,7 @@ public class Harvester {
 	@Override
 	public void serialEvent(SerialPortEvent portEvent) {
 	    // RXCHAR: bytes count in input buffer
-	    // RXFLAG: bytes count in input buffer (Linux)
+	    // RXFLAG: bytes count in input buffer (non-Linux)
 	    if (portEvent.isRXCHAR() || portEvent.isRXFLAG()) {
 		if (portEvent.getEventValue() > 0) {
 		    // spentTime += (System.nanoTime()-readingTime);
