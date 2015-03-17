@@ -676,20 +676,34 @@ public class Visio {
 	JPanel panel_8 = new JPanel();
 	panel_8.setBackground(new Color(0, 0, 51));
 	pcaPanel.add(panel_8, "cell 0 0,growx,aligny top");
-	panel_8.setLayout(new MigLayout("", "[grow]", "[70px,grow]"));
+	panel_8.setLayout(new MigLayout("", "[grow]", "[70px,grow][]"));
 
 	JPanel panel_15 = new JPanel();
-	panel_15.setForeground(new Color(211, 211, 211));
-	panel_15.setBorder(titledBorderSolucao);
+	panel_15.setForeground(Color.WHITE);
+	panel_15.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Amostras", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
 	panel_15.setBackground(new Color(0, 0, 51));
 	panel_8.add(panel_15, "cell 0 0,grow");
-	panel_15.setLayout(new MigLayout("", "[][]", "[]"));
-
-	JButton btnNewButton = new JButton("New button");
-	panel_15.add(btnNewButton, "cell 0 0");
-
-	JButton btnAbrir = new JButton("Abrir");
-	panel_15.add(btnAbrir, "cell 1 0");
+	panel_15.setLayout(new MigLayout("", "[grow][]", "[]"));
+	
+	textField = new JTextField();
+	panel_15.add(textField, "cell 0 0,grow");
+	textField.setColumns(10);
+	
+	button_1 = new JButton("+");
+	panel_15.add(button_1, "cell 1 0");
+	
+	panel_17 = new JPanel();
+	panel_17.setBackground(new Color(0, 0, 51));
+	panel_17.setForeground(Color.WHITE);
+	panel_17.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Componentes", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+	panel_8.add(panel_17, "cell 0 1,grow");
+	panel_17.setLayout(new MigLayout("", "[grow]", "[][]"));
+	
+	comboBox = new JComboBox();
+	panel_17.add(comboBox, "cell 0 0,growx");
+	
+	comboBox_1 = new JComboBox();
+	panel_17.add(comboBox_1, "cell 0 1,growx");
 
 	PCAPanel panel_13 = new PCAPanel();
 	panel_13.setBackground(new Color(0, 0, 0));
@@ -1699,6 +1713,11 @@ public class Visio {
     private String stringInstrucoes;
 
     private String stringVersao;
+    private JPanel panel_17;
+    private JComboBox comboBox;
+    private JComboBox comboBox_1;
+    private JTextField textField;
+    private JButton button_1;
 
     /**
      * Atribui o valor comm event.
