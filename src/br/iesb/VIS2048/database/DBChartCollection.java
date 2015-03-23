@@ -2,7 +2,6 @@ package br.iesb.VIS2048.database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import br.iesb.VIS2048.frame.Chart;
 

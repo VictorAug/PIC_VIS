@@ -629,7 +629,7 @@ public class Visio {
     /**
      * Adds the pca tab.
      */
-    DBChartCollection PCACollection;
+    DBChartCollection pcaCollection;
     DBChartCollection colBuffer;
     Matrix PCAMatrix;
 
@@ -673,23 +673,23 @@ public class Visio {
 
 	btnStart = new JButton("Start");
 	btnStart.addActionListener(arg0 -> {
-	    List<String> l = list.getSelectedValuesList();
-	    PCACollection = new DBChartCollection();
+	    List<String> selectedValues = list.getSelectedValuesList();
+	    pcaCollection = new DBChartCollection();
 	    BufferedReader br = null;
-	    String sCurrentLine;
+	    String currentLine;
 	    db.updateCollectionList();
-	    for (int i = 0; i < l.size(); i++) {
-		String path = DBHandler.getDBFileCollection() + l.get(i);
+	    for (int i = 0; i < selectedValues.size(); i++) {
+		String path = DBHandler.getDBFileCollection() + selectedValues.get(i);
 		System.out.println(path);
 
 		if (Files.exists(Paths.get(path + "/index.txt")))
 		    try {
 			br = new BufferedReader(new FileReader(path + "/" + "index.txt"));
-			while ((sCurrentLine = br.readLine()) != null) {
-			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + sCurrentLine + ".vis");
+			while ((currentLine = br.readLine()) != null) {
+			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + currentLine + ".vis");
 			    System.out.println(colBuffer.count());
 			    for (int k = 0; k < colBuffer.count(); k++)
-				PCACollection.addChart(colBuffer.getChart(k));
+				pcaCollection.addChart(colBuffer.getChart(k));
 			}
 		    } catch (IOException e) {
 			e.printStackTrace();
@@ -697,7 +697,7 @@ public class Visio {
 		else
 		    System.out.println("Nada a declarar");
 	    }
-	    PCAMatrix = new Matrix(PCACollection.count(), 2048);
+	    PCAMatrix = new Matrix(pcaCollection.count(), 2048);
 	});
 	panel_15.add(btnStart, "cell 1 2");
 
