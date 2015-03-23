@@ -3,7 +3,6 @@ package br.iesb.VIS2048.database;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;

@@ -8,7 +8,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -39,15 +39,12 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
@@ -69,11 +66,10 @@ import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBViewer;
 
-import javax.swing.JList;
-
 /**
  * Class Visio.
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class Visio {
 
     /** Atributo btn conectar. */
@@ -636,19 +632,17 @@ public class Visio {
     DBChartCollection PCACollection;
     DBChartCollection colBuffer;
     Matrix PCAMatrix;
+
     private void addPcaTab() {
 	pcaPanel = new JPanel();
 	pcaPanel.setBackground(new Color(0, 0, 51));
 	tabbedPane.addTab("PCA", null, pcaPanel, null);
-	tabbedPane.addChangeListener(new ChangeListener() {
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			ArrayList l = db.getCollectionList();
-			model.clear();
-			for(int i=0; i<l.size(); i++){
-				model.add(i, l.get(i));
-			}
-		}
+	tabbedPane.addChangeListener(e -> {
+	    ArrayList<String> l = db.getCollectionList();
+	    model.clear();
+	    for (int i = 0; i < l.size(); i++) {
+		model.add(i, l.get(i));
+	    }
 	});
 	pcaPanel.setLayout(new MigLayout("", "0[245px:245px:245px,grow]0[grow]0", "0[grow]0[30px:30px:30px]0"));
 
@@ -663,63 +657,61 @@ public class Visio {
 	panel_15.setBackground(new Color(0, 0, 51));
 	panel_8.add(panel_15, "cell 0 0,grow");
 	panel_15.setLayout(new MigLayout("", "[][grow]", "[][120px,grow][]"));
-	
+
 	lblSelecioneOsArquivos = new JLabel("Selecione os Arquivos: (Ctrl + Click)");
 	lblSelecioneOsArquivos.setForeground(Color.WHITE);
 	panel_15.add(lblSelecioneOsArquivos, "cell 0 0 2 1");
-	
+
 	list = new JList(model);
 	JScrollPane jscroll = new JScrollPane(list);
 	list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	panel_15.add(jscroll, "cell 0 1 2 1,grow");
-	
+
 	lblRealizarPca = new JLabel("Realizar PCA:");
 	lblRealizarPca.setForeground(Color.WHITE);
 	panel_15.add(lblRealizarPca, "cell 0 2");
-	
+
 	btnStart = new JButton("Start");
-	btnStart.addActionListener(new ActionListener() {
-		
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			List l = list.getSelectedValuesList();
-			PCACollection = new DBChartCollection();
-			BufferedReader br = null;
-			String sCurrentLine;
-			db.updateCollectionList();
-			for(int i = 0; i<l.size(); i++){		
-				String path = db.getDBFileCollection() + l.get(i);
-				System.out.println(path);
-				
-				if (Files.exists(Paths.get(path + "/index.txt")))
-					try {
-						br = new BufferedReader(new FileReader(path + "/" + "index.txt"));
-						while ((sCurrentLine = br.readLine()) != null) {
-							colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path +"/"+ sCurrentLine+".vis");
-							System.out.println(colBuffer.count());
-							for(int k=0; k<colBuffer.count(); k++) PCACollection.addChart(colBuffer.getChart(k));
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}	
-				else System.out.println("Nada a declarar");
+	btnStart.addActionListener(arg0 -> {
+	    List<String> l = list.getSelectedValuesList();
+	    PCACollection = new DBChartCollection();
+	    BufferedReader br = null;
+	    String sCurrentLine;
+	    db.updateCollectionList();
+	    for (int i = 0; i < l.size(); i++) {
+		String path = DBHandler.getDBFileCollection() + l.get(i);
+		System.out.println(path);
+
+		if (Files.exists(Paths.get(path + "/index.txt")))
+		    try {
+			br = new BufferedReader(new FileReader(path + "/" + "index.txt"));
+			while ((sCurrentLine = br.readLine()) != null) {
+			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + sCurrentLine + ".vis");
+			    System.out.println(colBuffer.count());
+			    for (int k = 0; k < colBuffer.count(); k++)
+				PCACollection.addChart(colBuffer.getChart(k));
 			}
-			PCAMatrix = new Matrix(PCACollection.count(), 2048);
-		}
+		    } catch (IOException e) {
+			e.printStackTrace();
+		    }
+		else
+		    System.out.println("Nada a declarar");
+	    }
+	    PCAMatrix = new Matrix(PCACollection.count(), 2048);
 	});
 	panel_15.add(btnStart, "cell 1 2");
-	
+
 	panel_17 = new JPanel();
 	panel_17.setBackground(new Color(0, 0, 51));
 	panel_17.setForeground(Color.WHITE);
 	panel_17.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Componentes", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
 	panel_8.add(panel_17, "cell 0 1,grow");
 	panel_17.setLayout(new MigLayout("", "[grow]", "[][]"));
-	
-	comboBox = new JComboBox();
+
+	comboBox = new JComboBox<>();
 	panel_17.add(comboBox, "cell 0 0,growx");
-	
-	comboBox_1 = new JComboBox();
+
+	comboBox_1 = new JComboBox<>();
 	panel_17.add(comboBox_1, "cell 0 1,growx");
 
 	PCAPanel panel_13 = new PCAPanel();
@@ -1176,8 +1168,8 @@ public class Visio {
 	    lblEspectrometroEmissao.setText("<html><b>VIS2048</b> - Spectrometer of Emission</html>");
 	    titledBorderEspectro.setTitle("Spectrum");
 	    labTabEspectro.setText("Spectrum");
-	    //btnRemover.setText("Remove");
-	    //btnEditar.setText("Edit");
+	    // btnRemover.setText("Remove");
+	    // btnEditar.setText("Edit");
 	    labTabConexao.setText("Connection");
 	    confirmDialogText = "The modified settings can severely alter the functioning of the software. Would you like to proceed?";
 	    btnLimpar.setText("Clean");
@@ -1242,8 +1234,8 @@ public class Visio {
 	    lblEspectrometroEmissao.setText("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
 	    titledBorderEspectro.setTitle("Espectro");
 	    labTabEspectro.setText("Espectro");
-	    //btnRemover.setText("Remover");
-	    //btnEditar.setText("Editar");
+	    // btnRemover.setText("Remover");
+	    // btnEditar.setText("Editar");
 	    labTabConexao.setText("Conexão");
 	    confirmDialogText = "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?";
 	    btnLimpar.setText("Limpar");
@@ -1727,10 +1719,10 @@ public class Visio {
 
     private String stringVersao;
     private JPanel panel_17;
-    private JComboBox comboBox;
-    private JComboBox comboBox_1;
+    private JComboBox<String> comboBox;
+    private JComboBox<String> comboBox_1;
     private JLabel lblSelecioneOsArquivos;
-    private JList list;
+    private JList<String> list;
     private JButton btnStart;
     private JLabel lblRealizarPca;
 
