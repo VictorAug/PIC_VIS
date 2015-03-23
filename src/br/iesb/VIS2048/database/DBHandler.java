@@ -50,7 +50,7 @@ public class DBHandler {
 		}
 		System.err.print(mainDB);
 		//DBChart = new DBChartCollection();
-		System.out.println(" Ready");
+		System.out.println("Ready");
 	}
 
 	public ArrayList<String> getCollectionList() {
@@ -69,6 +69,11 @@ public class DBHandler {
 
 	public static File[] getFilesList(String directoryName) {
 		return new File(directoryName).listFiles();
+	}
+	
+	public void updateCollectionList(){
+		for (File file : getFilesList(DBFileCollection))
+			collection.add(file.getName().toLowerCase());
 	}
 
 	public void listFilesAndFolders(String directoryName) {
