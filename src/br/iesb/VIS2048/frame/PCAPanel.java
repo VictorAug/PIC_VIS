@@ -24,7 +24,6 @@ public class PCAPanel extends JPanel {
 	 * 
 	 */
     private static final long serialVersionUID = -792937870442306359L;
-    private NumberAxis counts;
     ChartPanel PCApanel;
     JFreeChart PCAjfreechart;
     XYDataset dataset;
@@ -35,7 +34,8 @@ public class PCAPanel extends JPanel {
 	setAlignmentY(0.0f);
 	dataset = createDataset();
 	PCAjfreechart = ChartFactory.createScatterPlot("Visio", "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
-	counts = (NumberAxis) ((XYPlot) PCAjfreechart.getPlot()).getRangeAxis();
+	NumberAxis counts = (NumberAxis) ((XYPlot) PCAjfreechart.getPlot()).getRangeAxis();
+	System.out.println(counts);
 	// counts.setRange(0, 2500);
 	PCApanel = new ChartPanel(PCAjfreechart);
 	PCApanel.setBackground(Color.black);

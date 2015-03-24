@@ -1,7 +1,6 @@
 package br.iesb.VIS2048.pca;
 
 import Jama.Matrix;
-import Jama.SingularValueDecomposition;
 
 public class Pca {
     
@@ -12,7 +11,7 @@ public class Pca {
 	int m = X.getRowDimension();
 	int n = X.getColumnDimension();
 	int A = nPcs;
-	SingularValueDecomposition svd = X.svd();
+	br.iesb.VIS2048.pca.SingularValueDecomposition svd = new br.iesb.VIS2048.pca.SingularValueDecomposition(X);
 	Matrix S = svd.getS();
 	T = svd.getU().getMatrix(0, m-1, 0,A-1).times(S.getMatrix(0, A-1, 0, A-1));
 	L = svd.getV().getMatrix(0, n-1, 0, A-1);
