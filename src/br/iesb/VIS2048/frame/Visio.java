@@ -571,10 +571,11 @@ public class Visio {
 	btnAplicar = new JButton("Aplicar");
 	conexaoPanel.add(btnAplicar, "cell 3 6");
 	tabbedPane.setEnabledAt(1, true);
-	tabbedPane.setBackgroundAt(1, backgroundColor);
+	tabbedPane.setBackgroundAt(1, Color.LIGHT_GRAY);
 	labTabConexao = new JLabel("Conexão");
 	labTabConexao.setUI(new VerticalLabelUI(false));
 	tabbedPane.setTabComponentAt(2, labTabConexao);
+	tabbedPane.setBackgroundAt(2, Color.GRAY);
 
 	btnAplicar.addActionListener((ActionEvent actionEvent) -> {
 	    this.confirmDialogText = "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?";
@@ -639,13 +640,13 @@ public class Visio {
 	Q = P.copy();
 
 	for (int i = 0; i < M.getRowDimension(); i++)
-	    for (int j = 0; j < M.getColumnDimension(); j++) {
+	    for (int j = 0; j < M.getColumnDimension(); j++)
 		P.set(i, j, Math.random() * M.get(i, j));
-	    }
+
 	Q = P.transpose();
 	for (int i = 1; i < comp + 1; i++) {
-	    comboBox.addItem(String.valueOf(i));
-	    comboBox_1.addItem(String.valueOf(i));
+	    comboBoxX.addItem(String.valueOf(i));
+	    comboBoxY.addItem(String.valueOf(i));
 	}
 
     }
@@ -676,53 +677,59 @@ public class Visio {
 	panel_8.add(panel_15, "cell 0 0,grow");
 	panel_15.setLayout(new MigLayout("", "[20px][90px][10px]", "[][120px,grow][][]"));
 
-	lblSelecioneOsArquivos = new JLabel("Selecione os Arquivos: (Ctrl + Click)");
+	JLabel lblSelecioneOsArquivos = new JLabel("Selecione os Arquivos: (Ctrl + Click)");
 	lblSelecioneOsArquivos.setForeground(Color.WHITE);
 	panel_15.add(lblSelecioneOsArquivos, "cell 0 0 3 1");
 
-	list = new JList(model);
-	JScrollPane jscroll = new JScrollPane(list);
-	list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+	modelList = new JList(model);
+	JScrollPane jscroll = new JScrollPane(modelList);
+	modelList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+	modelList.addListSelectionListener(e -> {
+	    if (!modelList.getSelectedValuesList().isEmpty())
+		btnStart.setEnabled(true);
+	    else
+		btnStart.setEnabled(false);
+	});
 	panel_15.add(jscroll, "cell 0 1 3 1,grow");
 
 	JLabel lblComponentes = new JLabel("Componentes:");
 	lblComponentes.setForeground(Color.WHITE);
 	panel_15.add(lblComponentes, "cell 0 2");
 
-	JSlider slider_1 = new JSlider();
-	slider_1.setMinimumSize(new Dimension(90, 26));
-	slider_1.setMaximumSize(new Dimension(90, 26));
-	slider_1.addChangeListener(arg0 -> label_3.setText(String.valueOf(slider_1.getValue())));
-	label_3 = new JLabel("200");
-	label_3.setMinimumSize(new Dimension(25, 14));
-	label_3.setMaximumSize(new Dimension(25, 14));
-	label_3.setForeground(Color.WHITE);
+	JSlider sliderComponentes = new JSlider(1, 20, 10);
+	sliderComponentes.setMinimumSize(new Dimension(90, 26));
+	sliderComponentes.setMaximumSize(new Dimension(90, 26));
+	sliderComponentes.setBackground(new Color(0, 0, 51));
+	lblComponentsValue = new JLabel(String.valueOf(sliderComponentes.getValue()));
+	sliderComponentes.addChangeListener(arg0 -> lblComponentsValue.setText(String.valueOf(sliderComponentes.getValue())));
+	lblComponentsValue.setMinimumSize(new Dimension(25, 14));
+	lblComponentsValue.setMaximumSize(new Dimension(25, 14));
+	lblComponentsValue.setForeground(Color.WHITE);
 
-	panel_15.add(label_3, "cell 2 2");
-	slider_1.setValue(10);
-	slider_1.setBackground(new Color(0, 0, 51));
-	panel_15.add(slider_1, "flowx,cell 1 2,growx");
+	panel_15.add(lblComponentsValue, "cell 2 2");
+	panel_15.add(sliderComponentes, "flowx,cell 1 2,growx");
 
 	lblRealizarPca = new JLabel("Realizar PCA:");
 	lblRealizarPca.setForeground(Color.WHITE);
 	panel_15.add(lblRealizarPca, "cell 0 3,alignx right");
 
 	btnStart = new JButton("Start");
+	btnStart.setEnabled(false);
 	btnStart.addActionListener(arg0 -> {
-	    List l = list.getSelectedValuesList();
+	    List selectedValues = modelList.getSelectedValuesList();
 	    PCACollection = new DBChartCollection();
 	    BufferedReader br = null;
-	    String sCurrentLine;
+	    String currentLine;
 	    dbHandler.updateCollectionList();
-	    for (int i1 = 0; i1 < l.size(); i1++) {
-		String path = DBHandler.getDBFileCollection() + l.get(i1);
+	    for (int j = 0; j < selectedValues.size(); j++) {
+		String path = DBHandler.getDBFileCollection() + selectedValues.get(j);
 		System.out.println(path);
 
 		if (Files.exists(Paths.get(path + "/index.txt")))
 		    try {
 			br = new BufferedReader(new FileReader(path + "/" + "index.txt"));
-			while ((sCurrentLine = br.readLine()) != null) {
-			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + sCurrentLine + ".vis");
+			while ((currentLine = br.readLine()) != null) {
+			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + currentLine + ".vis");
 			    System.out.println(colBuffer.count());
 			    for (int k = 0; k < colBuffer.count(); k++)
 				PCACollection.addChart(colBuffer.getChart(k));
@@ -730,20 +737,20 @@ public class Visio {
 		    } catch (IOException e) {
 			e.printStackTrace();
 		    }
-		// else System.out.println("Nada a declarar");
 	    }
 	    array = new double[PCACollection.count()][2048];
 
-	    for (int i2 = 0; i2 < PCACollection.count(); i2++) {
-		for (int j = 0; j < 2048; j++) {
-		    array[i2][j] = (double) PCACollection.getChart(i2).getXyseries().getY(j);
-		}
-	    }
+	    for (int k = 0; k < PCACollection.count(); k++)
+		for (int j = 0; j < 2048; j++)
+		    array[k][j] = (double) PCACollection.getChart(k).getXyseries().getY(j);
+
 	    System.out.println(array.length);
 	    PCAMatrix = new Matrix(array);
 
-	    Pca pca = new Pca(PCAMatrix, (int) slider_1.getValue());
+	    Pca pca = new Pca(PCAMatrix, (int) sliderComponentes.getValue());
 	    System.out.println(pca);
+	    comboBoxX.setEnabled(true);
+	    comboBoxY.setEnabled(true);
 	});
 	panel_15.add(btnStart, "cell 1 3 2 1,alignx center");
 
@@ -758,36 +765,40 @@ public class Visio {
 	lblX.setForeground(Color.WHITE);
 	panel_17.add(lblX, "cell 0 0,alignx trailing");
 
-	comboBox = new JComboBox();
-	panel_17.add(comboBox, "cell 1 0,growx");
+	comboBoxX = new JComboBox();
+	comboBoxX.setEnabled(false);
+	panel_17.add(comboBoxX, "cell 1 0,growx");
 
 	JLabel lblY = new JLabel("Y:");
 	lblY.setForeground(Color.WHITE);
 	panel_17.add(lblY, "cell 0 1,alignx trailing");
 
-	comboBox_1 = new JComboBox();
-	panel_17.add(comboBox_1, "cell 1 1,growx");
-
+	comboBoxY = new JComboBox();
+	comboBoxY.setEnabled(false);
+	panel_17.add(comboBoxY, "cell 1 1,growx");
+	
+	for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
+	    comboBoxX.addItem(String.valueOf(i));
+	    comboBoxY.addItem(String.valueOf(i));
+	}
 	PCAPanel panel_13 = new PCAPanel();
 	panel_13.setBackground(new Color(0, 0, 0));
 	pcaPanel.add(panel_13, "cell 1 0,grow");
 
-	comboBox.addActionListener(e -> {
-	    if (comboBox == null || comboBox_1 == null)
+	comboBoxX.addActionListener(e -> {
+	    if (comboBoxX == null || comboBoxY == null)
 		return;
 	    else
-		panel_13.updateChart((int) comboBox.getSelectedItem(), (int) comboBox_1.getSelectedItem(), P);
+		panel_13.updateChart((int) comboBoxX.getSelectedItem(), (int) comboBoxY.getSelectedItem(), P);
 
 	});
-	comboBox_1.addActionListener(e -> {
-	    if (comboBox == null || comboBox_1 == null)
+	comboBoxY.addActionListener(e -> {
+	    if (comboBoxX == null || comboBoxY == null)
 		return;
 	    else
-		for (int i = 0; i < (int) comboBox.getSelectedItem(); i++)
-		    for (int j = 0; j < (int) comboBox_1.getSelectedItem(); j++) {
+		for (int i = 0; i < (int) comboBoxX.getSelectedItem(); i++)
+		    for (int j = 0; j < (int) comboBoxY.getSelectedItem(); j++)
 			panel_13.updateChart(i, j, P);
-		    }
-
 	});
 
 	JPanel panel_14 = new JPanel();
@@ -1790,14 +1801,13 @@ public class Visio {
 
     private String stringVersao;
     private JPanel panel_17;
-    private JComboBox<String> comboBox;
-    private JComboBox<String> comboBox_1;
-    private JLabel lblSelecioneOsArquivos;
-    private JList<String> list;
+    private JComboBox<String> comboBoxX;
+    private JComboBox<String> comboBoxY;
+    private JList<String> modelList;
     private JButton btnStart;
     private JLabel lblRealizarPca;
 
-    private JLabel label_3 = new JLabel();
+    private JLabel lblComponentsValue;
 
     /**
      * Atribui o valor comm event.
