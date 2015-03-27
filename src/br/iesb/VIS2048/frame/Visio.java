@@ -40,6 +40,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -66,6 +67,7 @@ import br.iesb.VIS2048.comm.Harvester;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
 import br.iesb.VIS2048.database.DBViewer;
+import br.iesb.VIS2048.pca.PCAPanel;
 import br.iesb.VIS2048.pca.Pca;
 
 /**
@@ -1437,21 +1439,25 @@ public class Visio {
      * @return the j menu
      */
     private JMenu arquivoMenu() {
-	abrirItem = new JMenuItem("Abrir... (Alt+a)");
+	abrirItem = new JMenuItem("Abrir... 	Ctrl+A");
+	abrirItem.setAccelerator(KeyStroke.getKeyStroke("control A"));
 	abrirItem.setMnemonic('a');
 	abrirItem.addActionListener(new AbrirAction());
 
-	salvarItem = new JMenuItem("Salvar... (Alt+s)");
+	salvarItem = new JMenuItem("Salvar... 	Ctrl+S");
+	salvarItem.setAccelerator(KeyStroke.getKeyStroke("control S"));
 	salvarItem.setMnemonic('s');
 	salvarItem.addActionListener(new SalvarAction(frame));
 
-	exportarItem = new JMenuItem("Exportar (csv)... (Alt+e)");
+	exportarItem = new JMenuItem("Exportar (csv)...		Ctrl+E");
+	exportarItem.setAccelerator(KeyStroke.getKeyStroke("control E"));
 	exportarItem.setMnemonic('e');
 	subMenuExportar = "Este é o submenu 'Exportar...'. Em breve você poderá exportar arquivos csv.";
 	stringExportar = "Exportar...";
 	exportarItem.addActionListener((ActionEvent event) -> JOptionPane.showMessageDialog(frame, subMenuExportar, stringExportar, JOptionPane.PLAIN_MESSAGE));
 
-	exportarImagemItem = new JMenuItem("Exportar imagem (jpeg, PNG)... (Alt+i)");
+	exportarImagemItem = new JMenuItem("Exportar imagem (jpeg, PNG)... 	Ctrl+I");
+	exportarImagemItem.setAccelerator(KeyStroke.getKeyStroke("control I"));
 	exportarImagemItem.setMnemonic('i');
 	exportarImagemItem.addActionListener((ActionEvent event) -> JOptionPane.showMessageDialog(frame, subMenuExportar, stringExportar, JOptionPane.PLAIN_MESSAGE));
 

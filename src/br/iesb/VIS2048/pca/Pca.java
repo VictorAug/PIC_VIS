@@ -18,11 +18,19 @@ public class Pca {
     }
 
     public Matrix getT() {
-        return T;
+	if (T == null) {
+	    return null;
+	} else {
+	    return T.copy();
+	}
     }
 
     public Matrix getL() {
-        return L;
+	if (L == null) {
+	    return null;
+	} else {
+	    return L.copy();
+	}
     }
     
 }
