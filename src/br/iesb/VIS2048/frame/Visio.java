@@ -842,7 +842,7 @@ public class Visio {
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), pca.getT());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getT());
 
 		});
 		comboBoxY.addActionListener(e -> {
@@ -850,7 +850,7 @@ public class Visio {
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), 
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), pca.getT());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getT());
 		});
 
 		JPanel panel_14 = new JPanel();
