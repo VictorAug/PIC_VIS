@@ -47,6 +47,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
@@ -828,7 +829,18 @@ public class Visio {
 		comboBoxY = new JComboBox();
 		comboBoxY.setEnabled(false);
 		panel_17.add(comboBoxY, "cell 1 1,growx");
-
+		sliderComponentes.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				comboBoxX.removeAllItems();
+				comboBoxY.removeAllItems();
+				for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
+					comboBoxX.addItem(String.valueOf(i));
+					comboBoxY.addItem(String.valueOf(i));
+				}				
+			}
+		});
 		for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
 			comboBoxX.addItem(String.valueOf(i));
 			comboBoxY.addItem(String.valueOf(i));
@@ -842,7 +854,7 @@ public class Visio {
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getT());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getL());
 
 		});
 		comboBoxY.addActionListener(e -> {
@@ -850,7 +862,7 @@ public class Visio {
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), 
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getT());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getL());
 		});
 
 		JPanel panel_14 = new JPanel();
