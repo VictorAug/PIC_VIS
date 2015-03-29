@@ -67,6 +67,7 @@ public class DBHandler {
     }
 
     public void updateCollectionList() {
+    collection.clear();
 	for (File file : getFilesList(DBFileCollection))
 	    collection.add(file.getName().toLowerCase());
     }
