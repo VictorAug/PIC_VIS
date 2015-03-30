@@ -829,18 +829,14 @@ public class Visio {
 		comboBoxY = new JComboBox();
 		comboBoxY.setEnabled(false);
 		panel_17.add(comboBoxY, "cell 1 1,growx");
-		sliderComponentes.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				comboBoxX.removeAllItems();
-				comboBoxY.removeAllItems();
-				for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
-					comboBoxX.addItem(String.valueOf(i));
-					comboBoxY.addItem(String.valueOf(i));
-				}				
-			}
-		});
+//		sliderComponentes.addChangeListener(new ChangeListener() {
+//			
+//			@Override
+//			public void stateChanged(ChangeEvent arg0) {
+//				if(comboBoxX == null || comboBoxY == null) return;
+//							
+//			}
+//		});
 		for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
 			comboBoxX.addItem(String.valueOf(i));
 			comboBoxY.addItem(String.valueOf(i));

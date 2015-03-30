@@ -32,7 +32,7 @@ public class PCAPanel extends JPanel {
 
 	public PCAPanel() {
 		setAlignmentY(0.0f);
-		dataset = createDataset();
+		dataset = new XYSeriesCollection();
 		PCAjfreechart = ChartFactory.createScatterPlot("Visio", "",
 				collectionName, dataset, PlotOrientation.VERTICAL, true, true,
 				false);
@@ -54,17 +54,17 @@ public class PCAPanel extends JPanel {
 		((XYPlot) PCAjfreechart.getPlot()).setDomainGridlinePaint(Color.white);
 	}
 
-	private static XYDataset createDataset() {
-		XYSeriesCollection result = new XYSeriesCollection();
-		XYSeries series = new XYSeries("Random");
-		for (int i = 0; i <= 100; i++) {
-			double x = r.nextDouble();
-			double y = r.nextDouble();
-			series.add(x, y);
-		}
-		result.addSeries(series);
-		return result;
-	}
+//	private static XYDataset createDataset() {
+//		XYSeriesCollection result = new XYSeriesCollection();
+//		XYSeries series = new XYSeries("Random");
+//		for (int i = 0; i <= 100; i++) {
+//			double x = r.nextDouble();
+//			double y = r.nextDouble();
+//			series.add(x, y);
+//		}
+//		result.addSeries(series);
+//		return result;
+//	}
 
 	public void updateChart(int x, int y, int nOfSamples, Matrix PCA) {
 		// XYSeriesCollection result = new XYSeriesCollection();
