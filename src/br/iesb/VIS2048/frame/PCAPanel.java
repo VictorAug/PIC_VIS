@@ -66,10 +66,8 @@ public class PCAPanel extends JPanel {
     public void updateChart(int x, int y, Matrix PCA) {
 	// XYSeriesCollection result = new XYSeriesCollection();
 	XYSeries series = new XYSeries("PCA");
-	for (int i = 0; i <= x; i++) {
-	    for (int j = 0; j < y; j++) {
-		series.add(x, PCA.get(x, y));
-	    }
+	for (int i = 0; i <= PCA.getRowDimension(); i++) {
+	    series.add(PCA.get(i, x), PCA.get(i, y));
 	}
 	if (dataset.getSeriesCount() > 0)
 	    ((XYSeriesCollection) dataset).removeAllSeries();
