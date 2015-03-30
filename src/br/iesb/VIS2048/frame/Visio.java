@@ -47,7 +47,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;

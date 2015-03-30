@@ -71,11 +71,8 @@ public class PCAPanel extends JPanel {
 		y = y-1;
 		x = x-1;
 		XYSeries series = new XYSeries("PCA");
-		for (int i = 0; i < nOfSamples; i++) {
-			///for (int j = 0; j < y; j++) {
-				series.add(i, PCA.get(i, y));
-				System.out.println(i + " - " + PCA.get(i, y));
-			//}
+		for (int i = 0; i <= nOfSamples; i++) {
+		    series.add(PCA.get(i, x), PCA.get(i, y));
 		}
 		if (dataset.getSeriesCount() > 0)
 			((XYSeriesCollection) dataset).removeAllSeries();
