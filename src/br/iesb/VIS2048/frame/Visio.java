@@ -726,8 +726,7 @@ public class Visio {
 
 		modelList = new JList(model);
 		JScrollPane jscroll = new JScrollPane(modelList);
-		modelList
-				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		modelList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		modelList.addListSelectionListener(e -> {
 			if (!modelList.getSelectedValuesList().isEmpty())
 				btnStart.setEnabled(true);
@@ -800,6 +799,12 @@ public class Visio {
 
 			pca = new Pca(PCAMatrix, (int) sliderComponentes.getValue());
 			System.out.println(pca);
+			comboBoxX.removeAllItems();
+			comboBoxY.removeAllItems();
+			for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
+				comboBoxX.addItem(String.valueOf(i));
+				comboBoxY.addItem(String.valueOf(i));
+			}
 			comboBoxX.setEnabled(true);
 			comboBoxY.setEnabled(true);
 		});
@@ -846,7 +851,7 @@ public class Visio {
 		pcaPanel.add(panel_13, "cell 1 0,grow");
 
 		comboBoxX.addActionListener(e -> {
-			if (comboBoxX == null || comboBoxY == null)
+			if (comboBoxX == null || comboBoxY == null || comboBoxX.getItemCount() == 0 || comboBoxY.getItemCount() == 0)
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
@@ -854,7 +859,7 @@ public class Visio {
 
 		});
 		comboBoxY.addActionListener(e -> {
-			if (comboBoxX == null || comboBoxY == null)
+			if (comboBoxX == null || comboBoxY == null || comboBoxX.getItemCount() == 0 || comboBoxY.getItemCount() == 0)
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), 
