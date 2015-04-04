@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -706,7 +707,7 @@ public class Visio {
 		JPanel panel_8 = new JPanel();
 		panel_8.setBackground(new Color(0, 0, 51));
 		pcaPanel.add(panel_8, "cell 0 0,growx,aligny top");
-		panel_8.setLayout(new MigLayout("", "[grow]", "[grow][]"));
+		panel_8.setLayout(new MigLayout("", "[grow]", "[grow][][]"));
 
 		JPanel panel_15 = new JPanel();
 		panel_15.setForeground(Color.WHITE);
@@ -833,6 +834,32 @@ public class Visio {
 		comboBoxY = new JComboBox();
 		comboBoxY.setEnabled(false);
 		panel_17.add(comboBoxY, "cell 1 1,growx");
+		
+		panel_16 = new JPanel();
+		panel_16.setToolTipText("");
+		panel_16.setForeground(Color.WHITE);
+		panel_16.setBackground(new Color(0, 0, 51));
+		panel_16.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Matrizes", TitledBorder.LEADING, TitledBorder.TOP, null, Color.WHITE));
+		panel_8.add(panel_16, "cell 0 2,grow");
+		panel_16.setLayout(new MigLayout("", "[grow][grow]", "[]"));
+		
+		rdbtnL = new JRadioButton("L");
+		rdbtnL.setBackground(new Color(0, 0, 51));
+		rdbtnL.setForeground(Color.WHITE);
+		panel_16.add(rdbtnL, "cell 0 0,alignx center");
+		rdbtnL.setSelected(true);
+		
+		rdbtnT = new JRadioButton("T");
+		rdbtnT.setBackground(new Color(0, 0, 51));
+		rdbtnT.setForeground(Color.WHITE);
+		panel_16.add(rdbtnT, "cell 1 0,alignx center");
+		rdbtnT.setSelected(false);
+		
+		ButtonGroup matrixSelection = new ButtonGroup();
+		matrixSelection.add(rdbtnL);
+		matrixSelection.add(rdbtnT);
+		
+
 //		sliderComponentes.addChangeListener(new ChangeListener() {
 //			
 //			@Override
@@ -854,17 +881,36 @@ public class Visio {
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getL());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), (rdbtnL.isSelected() ? pca.getL() : pca.getT()));
 
 		});
+		
 		comboBoxY.addActionListener(e -> {
 			if (comboBoxX == null || comboBoxY == null || comboBoxX.getItemCount() == 0 || comboBoxY.getItemCount() == 0)
 				return;
 			else
 				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), 
-						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), pca.getL());
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), (rdbtnL.isSelected() ? pca.getL() : pca.getT()));
 		});
 
+		rdbtnL.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), (rdbtnL.isSelected() ? pca.getL() : pca.getT()));				
+			}
+		});
+		
+		rdbtnT.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()),
+						Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(), (rdbtnL.isSelected() ? pca.getL() : pca.getT()));				
+			}
+		});
+		
 		JPanel panel_14 = new JPanel();
 		panel_14.setBackground(SystemColor.controlDkShadow);
 		pcaPanel.add(panel_14, "cell 0 1 2 1,grow");
@@ -1939,6 +1985,9 @@ public class Visio {
 	private JLabel lblRealizarPca;
 
 	private JLabel lblComponentsValue;
+	private JRadioButton rdbtnL;
+	private JPanel panel_16;
+	private JRadioButton rdbtnT;
 
 	/**
 	 * Atribui o valor comm event.
