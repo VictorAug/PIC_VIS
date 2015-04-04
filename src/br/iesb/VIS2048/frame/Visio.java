@@ -1318,8 +1318,7 @@ public class Visio {
 				"Solu\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP,
 				null, new Color(211, 211, 211));
 		solucaoFieldSet.setBorder(titledBorderSolucao);
-		solucaoFieldSet.setLayout(new MigLayout("", "[grow][grow]",
-				"0[20px:20px:20px][20px:20px:20px]"));
+		solucaoFieldSet.setLayout(new MigLayout("", "[50%][50%]", "[20px:20px:20px][20px:20px:20px]"));
 
 		sliderTempoDeIntegracao.addChangeListener((ChangeEvent e) -> label_1
 				.setText("" + sliderTempoDeIntegracao.getValue()));
@@ -1330,7 +1329,7 @@ public class Visio {
 		solucaoFieldSet.add(lblConjunto,
 				"flowx,cell 0 0 2 1,growx,aligny center");
 
-		btnEscolher = new JButton("Abrir");
+		btnEscolher = new JButton("Renomear");
 		solucaoFieldSet.add(btnEscolher, "cell 0 1,growx");
 		btnEscolher.setFont(new Font("Tahoma", Font.PLAIN, 11));
 

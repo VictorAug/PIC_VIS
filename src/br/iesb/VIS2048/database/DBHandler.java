@@ -43,7 +43,7 @@ public class DBHandler {
 	for (int i = 1; i < collection.size() + 2; i++) {
 	    if (!collection.contains(("solucao" + i).toLowerCase())) {
 		mainDB = DBFileCollection + "solucao" + i;
-		createDir(mainDB);
+		
 		break;
 	    }
 	}
@@ -93,6 +93,7 @@ public class DBHandler {
     }
 
     public boolean insert(DBChartCollection col) {
+    createDir(mainDB);
 	String name = col.getChart(0).getTimestamp() + "-" + col.getChart(col.count() - 1).getTimestamp();
 
 	try {
