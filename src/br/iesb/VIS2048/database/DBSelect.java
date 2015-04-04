@@ -14,6 +14,11 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
+import java.awt.Dialog.ModalExclusionType;
+import java.awt.Dialog.ModalityType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class DBSelect extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
@@ -24,23 +29,25 @@ public class DBSelect extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			DBSelect dialog = new DBSelect();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		try {
+//			DBSelect dialog = new DBSelect();
+//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//			dialog.setVisible(true);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public DBSelect() {
-		DBHandler dbHandler = new DBHandler();
+	public DBSelect(DBHandler dbHandler) {
+		setModalityType(ModalityType.APPLICATION_MODAL);
+		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		dbHandler .updateCollectionList();
-		ArrayList collectionList = dbHandler.getCollectionList();
+		ArrayList<String> collectionList = dbHandler.getCollectionList();
+		JComboBox<String> comboBox = new JComboBox<String>();
 		setBounds(100, 100, 399, 186);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -50,8 +57,7 @@ public class DBSelect extends JDialog {
 			JLabel lblNewLabel = new JLabel("Abrir:");
 			contentPanel.add(lblNewLabel, "cell 0 0,alignx trailing");
 		}
-		{
-			JComboBox comboBox = new JComboBox();
+		{			
 			contentPanel.add(comboBox, "cell 1 0,growx");
 			comboBox.removeAll();
 			for (int i = 0; i < collectionList.size(); i++) {
@@ -94,6 +100,14 @@ public class DBSelect extends JDialog {
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
+				okButton.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						dbHandler.setMainDB((String)comboBox.getSelectedItem());
+						dispose();
+					}
+				});
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");

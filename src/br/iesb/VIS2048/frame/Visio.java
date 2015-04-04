@@ -3,6 +3,7 @@ package br.iesb.VIS2048.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -21,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -49,8 +52,12 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 
+
+
 import jssc.SerialPortList;
 import net.miginfocom.swing.MigLayout;
+
+
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -61,12 +68,15 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+
+
 import Jama.Matrix;
 import br.iesb.VIS2048.action.AbrirAction;
 import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
+import br.iesb.VIS2048.database.DBSelect;
 import br.iesb.VIS2048.database.DBViewer;
 import br.iesb.VIS2048.pca.PCAPanel;
 import br.iesb.VIS2048.pca.Pca;
@@ -143,7 +153,7 @@ public class Visio {
 	String fileName;
 
 	/** Atributo db. */
-	private DBHandler dbHandler = new DBHandler();
+	private DBHandler dbHandler;
 
 	/** The check port. */
 	private Thread checkPort;
@@ -249,6 +259,7 @@ public class Visio {
 			try {
 				Visio window = new Visio();
 				window.frame.setVisible(true);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -300,7 +311,13 @@ public class Visio {
 		// /////////////////////////////////////////////////////////
 		syncronizeBtnAdquirir();
 		addConexaoTab();
-
+		dbHandler = new DBHandler();
+		DBSelect Selector = new DBSelect(dbHandler);
+		Selector.setVisible(true);
+		Selector.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+		Selector.setAlwaysOnTop(true);
+		collectionName = dbHandler.getMainDB();
+		lblConjunto.setText(dbHandler.getMainDB());
 	}
 
 	/**
@@ -663,8 +680,8 @@ public class Visio {
 		checkPort = new Thread(new CheckForPorts());
 		checkPort.setDaemon(true);
 		checkPort.start();
-		fileName = dbHandler.getMainDBFileName();
-		collectionName = dbHandler.getMainDB();
+		//fileName = dbHandler.getMainDBFileName();
+		//collectionName = dbHandler.getMainDB();
 	}
 
 	DBChartCollection PCACollection;
@@ -1046,7 +1063,7 @@ public class Visio {
 		frame.setBounds(100, 100, 940, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
+	JLabel lblConjunto;
 	/**
 	 * Adds the espectro fieldset.
 	 */
@@ -1323,7 +1340,7 @@ public class Visio {
 		sliderTempoDeIntegracao.addChangeListener((ChangeEvent e) -> label_1
 				.setText("" + sliderTempoDeIntegracao.getValue()));
 
-		JLabel lblConjunto = new JLabel(dbHandler.getMainDB());
+		lblConjunto = new JLabel("");
 		lblConjunto.setForeground(new Color(211, 211, 211));
 		lblConjunto.setHorizontalAlignment(SwingConstants.CENTER);
 		solucaoFieldSet.add(lblConjunto,
