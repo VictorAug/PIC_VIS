@@ -59,7 +59,7 @@ public class DBSelect extends JDialog {
 		}
 		{			
 			contentPanel.add(comboBox, "cell 1 0,growx");
-			comboBox.removeAll();
+			//comboBox.removeAll();
 			for (int i = 0; i < collectionList.size(); i++) {
 				comboBox.addItem(collectionList.get(i));
 			}
