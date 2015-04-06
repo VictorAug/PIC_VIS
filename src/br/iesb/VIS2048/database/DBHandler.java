@@ -42,7 +42,7 @@ public class DBHandler {
 
 	for (int i = 1; i < collection.size() + 2; i++) {
 	    if (!collection.contains(("solucao" + i).toLowerCase())) {
-		mainDB = DBFileCollection + "solucao" + i;
+		mainDB = "solucao" + i;
 		
 		break;
 	    }
@@ -93,7 +93,7 @@ public class DBHandler {
     }
 
     public boolean insert(DBChartCollection col) {
-    createDir(mainDB);
+    createDir(DBFileCollection + mainDB);
 	String name = col.getChart(0).getTimestamp() + "-" + col.getChart(col.count() - 1).getTimestamp();
 
 	try {
@@ -101,18 +101,18 @@ public class DBHandler {
 	    // + "/" + "index.txt"));
 	    // outputStream.write(name.getBytes(), 0, name.length());
 	    // outputStream.close();
-	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(mainDB + "/" + "index.txt", true)));
+	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(DBFileCollection + mainDB + "/" + "index.txt", true)));
 	    out.println(name);
 	    out.close();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
-	saveGZipObject(col, mainDB + "/" + name + ".vis");
+	saveGZipObject(col, DBFileCollection + mainDB + "/" + name + ".vis");
 	return false;
     }
 
     public DBChartCollection select() {
-	File directory = new File(mainDB);
+	File directory = new File(DBFileCollection + mainDB);
 	File[] fList = directory.listFiles();
 	Arrays.asList(fList).stream().filter(file -> file.isFile()).forEach(file -> System.out.println(file.getName()));
 	return null;
@@ -238,7 +238,7 @@ public class DBHandler {
     }
 
     public String getMainDBFileName() {
-	return mainDB;
+	return DBFileCollection + mainDB;
     }
 
     public void setMainDB(String mainDB) {

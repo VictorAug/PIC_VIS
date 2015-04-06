@@ -38,16 +38,35 @@ public class DBSelect extends JDialog {
 //			e.printStackTrace();
 //		}
 //	}
-
+	JLabel lblNomeDoArquivo;
+	JLabel lblNmeroDeAmostras;
+	JLabel lblPerodo;
+	
 	/**
 	 * Create the dialog.
 	 */
 	public DBSelect(DBHandler dbHandler) {
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-		dbHandler .updateCollectionList();
+		dbHandler.updateCollectionList();
 		ArrayList<String> collectionList = dbHandler.getCollectionList();
 		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.addItem("Novo Arquivo...");
+		comboBox.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(((String)comboBox.getSelectedItem()).equals("Novo Arquivo...")){
+					textField.setText(dbHandler.getMainDB());
+					textField.setEditable(true);
+					System.out.println("Create new");
+				}else{
+					textField.setText((String)comboBox.getSelectedItem());
+					textField.setEditable(false);
+					textField_1.setText("");
+					textField_2.setText("");
+				}
+			}
+		});
 		setBounds(100, 100, 399, 186);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -65,29 +84,32 @@ public class DBSelect extends JDialog {
 			}
 		}
 		{
-			JLabel lblNomeDoArquivo = new JLabel("Nome do Arquivo:\r\n");
+			lblNomeDoArquivo = new JLabel("Nome do Arquivo:\r\n");
 			contentPanel.add(lblNomeDoArquivo, "cell 0 1,alignx trailing");
 		}
 		{
 			textField = new JTextField();
 			contentPanel.add(textField, "cell 1 1,growx");
+			textField.setText(dbHandler.getMainDB());
 			textField.setColumns(10);
 		}
 		{
-			JLabel lblNmeroDeAmostras = new JLabel("Número de Amostras:");
+			lblNmeroDeAmostras = new JLabel("Número de Amostras:");
 			contentPanel.add(lblNmeroDeAmostras, "cell 0 2,alignx trailing");
 		}
 		{
 			textField_1 = new JTextField();
+			textField_1.setEditable(false);
 			contentPanel.add(textField_1, "cell 1 2,growx");
 			textField_1.setColumns(10);
 		}
 		{
-			JLabel lblPerodo = new JLabel("Período:");
+			lblPerodo = new JLabel("Período:");
 			contentPanel.add(lblPerodo, "cell 0 3,alignx trailing");
 		}
 		{
 			textField_2 = new JTextField();
+			textField_2.setEditable(false);
 			contentPanel.add(textField_2, "cell 1 3,growx");
 			textField_2.setColumns(10);
 		}
@@ -104,15 +126,10 @@ public class DBSelect extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						dbHandler.setMainDB((String)comboBox.getSelectedItem());
+						dbHandler.setMainDB((String)textField.getText());
 						dispose();
 					}
 				});
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
 			}
 		}
 		
