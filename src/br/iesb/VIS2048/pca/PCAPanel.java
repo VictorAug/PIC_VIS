@@ -2,7 +2,6 @@ package br.iesb.VIS2048.pca;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -28,7 +27,7 @@ public class PCAPanel extends JPanel {
 	JFreeChart PCAjfreechart;
 	XYDataset dataset;
 	private String collectionName = "";
-	private static final Random r = new Random();
+//	private static final Random r = new Random();
 
 	public PCAPanel() {
 		setAlignmentY(0.0f);

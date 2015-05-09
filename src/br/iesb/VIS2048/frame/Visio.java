@@ -317,8 +317,8 @@ public class Visio {
 		Selector.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
 		Selector.setAlwaysOnTop(true);
 		dbHandler.setMainDB(dbHandler.getMainDB());
-		collectionName = dbHandler.getDBFileCollection() + dbHandler.getMainDB();
-		lblConjunto.setText(dbHandler.getDBFileCollection() + dbHandler.getMainDB());
+		collectionName = DBHandler.getDBFileCollection() + dbHandler.getMainDB();
+		lblConjunto.setText(DBHandler.getDBFileCollection() + dbHandler.getMainDB());
 	}
 
 	/**
