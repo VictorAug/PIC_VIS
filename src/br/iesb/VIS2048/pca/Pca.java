@@ -4,8 +4,8 @@ import Jama.Matrix;
 
 public class Pca {
     
-    Matrix T;
-    Matrix L;
+    private Matrix T;
+    private Matrix L;
     
     public Pca(Matrix X, int nPcs) {
 	int m = X.getRowDimension();

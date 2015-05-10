@@ -34,9 +34,9 @@ public class VerticalLabelUI extends BasicLabelUI {
 
     private boolean clockwise = false;
     // see comment in BasicLabelUI
-    Rectangle verticalViewR = new Rectangle();
-    Rectangle verticalIconR = new Rectangle();
-    Rectangle verticalTextR = new Rectangle();
+    private Rectangle verticalViewR = new Rectangle();
+    private Rectangle verticalIconR = new Rectangle();
+    private Rectangle verticalTextR = new Rectangle();
     protected static VerticalLabelUI verticalLabelUI = new VerticalLabelUI();
     private final static VerticalLabelUI SAFE_VERTICAL_LABEL_UI = new VerticalLabelUI();
 

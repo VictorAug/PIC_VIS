@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -22,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.database.DBChartCollection;
@@ -181,12 +177,7 @@ public class ChartEditor extends JDialog {
 		spinner.setMinimumSize(new Dimension(60, 20));
 		spinner.setBounds(new Rectangle(0, 0, 10, 0));
 		panel2.add(spinner, "flowx,cell 1 2,growx");
-		spinner.addChangeListener(new ChangeListener() {
-		    @Override
-		    public void stateChanged(ChangeEvent arg0) {
-			textField_2.setText("" + selected.getXyseries().getY((int) spinner.getValue()));
-		    }
-		});
+		spinner.addChangeListener(arg0 -> textField_2.setText("" + selected.getXyseries().getY((int) spinner.getValue())));
 	    }
 	    {
 		JLabel lblDescrio = new JLabel("Descrição");
@@ -219,20 +210,17 @@ public class ChartEditor extends JDialog {
 	    {
 		JButton btnRemover = new JButton("Remover");
 		buttonPane.add(btnRemover);
-		btnRemover.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent arg0) {
-			chartCollection.getChartQueue().remove(selectedChart);
-			if (selectedChart >= 1)
-			    ChartEditor.this.selectedChart--;
-			else if (chartCollection.count() > 0) {
-			    ChartEditor.this.selectedChart = 0;
-			} else if (chartCollection.count() == 0) {
-			    dispose();
-			}
-			if (chartCollection.count() > 0)
-			    updateView();
+		btnRemover.addActionListener(arg0 -> {
+		    chartCollection.getChartQueue().remove(selectedChart);
+		    if (selectedChart >= 1)
+			ChartEditor.this.selectedChart--;
+		    else if (chartCollection.count() > 0) {
+			ChartEditor.this.selectedChart = 0;
+		    } else if (chartCollection.count() == 0) {
+			dispose();
 		    }
+		    if (chartCollection.count() > 0)
+			updateView();
 		});
 	    }
 	    {
@@ -243,41 +231,26 @@ public class ChartEditor extends JDialog {
 	    {
 		JButton cancelButton = new JButton("Cancelar");
 		buttonPane.add(cancelButton);
-		cancelButton.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent arg0) {
-			dispose();
-		    }
-		});
+		cancelButton.addActionListener(arg0 -> dispose());
 	    }
 	}
-	btnNewButton.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		ChartEditor.this.selectedChart--;
-		// else if()
+	btnNewButton.addActionListener(arg0 -> {
+	    ChartEditor.this.selectedChart--;
+	    // else if()
 		updateView();
-	    }
+	    });
+	btnNewButton_1.addActionListener(e -> {
+	    ChartEditor.this.selectedChart++;
+	    updateView();
 	});
-	btnNewButton_1.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		ChartEditor.this.selectedChart++;
-		// else if()
+	textField_3.addActionListener(e -> {
+	    int value = Integer.parseInt(textField_3.getText()) - 1;
+	    if (value < 0 || value >= chartCollection.count())
+		return;
+	    else
+		ChartEditor.this.selectedChart = value;
+	    if (chartCollection.count() > 0)
 		updateView();
-	    }
-	});
-	textField_3.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		int value = Integer.parseInt(textField_3.getText()) - 1;
-		if (value < 0 || value >= chartCollection.count())
-		    return;
-		else
-		    ChartEditor.this.selectedChart = value;
-		if (chartCollection.count() > 0)
-		    updateView();
-	    }
 	});
 	updateView();
     }

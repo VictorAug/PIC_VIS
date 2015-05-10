@@ -21,31 +21,29 @@ public class PCAPanel extends JPanel {
 
     /** Constante serialVersionUID. */
     private static final long serialVersionUID = -792937870442306359L;
-    ChartPanel PCApanel;
-    JFreeChart PCAjfreechart;
-    XYDataset dataset;
-    private String collectionName = "";
-
+    private ChartPanel pcaPanel;
+    private JFreeChart pcaFreeChart;
+    private XYDataset dataSet;
     // private static final Random r = new Random();
 
     public PCAPanel() {
 	setAlignmentY(0.0f);
-	dataset = new XYSeriesCollection();
-	PCAjfreechart = ChartFactory.createScatterPlot("Visio", "", collectionName, dataset, PlotOrientation.VERTICAL, true, true, false);
-	NumberAxis counts = (NumberAxis) ((XYPlot) PCAjfreechart.getPlot()).getRangeAxis();
+	dataSet = new XYSeriesCollection();
+	pcaFreeChart = ChartFactory.createScatterPlot("Visio", "", "", dataSet, PlotOrientation.VERTICAL, true, true, false);
+	NumberAxis counts = (NumberAxis) ((XYPlot) pcaFreeChart.getPlot()).getRangeAxis();
 	System.out.println(counts);
 	// counts.setRange(0, 2500);
-	PCApanel = new ChartPanel(PCAjfreechart);
-	PCApanel.setBackground(Color.black);
-	((XYPlot) PCAjfreechart.getPlot()).setRangeGridlinePaint(Color.white);
-	((XYPlot) PCAjfreechart.getPlot()).setBackgroundPaint(Color.black);
+	pcaPanel = new ChartPanel(pcaFreeChart);
+	pcaPanel.setBackground(Color.black);
+	((XYPlot) pcaFreeChart.getPlot()).setRangeGridlinePaint(Color.white);
+	((XYPlot) pcaFreeChart.getPlot()).setBackgroundPaint(Color.black);
 	setLayout(new BorderLayout());
-	add(PCApanel, BorderLayout.CENTER);
+	add(pcaPanel, BorderLayout.CENTER);
 
-	PCAjfreechart.setBackgroundPaint(Color.black);
-	((XYPlot) PCAjfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.green);
-	((XYPlot) PCAjfreechart.getPlot()).setDomainCrosshairPaint(Color.white);
-	((XYPlot) PCAjfreechart.getPlot()).setDomainGridlinePaint(Color.white);
+	pcaFreeChart.setBackgroundPaint(Color.black);
+	((XYPlot) pcaFreeChart.getPlot()).getRenderer().setSeriesPaint(0, Color.green);
+	((XYPlot) pcaFreeChart.getPlot()).setDomainCrosshairPaint(Color.white);
+	((XYPlot) pcaFreeChart.getPlot()).setDomainGridlinePaint(Color.white);
     }
 
     // private static XYDataset createDataset() {
@@ -68,10 +66,10 @@ public class PCAPanel extends JPanel {
 	for (int i = 0; i < nOfSamples; i++) {
 	    series.add(PCA.get(i, x), PCA.get(i, y));
 	}
-	if (dataset.getSeriesCount() > 0)
-	    ((XYSeriesCollection) dataset).removeAllSeries();
-	((XYSeriesCollection) dataset).addSeries(series);
-	PCApanel.updateUI();
+	if (dataSet.getSeriesCount() > 0)
+	    ((XYSeriesCollection) dataSet).removeAllSeries();
+	((XYSeriesCollection) dataSet).addSeries(series);
+	pcaPanel.updateUI();
 	System.out.println("Updated");
     }
 }

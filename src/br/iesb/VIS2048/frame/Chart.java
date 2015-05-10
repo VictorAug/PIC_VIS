@@ -51,13 +51,10 @@ public class Chart extends JToggleButton implements Serializable {
     private Integer numberOfSamples;
 
     /** Atributo xyseries. */
-    private XYSeries xyseries;
-
-    /** Atributo picture. */
-    private JLabel picture;
+    private XYSeries xySeries;
 
     /** Atributo Image. */
-    public transient Thread Image = new Thread(new genImage(), "Spectrometer");
+    public transient Thread image = new Thread(new genImage(), "Spectrometer");
 
     /** Atributo mili volt. */
     private boolean miliVolt = false;
@@ -81,7 +78,7 @@ public class Chart extends JToggleButton implements Serializable {
 	setBackground(new Color(0, 0, 51));
 	setBorder(new BevelBorder(BevelBorder.LOWERED, new Color(102, 204, 204), new Color(102, 204, 204), Color.CYAN, Color.CYAN));
 	// this.setDoubleSeries(doubleSeries);
-	this.xyseries = series;
+	this.xySeries = series;
 	this.setName(name);
 	this.setDescription(description);
 	this.setTimestamp(timestamp);
@@ -128,7 +125,7 @@ public class Chart extends JToggleButton implements Serializable {
 	    counts.setTickLabelsVisible(false);
 	    // jfreechart.setBorderPaint(new Color(255,255,255));
 
-	    dataset.addSeries(xyseries);
+	    dataset.addSeries(xySeries);
 	    ((XYPlot) jfreechart.getPlot()).getRenderer().setSeriesPaint(0, Color.white);
 	    // picture = new JLabel(new
 	    // ImageIcon(resizeImg(jfreechart.createBufferedImage( 640, 480,
@@ -287,9 +284,8 @@ public class Chart extends JToggleButton implements Serializable {
      */
     public void setPicture(/* JLabel picture */) {
 	// this.picture = picture;
-	Image.setDaemon(true);
-	Image.start();
-
+	image.setDaemon(true);
+	image.start();
     }
 
     /**
@@ -298,7 +294,7 @@ public class Chart extends JToggleButton implements Serializable {
      * @return xyseries
      */
     public XYSeries getXyseries() {
-	return xyseries == null ? null : xyseries;
+	return xySeries == null ? null : xySeries;
     }
 
     /**
@@ -309,9 +305,9 @@ public class Chart extends JToggleButton implements Serializable {
      */
     public void setXyseries(XYSeries xyseries) {
 	if (xyseries == null) {
-	    this.xyseries = null;
+	    this.xySeries = null;
 	} else {
-	    this.xyseries = xyseries;
+	    this.xySeries = xyseries;
 	}
     }
 
