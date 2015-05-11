@@ -50,7 +50,7 @@ public class Harvester {
     private Thread launch;
 
     /**
-     * Instancia um novo harvester.
+     * Instancia um novo objeto <code>Harvester</code>.
      */
     public Harvester() {
     }
@@ -189,6 +189,7 @@ public class Harvester {
     /**
      * Launch.
      */
+    // TODO Método inútil.
     public void launch() {
 	launch = new Thread(new Harvest(), "Spectrometer");
 	launch.setDaemon(true);
@@ -241,6 +242,7 @@ public class Harvester {
     /**
      * Class Harvest.
      */
+    // TODO Classe inútil.
     private class Harvest implements Runnable { // N�o foi implementado ainda
 	/*
 	 * (non-Javadoc)
@@ -253,12 +255,6 @@ public class Harvester {
 	    }
 	}
     }
-
-    /** Atributo leitura. */
-    Double[] leitura = null;
-
-    /** Atributo data set. */
-    String dataSet = null;
 
     /**
      * Retorna dataset.
@@ -276,8 +272,8 @@ public class Harvester {
 	XYSeries series = null;
 	try {
 	    waitToGet();
-	    dataSet = new String(data);
-	    leitura = new Double[numberOfSamples];
+	    String dataSet = new String(data);
+	    Double[] leitura = new Double[numberOfSamples];
 	    int i = 0;
 	    char[] charArray = dataSet.toCharArray();
 	    timeStamp = System.currentTimeMillis();
@@ -335,19 +331,6 @@ public class Harvester {
      */
     private class Reader implements SerialPortEventListener {
 
-	/** Atributo str. */
-	private String str = "";
-	// double readingTime = 0;
-	// double spentTime = 0;
-	/** Atributo buffer. */
-	byte[] buffer = null;
-
-	/** Atributo pos. */
-	private int pos = 0;
-
-	/** Atributo reading. */
-	String reading = "";
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -362,10 +345,10 @@ public class Harvester {
 		    // spentTime += (System.nanoTime()-readingTime);
 		    try {
 			// System.out.println(serialPort.getInputBufferBytesCount());
-			buffer = serialPort.readBytes(portEvent.getEventValue());
-			str = new String(buffer);
-			pos += str.length() - str.replace("\n", "").length();
-			reading += str;
+			byte[] buffer = serialPort.readBytes(portEvent.getEventValue());
+			String str = new String(buffer);
+			int pos = str.length() - str.replace("\n", "").length();
+			String reading = str;
 			if (pos == numberOfSamples) {
 			    setData(reading);
 			    pos = 0;
@@ -392,15 +375,6 @@ public class Harvester {
     // ///////////////////////////////
     // //Variable Handling Methods////
     // ///////////////////////////////
-    
-    /**
-     * Retorna data.
-     *
-     * @return data
-     */
-    public String getData() {
-	return data;
-    }
     
     /**
      * Atribui o valor data.

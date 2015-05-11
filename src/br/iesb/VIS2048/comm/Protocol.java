@@ -16,7 +16,6 @@ public abstract class Protocol {
     public static String getParameter(int qtPro, int tmInt, int led, int ccd) {
 	StringBuilder data = new StringBuilder();
 	String buffer = " ";
-	
 	StringBuilder protocolString = new StringBuilder();
 	protocolString.append(Integer.toHexString(BEGIN_PACKET));
 
@@ -74,6 +73,7 @@ public abstract class Protocol {
 	return c;
     }
 
+    // TODO Método inútil.
     public static int bigToLittleEndian(int bigEndian) {
 	ByteBuffer buf = ByteBuffer.allocate(4);
 	buf.putInt(bigEndian);

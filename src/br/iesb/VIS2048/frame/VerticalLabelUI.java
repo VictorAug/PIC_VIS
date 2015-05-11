@@ -9,6 +9,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,10 +34,11 @@ import javax.swing.plaf.basic.BasicLabelUI;
 public class VerticalLabelUI extends BasicLabelUI {
 
     private boolean clockwise = false;
-    // see comment in BasicLabelUI
+    
     private Rectangle verticalViewR = new Rectangle();
     private Rectangle verticalIconR = new Rectangle();
     private Rectangle verticalTextR = new Rectangle();
+    
     protected static VerticalLabelUI verticalLabelUI = new VerticalLabelUI();
     private final static VerticalLabelUI SAFE_VERTICAL_LABEL_UI = new VerticalLabelUI();
 

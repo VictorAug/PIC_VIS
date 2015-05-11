@@ -18,19 +18,17 @@ import javax.swing.JTextArea;
  */
 public class SalvarAction extends AbstractAction {
 
-    /** Constante serialVersionUID. */
+    /** Constante de serialização do objeto. */
     private static final long serialVersionUID = 1L;
-    
-    /** Atributo parent. */
+
     private JFrame parent;
-    
-    /** Atributo text area. */
     private JTextArea textArea;
 
     /**
-     * Instancia um novo salvar action.
+     * Instancia um novo objeto <code>SalvarAction</code>.
      *
-     * @param frame the frame
+     * @param frame
+     *            the frame
      */
     public SalvarAction(JFrame frame) {
 	super("Salvar");
@@ -38,8 +36,11 @@ public class SalvarAction extends AbstractAction {
 	this.parent = frame;
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -67,17 +68,18 @@ public class SalvarAction extends AbstractAction {
     /**
      * Escreve arquivo.
      *
-     * @param conteudo the conteudo
-     * @param fileName the file name
-     * @throws IOException Sinaliza que uma I/O exception ocorreu.
+     * @param conteudo
+     *            the conteudo
+     * @param fileName
+     *            the file name
+     * @throws IOException
+     *             Sinaliza que uma I/O exception ocorreu.
      */
     public void escreveArquivo(String conteudo, String fileName) throws IOException {
-
 	PrintWriter out = new PrintWriter(new FileWriter(fileName));
 	out.print(conteudo);
 	out.close();
 	JOptionPane.showMessageDialog(null, "Arquivo salvo com sucesso!");
-
     }
 
 }

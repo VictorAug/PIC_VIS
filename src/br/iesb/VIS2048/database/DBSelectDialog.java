@@ -2,8 +2,6 @@ package br.iesb.VIS2048.database;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -16,54 +14,47 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-public class DBSelect extends JDialog {
+/**
+ * Classe DBSelect.
+ */
+public class DBSelectDialog extends JDialog {
 
-    /** Constante serialVersionUID. */
+    /** Constante de serialização do objeto. */
     private static final long serialVersionUID = 1L;
+
     private final JPanel contentPanel = new JPanel();
+
     private JTextField textField;
     private JTextField textField_1;
     private JTextField textField_2;
 
-    /**
-     * Launch the application.
-     */
-    // public static void main(String[] args) {
-    // try {
-    // DBSelect dialog = new DBSelect();
-    // dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    // dialog.setVisible(true);
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
-    JLabel lblNomeDoArquivo;
-    JLabel lblNmeroDeAmostras;
-    JLabel lblPerodo;
+    private JLabel lblNomeDoArquivo;
+    private JLabel lblNmeroDeAmostras;
+    private JLabel lblPerodo;
 
     /**
-     * Create the dialog.
+     * Cria a caixa de diálogo.
+     *
+     * @param dbHandler
+     *            the db handler
      */
-    public DBSelect(DBHandler dbHandler) {
+    public DBSelectDialog(DBHandler dbHandler) {
 	setModalityType(ModalityType.APPLICATION_MODAL);
 	setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 	dbHandler.updateCollectionList();
 	ArrayList<String> collectionList = dbHandler.getCollectionList();
 	JComboBox<String> comboBox = new JComboBox<String>();
 	comboBox.addItem("Novo Arquivo...");
-	comboBox.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent arg0) {
-		if (((String) comboBox.getSelectedItem()).equals("Novo Arquivo...")) {
-		    textField.setText(dbHandler.getMainDB());
-		    textField.setEditable(true);
-		    System.out.println("Create new");
-		} else {
-		    textField.setText((String) comboBox.getSelectedItem());
-		    textField.setEditable(false);
-		    textField_1.setText("");
-		    textField_2.setText("");
-		}
+	comboBox.addActionListener(arg0 -> {
+	    if (((String) comboBox.getSelectedItem()).equals("Novo Arquivo...")) {
+		textField.setText(dbHandler.getMainDB());
+		textField.setEditable(true);
+		System.out.println("Create new");
+	    } else {
+		textField.setText((String) comboBox.getSelectedItem());
+		textField.setEditable(false);
+		textField_1.setText("");
+		textField_2.setText("");
 	    }
 	});
 	setBounds(100, 100, 399, 186);
@@ -121,13 +112,9 @@ public class DBSelect extends JDialog {
 		okButton.setActionCommand("OK");
 		buttonPane.add(okButton);
 		getRootPane().setDefaultButton(okButton);
-		okButton.addActionListener(new ActionListener() {
-
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-			dbHandler.setMainDB((String) textField.getText());
-			dispose();
-		    }
+		okButton.addActionListener(e -> {
+		    dbHandler.setMainDB((String) textField.getText());
+		    dispose();
 		});
 	    }
 	}

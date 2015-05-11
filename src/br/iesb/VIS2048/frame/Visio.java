@@ -10,7 +10,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -68,178 +67,142 @@ import br.iesb.VIS2048.action.SalvarAction;
 import br.iesb.VIS2048.comm.Harvester;
 import br.iesb.VIS2048.database.DBChartCollection;
 import br.iesb.VIS2048.database.DBHandler;
-import br.iesb.VIS2048.database.DBSelect;
-import br.iesb.VIS2048.database.DBViewer;
+import br.iesb.VIS2048.database.DBSelectDialog;
+import br.iesb.VIS2048.database.DBViewerDialog;
 import br.iesb.VIS2048.pca.PCAPanel;
-import br.iesb.VIS2048.pca.Pca;
+import br.iesb.VIS2048.pca.PCA;
 
 /**
- * Class Visio.
+ * Classe Visio.
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class Visio {
 
-    /** Atributo btn conectar. */
-    private JButton btnConectar = new JButton("Conectar");
-
-    /** Atributo lbl conectado. */
-    private JLabel commLabel;
-
-    /** Atributo label. */
-    private JLabel label;
-
-    /** Atributo btn adquirir. */
-    private JButton btnAdquirir;
-
-    /** Atributo combo box. */
-    private JComboBox<String> commComboBox = new JComboBox<String>();
-
-    /** Atributo harvester. */
-    private Harvester harvester = new Harvester();
-
-    /** Atributo baud rate. */
-    private int baudRate = harvester.getBaudRate();
-
-    /** Atributo data bits. */
-    private int dataBits = harvester.getDataBits();
-
-    /** Atributo stop bits. */
-    private int stopBits = harvester.getStopBits();
-
-    /** Atributo parity. */
-    private int parity = harvester.getParity();
-
-    // /** Atributo data. */
-    // private String data = harvester.getData();
-
-    /** Atributo frame. */
     private JFrame frame;
 
-    /** Atributo R spec. */
-    private Thread RSpec = launchThread();
-
-    /** Atributo read once. */
-    private boolean readOnce = false;
-
-    /** Atributo get. */
-    private boolean get = false;
-
-    /** Atributo dataset. */
-    private XYSeriesCollection dataSet;
-
-    /** Atributo jfreechart. */
-    private JFreeChart jfreechart;
-    // private ChartPanel panel;
-    /** Atributo counts. */
-    private NumberAxis counts = new NumberAxis();
-
-    /** Atributo chart collection. */
-    private DBChartCollection chartCollection;
-    // private DBChartCollection selectedCharts;
-    private DBChartCollection oldCharts;
-
-    /** The collection name. */
-    private String collectionName = "Counts";
-
-    /** The file name. */
-    String fileName;
-
-    /** Atributo db. */
-    private DBHandler dbHandler;
-
-    /** The check port. */
-    private Thread checkPort;
-
-    /** The cleaner. */
-    private Thread cleaner;
-
-    /** The panel_8. */
-    private JPanel espectroPanel;
-
-    /** Atributo tabbed pane. */
-    private JTabbedPane tabbedPane;
-
-    /** Atributo pca panel. */
-    private JPanel pcaPanel;
-
-    /** Atributo espectro fieldset. */
-    private JPanel espectroFieldset;
-
-    /** Atributo btn parar. */
+    private JButton btnConectar = new JButton("Conectar");
     private JButton btnParar;
+    private JButton btnAdquirir;
+    private JButton btnEscolher;
+    private JButton btnSalvar;
+    private JButton btnLimpar;
+    private JButton btnAplicar;
+    private JButton btnStart;
 
-    /** Atributo visio panel. */
-    private JPanel visioPanel;
+    private JLabel lblConjunto;
+    private JLabel commLabel;
+    private JLabel label;
 
-    /** Atributo prime chart. */
-    private JPanel primeChart;
+    private JComboBox<String> comboBoxX;
+    private JComboBox<String> comboBoxY;
+    private JComboBox<String> commComboBox = new JComboBox<String>();
 
-    /** Atributo panel. */
-    private JPanel panel;
+    private Harvester harvester = new Harvester();
 
-    /** Atributo group unit. */
-    private ButtonGroup groupUnit = new ButtonGroup();
+    private int baudRate = harvester.getBaudRate();
+    private int dataBits = harvester.getDataBits();
+    private int stopBits = harvester.getStopBits();
+    private int parity = harvester.getParity();
+    private int numeroAmostras = harvester.getNumberOfSamples();
 
-    /** Atributo connection field set. */
-    private JPanel connectionFieldSet;
-
-    /** Atributo opcoes field set. */
-    private JPanel opcoesFieldSet;
-
-    /** Atributo solucao field set. */
-    private JPanel solucaoFieldSet;
-
-    /** Atributo group modo op. */
-    private ButtonGroup groupModoOp = new ButtonGroup();
-
-    /** Atributo flag. */
+    private boolean readOnce = false;
+    private boolean get = false;
     private boolean flag;
+    private boolean tradutorPortugues = true;
+    private boolean tradutorIngles = false;
+    private boolean commEvent = false;
+    private boolean conectado = false;
 
-    /** Atributo conexao panel. */
-    private JPanel conexaoPanel;
-
-    /** Atributo numero amostras. */
-    protected int numeroAmostras = harvester.getNumberOfSamples();
-
-    /** Atributo radio button. */
     private JRadioButton radioButton;
-
-    /** Atributo rdbtn new radio button. */
     private JRadioButton rdbtnNewRadioButton;
-
-    /** Atributo rdbtn new radio button_1. */
     private JRadioButton rdbtnNewRadioButton_1;
-
-    /** Atributo rdbtn new radio button_2. */
     private JRadioButton rdbtnNewRadioButton_2;
 
-    /** Atributo slider. */
-    private JSlider slider;
+    private JMenu arquivoMenu;
+    private JMenu ajudaMenu;
+    private JMenu graficoMenu;
+    private JMenu idiomaMenu;
+    private JMenu menuOpcoes;
 
-    /** Atributo slider_1. */
-    private JSlider sliderTempoDeIntegracao;
+    private JTextField textFieldBaudRate;
+    private JTextField textFieldDataBits;
+    private JTextField textFieldStopBits;
+    private JTextField textFieldParity;
+    private JTextField textFieldNumeroAmostras;
 
-    /** Atributo spinner. */
-    private JSpinner spinner;
+    private TitledBorder titledBorderPortSettings;
+    private TitledBorder protocoloBorder;
+    private TitledBorder titledBorderSolucao;
+    private TitledBorder titledBorderConexao;
+    private TitledBorder titledBorderOpcoes;
+    private TitledBorder titledBorderEspectro;
+    private TitledBorder titledBorderVariavelEstado;
 
-    /** Atributo spinner_1. */
-    private JSpinner spinner_1;
+    private JLabel lblNumeroAmostras;
+    private JLabel lblA;
+    private JLabel lblFaixaEspectral_1;
+    private JLabel lblTempoDeIntegrao;
+    private JLabel lblUnidade;
+    private JLabel lblModoDeOperao;
+    private JLabel lblEspectrometroEmissao;
+    private JLabel labTabEspectro;
+    private JLabel labTabConexao;
+    private JLabel lblNmeroDeAmostras;
+    private JLabel lblParity;
+    private JLabel lblRealizarPca;
+    private JLabel lblComponentsValue;
 
+    private JRadioButton rdbtnUnico;
+    private JRadioButton rdbtnContinuo;
+    private JRadioButton rdbtnL;
+    private JRadioButton rdbtnT;
+
+    private JMenuItem instrucoesItem;
+    private JMenuItem versaoItem;
+    private JMenuItem fundoItem;
+    private JMenuItem curvaItem;
+    private JMenuItem autoEscalarItem;
+    private JMenuItem abrirItem;
+    private JMenuItem salvarItem;
+    private JMenuItem exportarItem;
+    private JMenuItem exportarImagemItem;
+    private JMenuItem sairItem;
+
+    private String instrucoesDeUso;
+    private String versao;
+    private String subMenuExportar;
+    private String stringExportar;
+    private String stringInstrucoes;
+    private String stringVersao;
+    private String collectionName = "Counts";
     private String confirmDialogText;
 
-    private boolean tradutorPortugues = true;
-    private String protocolString = "+";
-    DefaultListModel model = new DefaultListModel();
+    private JList<String> modelList;
 
-    // private static DBTree dbtree;
+    private JPanel panel_17;
+    private JPanel panel_16;
+    private JPanel espectroPanel;
+    private JPanel conexaoPanel;
 
-    // private Chart selectedChart = null;
-    // ///////////////////////////////////////
-    // ///////// MÉTODOS /////////////////////
-    // ///////////////////////////////////////
+    private JSlider slider;
+    private JSlider sliderTempoDeIntegracao;
+
+    private JSpinner spinner;
+    private JSpinner spinner_1;
+
+    private XYSeriesCollection dataSet;
+    private JFreeChart jfreechart;
+    private NumberAxis counts = new NumberAxis();
+    private DBChartCollection chartCollection;
+    private DBHandler dbHandler;
+    private Thread checkPort;
+    private JTabbedPane tabbedPane;
+    private DefaultListModel model = new DefaultListModel();
+    private PCA pca = null;
+    private Matrix pcaMatrix = null;
 
     /**
-     * The main method.
+     * Método main.
      *
      * @param args
      *            the arguments
@@ -259,62 +222,57 @@ public class Visio {
     }
 
     /**
-     * Instantiates a new visio.
+     * Instancia um novo objeto <code>Visio</code>.
      * 
      * @wbp.parser.entryPoint
      */
-    public Visio() {
+    private Visio() {
 	initialize();
     }
 
     /**
-     * Initialize.
+     * Constroi a aplicação.
      */
     private void initialize() {
 	initFrame();
 	initMenuBar();
 	initTabbedPane();
 
-	// ///////////////////
-	// / Tab Espectro ////
-	// ///////////////////
+	// Tab Espectro
 	initEspectroPanel();
 	addEspectroTab();
 
-	// ////////////////////////
-	// / Tab Espectro -> FieldSet Espectro ////
-	// ////////////////////////
+	// Tab Espectro -> FieldSet Espectro
 	addEspectroFieldset();
 
-	// ////////////////////////////////////////////////////////
-	// / Tab Espectro -> Painel com o gráfico a ser gerado ////
-	// ////////////////////////////////////////////////////////
+	// Tab Espectro -> Painel com o gráfico a ser gerado
 	initVisioPanel();
 	checkForPorts();
 
-	// ///////////////////
-	// / Tab Pca /////////
-	// ///////////////////
+	// Tab Pca
 	addPcaTab();
 	addGraphicsPanel();
 
-	// /////////////////////////////////////////////////////////
-	// / Tab Espectro -> FieldSet Conexão, Opções e Solução ////
-	// /////////////////////////////////////////////////////////
+	// Tab Espectro -> FieldSet Conexão, Opções e Solução
 	syncronizeBtnAdquirir();
 	addConexaoTab();
+	
+	extracted();
+    }
+
+    private void extracted() {
 	dbHandler = new DBHandler();
-	DBSelect Selector = new DBSelect(dbHandler);
-	Selector.setVisible(true);
-	Selector.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
-	Selector.setAlwaysOnTop(true);
+	final DBSelectDialog selector = new DBSelectDialog(dbHandler);
+	selector.setVisible(true);
+	selector.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+	selector.setAlwaysOnTop(true);
 	dbHandler.setMainDB(dbHandler.getMainDB());
 	collectionName = DBHandler.getDBFileCollection() + dbHandler.getMainDB();
 	lblConjunto.setText(DBHandler.getDBFileCollection() + dbHandler.getMainDB());
     }
 
     /**
-     * Syncronize btn adquirir.
+     * Sincroniza a ação do botão Adquirir.
      */
     private void syncronizeBtnAdquirir() {
 	checkPort = new Thread(new CheckForPorts());
@@ -330,11 +288,11 @@ public class Visio {
     }
 
     /**
-     * Adds the conexao tab.
+     * Adiciona a tab de configuração de parâmetros da conexão.
      */
     private void addConexaoTab() {
+	Color backgroundColor = new Color(0, 0, 51);
 	conexaoPanel = new JPanel();
-	backgroundColor = new Color(0, 0, 51);
 	conexaoPanel.setBackground(backgroundColor);
 	tabbedPane.addTab("Conexão", null, conexaoPanel, null);
 	conexaoPanel.setLayout(new MigLayout("", "[][100px][][100px][][grow]", "[][][][][][grow][grow]"));
@@ -368,7 +326,6 @@ public class Visio {
 	textFieldBaudRate.setText(String.valueOf(baudRate));
 	panel_2.add(textFieldBaudRate, "cell 1 3 16 1,alignx center,growy");
 	textFieldBaudRate.addKeyListener(new KeyListener() {
-
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 	    }
@@ -408,7 +365,6 @@ public class Visio {
 	textFieldDataBits.setColumns(10);
 	textFieldDataBits.setText(String.valueOf(dataBits));
 	textFieldDataBits.addKeyListener(new KeyListener() {
-
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 	    }
@@ -447,7 +403,6 @@ public class Visio {
 	textFieldStopBits.setColumns(10);
 	textFieldStopBits.setText(String.valueOf(stopBits));
 	textFieldStopBits.addKeyListener(new KeyListener() {
-
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 	    }
@@ -486,7 +441,6 @@ public class Visio {
 	textFieldParity.setColumns(10);
 	textFieldParity.setText(String.valueOf(parity));
 	textFieldParity.addKeyListener(new KeyListener() {
-
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 	    }
@@ -533,7 +487,6 @@ public class Visio {
 	textFieldNumeroAmostras.setColumns(10);
 	textFieldNumeroAmostras.setText(String.valueOf(numeroAmostras));
 	textFieldNumeroAmostras.addKeyListener(new KeyListener() {
-
 	    @Override
 	    public void keyTyped(KeyEvent event) throws NullPointerException {
 	    }
@@ -621,11 +574,9 @@ public class Visio {
      * Adds the graphics panel.
      */
     private void addGraphicsPanel() {
-
 	JPanel panel_2 = new JPanel();
 	panel_2.setBackground(new Color(105, 105, 105));
 	espectroPanel.add(panel_2, "cell 0 1 2 1,grow");
-
 	lblEspectrometroEmissao = new JLabel("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
 	lblEspectrometroEmissao.setForeground(new Color(255, 255, 255));
 	lblEspectrometroEmissao.setFont(new Font("Tahoma", Font.PLAIN, 17));
@@ -639,24 +590,25 @@ public class Visio {
 	checkPort = new Thread(new CheckForPorts());
 	checkPort.setDaemon(true);
 	checkPort.start();
-	// fileName = dbHandler.getMainDBFileName();
-	// collectionName = dbHandler.getMainDB();
     }
 
-    DBChartCollection PCACollection;
-    DBChartCollection colBuffer;
-    Matrix PCAMatrix = null, P = null, Q = null;
-    double[][] array = null;
-
+    /**
+     * Pca.
+     *
+     * @param M
+     *            the m
+     * @param comp
+     *            the comp
+     */
     void PCA(Matrix M, int comp) {
-	P = M.copy();
-	Q = P.copy();
+	Matrix P = M.copy();
+//	Matrix Q = P.copy();
 
 	for (int i = 0; i < M.getRowDimension(); i++)
 	    for (int j = 0; j < M.getColumnDimension(); j++)
 		P.set(i, j, Math.random() * M.get(i, j));
 
-	Q = P.transpose();
+//	Q = P.transpose();
 	for (int i = 1; i < comp + 1; i++) {
 	    comboBoxX.addItem(String.valueOf(i));
 	    comboBoxY.addItem(String.valueOf(i));
@@ -664,10 +616,11 @@ public class Visio {
 
     }
 
-    Pca pca = null;
-
+    /**
+     * Adds the pca tab.
+     */
     private void addPcaTab() {
-	pcaPanel = new JPanel();
+	JPanel pcaPanel = new JPanel();
 	pcaPanel.setBackground(new Color(0, 0, 51));
 	tabbedPane.addTab("PCA", null, pcaPanel, null);
 	tabbedPane.addChangeListener(e -> {
@@ -732,12 +685,13 @@ public class Visio {
 	btnStart.setEnabled(false);
 	btnStart.addActionListener(arg0 -> {
 	    List selectedValues = modelList.getSelectedValuesList();
-	    PCACollection = new DBChartCollection();
+	    DBChartCollection colBuffer = null;
+	    DBChartCollection pcaCollection = new DBChartCollection();
 	    BufferedReader br = null;
-	    String currentLine;
+	    String currentLine, path;
 	    dbHandler.updateCollectionList();
 	    for (int j = 0; j < selectedValues.size(); j++) {
-		String path = DBHandler.getDBFileCollection() + selectedValues.get(j);
+		path = DBHandler.getDBFileCollection() + selectedValues.get(j);
 		System.out.println(path);
 
 		if (Files.exists(Paths.get(path + "/index.txt")))
@@ -747,22 +701,22 @@ public class Visio {
 			    colBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "/" + currentLine + ".vis");
 			    System.out.println(colBuffer.count());
 			    for (int k = 0; k < colBuffer.count(); k++)
-				PCACollection.addChart(colBuffer.getChart(k));
+				pcaCollection.addChart(colBuffer.getChart(k));
 			}
 		    } catch (IOException e) {
 			e.printStackTrace();
 		    }
 	    }
-	    array = new double[PCACollection.count()][2048];
+	    double[][] array = new double[pcaCollection.count()][2048];
 
-	    for (int k = 0; k < PCACollection.count(); k++)
+	    for (int k = 0; k < pcaCollection.count(); k++)
 		for (int j = 0; j < 2048; j++)
-		    array[k][j] = (double) PCACollection.getChart(k).getXyseries().getY(j);
+		    array[k][j] = (double) pcaCollection.getChart(k).getXyseries().getY(j);
 
 	    System.out.println(array.length);
-	    PCAMatrix = new Matrix(array);
+	    pcaMatrix = new Matrix(array);
 
-	    pca = new Pca(PCAMatrix, (int) sliderComponentes.getValue());
+	    pca = new PCA(pcaMatrix, (int) sliderComponentes.getValue());
 	    System.out.println(pca);
 	    comboBoxX.removeAllItems();
 	    comboBoxY.removeAllItems();
@@ -822,14 +776,6 @@ public class Visio {
 	matrixSelection.add(rdbtnL);
 	matrixSelection.add(rdbtnT);
 
-	// sliderComponentes.addChangeListener(new ChangeListener() {
-	//
-	// @Override
-	// public void stateChanged(ChangeEvent arg0) {
-	// if(comboBoxX == null || comboBoxY == null) return;
-	//
-	// }
-	// });
 	for (int i = 1; i < (int) sliderComponentes.getValue() + 1; i++) {
 	    comboBoxX.addItem(String.valueOf(i));
 	    comboBoxY.addItem(String.valueOf(i));
@@ -842,7 +788,7 @@ public class Visio {
 	    if (comboBoxX == null || comboBoxY == null || comboBoxX.getItemCount() == 0 || comboBoxY.getItemCount() == 0)
 		return;
 	    else
-		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(),
+		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), pcaMatrix.getRowDimension(),
 			(rdbtnL.isSelected() ? pca.getL() : pca.getT()));
 
 	});
@@ -851,27 +797,15 @@ public class Visio {
 	    if (comboBoxX == null || comboBoxY == null || comboBoxX.getItemCount() == 0 || comboBoxY.getItemCount() == 0)
 		return;
 	    else
-		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(),
+		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), pcaMatrix.getRowDimension(),
 			(rdbtnL.isSelected() ? pca.getL() : pca.getT()));
 	});
 
-	rdbtnL.addActionListener(new ActionListener() {
+	rdbtnL.addActionListener(e -> panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), pcaMatrix.getRowDimension(),
+		(rdbtnL.isSelected() ? pca.getL() : pca.getT())));
 
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(),
-			(rdbtnL.isSelected() ? pca.getL() : pca.getT()));
-	    }
-	});
-
-	rdbtnT.addActionListener(new ActionListener() {
-
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), PCAMatrix.getRowDimension(),
-			(rdbtnL.isSelected() ? pca.getL() : pca.getT()));
-	    }
-	});
+	rdbtnT.addActionListener(e -> panel_13.updateChart(Integer.parseInt((String) comboBoxX.getSelectedItem()), Integer.parseInt((String) comboBoxY.getSelectedItem()), pcaMatrix.getRowDimension(),
+		(rdbtnL.isSelected() ? pca.getL() : pca.getT())));
 
 	JPanel panel_14 = new JPanel();
 	panel_14.setBackground(SystemColor.controlDkShadow);
@@ -893,20 +827,19 @@ public class Visio {
      * Inits the visio panel.
      */
     private void initVisioPanel() {
-
-	visioPanel = new JPanel();
+	JPanel visioPanel = new JPanel();
 	visioPanel.setBackground(new Color(0, 0, 51));
 	espectroPanel.add(visioPanel, "cell 1 0,grow");
 	visioPanel.setLayout(new MigLayout("", "0[grow]0", "0[grow]0"));
 
-	primeChart = new JPanel();
+	JPanel primeChart = new JPanel();
 	primeChart.setBackground(Color.black);
 	primeChart.setAlignmentY(0.0f);
 	dataSet = new XYSeriesCollection();
 	jfreechart = ChartFactory.createXYLineChart("Visio", "", collectionName, dataSet, PlotOrientation.VERTICAL, true, true, false);
 	counts = (NumberAxis) ((XYPlot) jfreechart.getPlot()).getRangeAxis();
 	counts.setRange(0, 2500);
-	panel = new ChartPanel(jfreechart);
+	ChartPanel panel = new ChartPanel(jfreechart);
 	panel.setBackground(Color.black);
 	((XYPlot) jfreechart.getPlot()).setRangeGridlinePaint(Color.white);
 	((XYPlot) jfreechart.getPlot()).setBackgroundPaint(Color.black);
@@ -920,7 +853,8 @@ public class Visio {
 
 	chartCollection = new DBChartCollection();
 	visioPanel.add(primeChart, "cell 0 0,grow");
-	cleaner = new Thread(() -> {
+
+	Thread cleaner = new Thread(() -> {
 	    while (true) {
 		try {
 		    checkCommEvent();
@@ -936,15 +870,18 @@ public class Visio {
 	cleaner.start();
     }
 
+    /**
+     * Try connection.
+     */
     private void tryConnection() {
 	if (harvester != null && harvester.tryConnection(((String) commComboBox.getSelectedItem()))) {
 	    commLabel.setText("Conectado");
 	    commLabel.setForeground(Color.GREEN);
 	    conectado = true;
 	    setCommEvent(false);
-	    RSpec = launchThread();
-	    RSpec.setDaemon(true);
-	    RSpec.start();
+	    Thread rSpec = launchThread();
+	    rSpec.setDaemon(true);
+	    rSpec.start();
 	    btnAdquirir.setEnabled(true);
 	    enableSpecPanel();
 	}
@@ -1002,18 +939,16 @@ public class Visio {
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    JLabel lblConjunto;
-
     /**
      * Adds the espectro fieldset.
      */
     private void addEspectroFieldset() {
-
 	JPanel panel_1 = new JPanel();
 	panel_1.setBackground(new Color(0, 0, 51));
 	espectroPanel.add(panel_1, "cell 0 0,grow");
 	panel_1.setLayout(new MigLayout("", "0[245px]", "0[][][][]"));
-	espectroFieldset = new JPanel();
+
+	JPanel espectroFieldset = new JPanel();
 	panel_1.add(espectroFieldset, "cell 0 0,grow");
 	espectroFieldset.setBackground(new Color(0, 0, 51));
 	espectroFieldset.setForeground(new Color(211, 211, 211));
@@ -1046,7 +981,7 @@ public class Visio {
 	});
 
 	btnAdquirir.setToolTipText("Adquirir Leituras");
-	connectionFieldSet = new JPanel();
+	JPanel connectionFieldSet = new JPanel();
 	panel_1.add(connectionFieldSet, "cell 0 1,growx");
 	connectionFieldSet.setBackground(new Color(0, 0, 51));
 	connectionFieldSet.setForeground(new Color(211, 211, 211));
@@ -1062,7 +997,8 @@ public class Visio {
 
 	commLabel = new JLabel("Indisponível");
 	connectionFieldSet.add(commLabel, "cell 2 0,alignx center,growy");
-	opcoesFieldSet = new JPanel();
+
+	JPanel opcoesFieldSet = new JPanel();
 	panel_1.add(opcoesFieldSet, "cell 0 2,growx");
 	opcoesFieldSet.setBackground(new Color(0, 0, 51));
 
@@ -1091,6 +1027,7 @@ public class Visio {
 	rdbtnContinuo.setForeground(new Color(211, 211, 211));
 	rdbtnContinuo.setBackground(new Color(0, 0, 51));
 
+	ButtonGroup groupModoOp = new ButtonGroup();
 	groupModoOp.add(rdbtnUnico);
 	groupModoOp.add(rdbtnContinuo);
 
@@ -1123,6 +1060,7 @@ public class Visio {
 	countsRadioButton.setBackground(new Color(0, 0, 51));
 	countsRadioButton.setSelected(true);
 
+	ButtonGroup groupUnit = new ButtonGroup();
 	groupUnit.add(countsRadioButton);
 	countsRadioButton.addActionListener(actionEvent -> {
 	    if (flag) {
@@ -1233,7 +1171,8 @@ public class Visio {
 	label_1.setForeground(new Color(211, 211, 211));
 	label_1.setFont(new Font("Dialog", Font.PLAIN, 11));
 	opcoesFieldSet.add(label_1, "cell 0 7 2 1,grow");
-	solucaoFieldSet = new JPanel();
+
+	JPanel solucaoFieldSet = new JPanel();
 	panel_1.add(solucaoFieldSet, "cell 0 3,growx");
 	solucaoFieldSet.setForeground(new Color(211, 211, 211));
 	solucaoFieldSet.setBackground(new Color(0, 0, 51));
@@ -1255,7 +1194,7 @@ public class Visio {
 
 	btnEscolher.addActionListener((ActionEvent arg0) -> {
 	    try {
-		DBViewer dialog = new DBViewer();
+		DBViewerDialog dialog = new DBViewerDialog();
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 	    } catch (Exception e) {
@@ -1273,14 +1212,14 @@ public class Visio {
     /**
      * Traduzir.
      */
-    public void traduzir() {
+    private void traduzir() {
 	if (tradutorIngles) {
 	    stringVersao = "Version";
 	    stringInstrucoes = "Instructions for use";
 	    stringExportar = "Export...";
 	    subMenuExportar = "Coming soon...";
 	    instrucoesDeUso = "Coming soon...";
-	    menuArquivo.setText("File");
+	    arquivoMenu.setText("File");
 	    menuOpcoes.setText("Options");
 	    ajudaMenu.setText("Help");
 	    abrirItem.setText("Open... (Alt+a)");
@@ -1298,8 +1237,6 @@ public class Visio {
 	    lblNumeroAmostras.setText("Number of Samples");
 	    lblParity.setText("Parity");
 	    lblNmeroDeAmostras.setText("Number of Samples");
-	    button.setText("Connect");
-	    lblConectado.setText("Connect");
 	    btnAdquirir.setText("Acquire");
 	    btnAdquirir.setToolTipText("Acquire Readings");
 	    tabbedPane.setTitleAt(2, "Connection");
@@ -1330,15 +1267,7 @@ public class Visio {
 	    confirmDialogText = "The modified settings can severely alter the functioning of the software. Would you like to proceed?";
 	    btnLimpar.setText("Clean");
 	    btnAplicar.setText("Apply");
-	    radioButtonNao.setText("No");
-	    radioButtonSim.setText("Yes");
-	    radioButton_1.setText("No");
-	    radioButton2.setText("Yes");
-	    lblOpenPort.setText("Open Port");
-	    rdbtnNo.setText("No");
-	    rdbtnSim.setText("Yes");
 	    titledBorderVariavelEstado.setTitle("State Variables");
-	    lblSerialPort.setText("Serial Port");
 	    tradutorIngles = false;
 	} else if (tradutorPortugues) {
 	    stringVersao = "Versão";
@@ -1346,7 +1275,7 @@ public class Visio {
 	    stringExportar = "Exportar...";
 	    subMenuExportar = "Em breve...";
 	    instrucoesDeUso = "Em breve...";
-	    menuArquivo.setText("Arquivo");
+	    arquivoMenu.setText("Arquivo");
 	    menuOpcoes.setText("Opções");
 	    ajudaMenu.setText("Ajuda");
 	    abrirItem.setText("Abrir... (Alt+a)");
@@ -1363,9 +1292,6 @@ public class Visio {
 	    lblNumeroAmostras.setText("N\u00FAmero de Amostras");
 	    lblParity.setText("Paridade");
 	    lblNmeroDeAmostras.setText("Número de Amostras");
-	    lblSerialPort.setText("Porta Serial");
-	    button.setText("Conectar");
-	    lblConectado.setText("Conectar");
 	    btnAdquirir.setText("Adquirir");
 	    btnAdquirir.setToolTipText("Adquirir Leituras");
 	    tabbedPane.setTitleAt(2, "Conexão");
@@ -1390,19 +1316,10 @@ public class Visio {
 	    lblEspectrometroEmissao.setText("<html><b>VIS2048</b> - Espectrômetro de Emissão</html>");
 	    titledBorderEspectro.setTitle("Espectro");
 	    labTabEspectro.setText("Espectro");
-	    // btnRemover.setText("Remover");
-	    // btnEditar.setText("Editar");
 	    labTabConexao.setText("Conexão");
 	    confirmDialogText = "As configurações modificadas podem alterar severamente o funcionamento do software. Deseja prosseguir?";
 	    btnLimpar.setText("Limpar");
 	    btnAplicar.setText("Aplicar");
-	    radioButtonNao.setText("Não");
-	    radioButtonSim.setText("Sim");
-	    radioButton_1.setText("Não");
-	    radioButton2.setText("Sim");
-	    lblOpenPort.setText("Abrir Porta");
-	    rdbtnNo.setText("Não");
-	    rdbtnSim.setText("Sim");
 	    titledBorderVariavelEstado.setTitle("Variáveis de Estado");
 	    tradutorPortugues = false;
 	}
@@ -1445,10 +1362,7 @@ public class Visio {
 
 	fundoItem = new JMenuItem("- Fundo (cor)");
 	fundoItem.addActionListener((ActionEvent event) -> {
-	    // specPanel.setBackgroundPaint(JColorChooser.showDialog(specPanel,
-	    // "Escolha uma cor de fundo",
-	    // Color.black));
-	    });
+	});
 
 	curvaItem = new JMenuItem("- Curva (cor)");
 	curvaItem.setMnemonic('c');
@@ -1456,7 +1370,7 @@ public class Visio {
 	curvaItem.addActionListener((ActionEvent event) -> {
 	});
 
-	gridItem = new JMenuItem("- Grid");
+	JMenuItem gridItem = new JMenuItem("- Grid");
 	gridItem.setMnemonic('g');
 	gridItem.addActionListener((ActionEvent event) -> {
 	});
@@ -1473,24 +1387,18 @@ public class Visio {
 	graficoMenu.add(gridItem);
 	graficoMenu.add(autoEscalarItem);
 
-	portuguesItem = new JMenuItem("- Português");
+	JMenuItem portuguesItem = new JMenuItem("- Português");
 	portuguesItem.setMnemonic('p');
 	portuguesItem.addActionListener((ActionEvent event) -> {
 	    tradutorPortugues = true;
 	    traduzir();
-	    // JOptionPane.showMessageDialog(frame,
-	    // "Este é o submenu 'Exportar imagem...'. Em breve você poderá visualizar em português.",
-	    // "Português	(Alt+)", JOptionPane.PLAIN_MESSAGE);
-	    });
+	});
 
-	englishItem = new JMenuItem("- English");
+	JMenuItem englishItem = new JMenuItem("- English");
 	englishItem.addActionListener((ActionEvent event) -> {
 	    tradutorIngles = true;
 	    traduzir();
-	    // JOptionPane.showMessageDialog(frame,
-	    // "Este é o submenu 'English'. Em breve você poderá visualizar em inglês.",
-	    // "English	(Alt+e)", JOptionPane.PLAIN_MESSAGE);
-	    });
+	});
 
 	idiomaMenu = new JMenu("Idioma (Alt+i)");
 	idiomaMenu.setMnemonic('i');
@@ -1536,19 +1444,19 @@ public class Visio {
 	sairItem = new JMenuItem("Sair");
 	sairItem.addActionListener((ActionEvent event) -> System.exit(0));
 
-	menuArquivo = new JMenu("Arquivo");
-	menuArquivo.add(abrirItem);
-	menuArquivo.add(salvarItem);
-	menuArquivo.add(exportarItem);
-	menuArquivo.add(exportarImagemItem);
-	menuArquivo.add(sairItem);
-	return menuArquivo;
+	arquivoMenu = new JMenu("Arquivo");
+	arquivoMenu.add(abrirItem);
+	arquivoMenu.add(salvarItem);
+	arquivoMenu.add(exportarItem);
+	arquivoMenu.add(exportarImagemItem);
+	arquivoMenu.add(sairItem);
+	return arquivoMenu;
     }
 
     /**
      * Disable spec panel.
      */
-    void disableSpecPanel() {
+    private void disableSpecPanel() {
 	if (radioButton != null) {
 	    radioButton.setEnabled(false);
 	}
@@ -1579,7 +1487,7 @@ public class Visio {
     /**
      * Enable spec panel.
      */
-    void enableSpecPanel() {
+    private void enableSpecPanel() {
 	if (radioButton != null) {
 	    radioButton.setEnabled(true);
 	}
@@ -1615,7 +1523,7 @@ public class Visio {
      *
      * @return true, if is read once
      */
-    public boolean isReadOnce() {
+    private boolean isReadOnce() {
 	return readOnce;
     }
 
@@ -1625,7 +1533,7 @@ public class Visio {
      * @param readOnce
      *            the new read once
      */
-    public void setReadOnce(boolean readOnce) {
+    private void setReadOnce(boolean readOnce) {
 	this.readOnce = readOnce;
     }
 
@@ -1646,7 +1554,8 @@ public class Visio {
      * @param get
      *            the new gets the
      */
-    public synchronized void setGet(boolean get) { // Controla ordem de adquirir
+    private synchronized void setGet(boolean get) { // Controla ordem de
+						    // adquirir
 	this.get = get;
 	if (this.get)
 	    notifyAll();
@@ -1654,8 +1563,10 @@ public class Visio {
 
     /**
      * Launch thread.
+     *
+     * @return thread
      */
-    public Thread launchThread() {
+    private Thread launchThread() {
 	return new Thread((Runnable) () -> {
 	    XYSeries series;
 	    while (true) {
@@ -1667,7 +1578,7 @@ public class Visio {
 		    e.printStackTrace();
 		}
 		series = new XYSeries(collectionName);
-		Chart chart = harvester.getDataset(protocolString);
+		Chart chart = harvester.getDataset("");
 		series = chart.getXyseries();
 		chartCollection.addChart(chart);
 		System.out.println(chartCollection.count());
@@ -1695,7 +1606,7 @@ public class Visio {
 			+ chart.getNumberOfSamples() + "</p>" + "<p><b>Descrição:</b> " + chart.getDescription() + "</p>" + "</html>");
 
 		if (chartCollection.count() == 20) {
-		    oldCharts = chartCollection;
+		    DBChartCollection oldCharts = chartCollection;
 		    chartCollection = new DBChartCollection();
 		    dbHandler.insert(oldCharts);
 		}
@@ -1734,169 +1645,14 @@ public class Visio {
 	    wait();
     }
 
-    /** Atributo comm event. */
-    boolean commEvent = false;
-
-    /** Atributo conectado. */
-    boolean conectado = false;
-
-    /** Atributo text field. */
-    private JTextField textFieldBaudRate;
-
-    /** Atributo text field_1. */
-    private JTextField textFieldDataBits;
-
-    /** Atributo text field_2. */
-    private JTextField textFieldStopBits;
-
-    /** Atributo text field_3. */
-    private JTextField textFieldParity;
-
-    /** Atributo background color. */
-    private Color backgroundColor;
-
-    /** Atributo text field_4. */
-    private JTextField textFieldNumeroAmostras;
-
-    /** Atributo tradutor. */
-    private boolean tradutorIngles = false;
-
-    /** Atributo titled border. */
-    private TitledBorder titledBorderPortSettings;
-
-    /** Atributo protocolo border. */
-    private TitledBorder protocoloBorder;
-
-    private JLabel lblNumeroAmostras;
-
-    private JButton btnEscolher;
-
-    private JButton btnSalvar;
-
-    private TitledBorder titledBorderSolucao;
-
-    private JLabel lblA;
-
-    private JLabel lblFaixaEspectral_1;
-
-    private JLabel lblTempoDeIntegrao;
-
-    private JLabel lblUnidade;
-
-    private JRadioButton rdbtnUnico;
-
-    private JRadioButton rdbtnContinuo;
-
-    private JLabel lblModoDeOperao;
-
-    private TitledBorder titledBorderConexao;
-
-    private TitledBorder titledBorderOpcoes;
-
-    private JLabel lblEspectrometroEmissao;
-
-    private TitledBorder titledBorderEspectro;
-
-    private JLabel labTabEspectro;
-
-    private JLabel labTabConexao;
-
-    private JButton btnLimpar;
-
-    private JButton btnAplicar;
-
-    private JRadioButton radioButtonNao;
-
-    private JRadioButton radioButtonSim;
-
-    private JRadioButton radioButton_1;
-
-    private JRadioButton radioButton2;
-
-    private JLabel lblOpenPort;
-
-    private JRadioButton rdbtnNo;
-
-    private JRadioButton rdbtnSim;
-
-    private JLabel lblConectado;
-
-    private JButton button;
-
-    private TitledBorder titledBorderVariavelEstado;
-
-    private JLabel lblSerialPort;
-
-    private JLabel lblNmeroDeAmostras;
-
-    private JLabel lblParity;
-
-    private JMenuItem instrucoesItem;
-
-    private JMenuItem versaoItem;
-
-    private JMenu ajudaMenu;
-
-    private JMenuItem fundoItem;
-
-    private JMenuItem curvaItem;
-
-    private JMenuItem gridItem;
-
-    private JMenuItem autoEscalarItem;
-
-    private JMenu graficoMenu;
-
-    private JMenuItem portuguesItem;
-
-    private JMenuItem englishItem;
-
-    private JMenu idiomaMenu;
-
-    private JMenu menuOpcoes;
-
-    private JMenuItem abrirItem;
-
-    private JMenuItem salvarItem;
-
-    private JMenuItem exportarItem;
-
-    private JMenuItem exportarImagemItem;
-
-    private JMenuItem sairItem;
-
-    private JMenu menuArquivo;
-
-    private String instrucoesDeUso;
-
-    private String versao;
-
-    private String subMenuExportar;
-
-    private String stringExportar;
-
-    private String stringInstrucoes;
-
-    private String stringVersao;
-    private JPanel panel_17;
-    private JComboBox<String> comboBoxX;
-    private JComboBox<String> comboBoxY;
-    private JList<String> modelList;
-    private JButton btnStart;
-    private JLabel lblRealizarPca;
-
-    private JLabel lblComponentsValue;
-    private JRadioButton rdbtnL;
-    private JPanel panel_16;
-    private JRadioButton rdbtnT;
-
     /**
      * Atribui o valor comm event.
      *
      * @param commEvent
      *            novo comm event
      */
-    public synchronized void setCommEvent(boolean commEvent) { // Controla ordem
+    private synchronized void setCommEvent(boolean commEvent) { // Controla
+								// ordem
 	// de adquirir
 	this.commEvent = commEvent;
 	if (this.commEvent) {
@@ -2009,6 +1765,12 @@ public class Visio {
 	    }
 	}
 
+	/**
+	 * Sleep.
+	 *
+	 * @param ms
+	 *            the ms
+	 */
 	private void sleep(long ms) {
 	    try {
 		Thread.sleep(ms);

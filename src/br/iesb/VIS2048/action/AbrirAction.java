@@ -12,26 +12,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
- * Class AbrirAction.
+ * Classe AbrirAction.
  */
 public class AbrirAction extends AbstractAction {
 
-    /** Constante serialVersionUID. */
+    /** Constante de serialização do objeto. */
     private static final long serialVersionUID = 1L;
-    
-    /** Atributo text area. */
+
     private JTextArea textArea;
 
     /**
-     * Instancia um novo abrir action.
+     * Instancia um novo objeto AbrirAction.
      */
     public AbrirAction() {
 	super("Abrir");
 	this.putValue(Action.SHORT_DESCRIPTION, "Abrir arquivo");
     }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent actionEvent) {
 	JFileChooser fileChooser = new JFileChooser();
@@ -43,9 +45,10 @@ public class AbrirAction extends AbstractAction {
     }
 
     /**
-     * Open file.
+     * Abrir o arquivo.
      *
-     * @param arquivo the arquivo
+     * @param arquivo
+     *            the file
      */
     private void openFile(File arquivo) {
 	try {

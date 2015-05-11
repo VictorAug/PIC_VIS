@@ -4,7 +4,15 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
+/**
+ * Classe DBZip.
+ */
 public class DBZip {
+
+    private File arquivoZipAtual;
+    private static final int TAMANHO_BUFFER = 2048; // 2 Kb
+
+    // TODO Método inútil.
     public List<ZipEntry> listarEntradasZip(File arquivo) throws ZipException, IOException {
 	List<ZipEntry> entradasDoZip = new ArrayList<ZipEntry>();
 	ZipFile zip = null;
@@ -25,11 +33,12 @@ public class DBZip {
 	return entradasDoZip;
     }
 
+    // TODO Método inútil.
     public void extrairZip(File diretorio) throws ZipException, IOException {
 	extrairZip(this.getArquivoZipAtual(), diretorio);
     }
 
-    public void extrairZip(File arquivoZip, File diretorio) throws ZipException, IOException {
+    private void extrairZip(File arquivoZip, File diretorio) throws ZipException, IOException {
 	ZipFile zip = null;
 	File arquivo = null;
 	InputStream is = null;
@@ -94,6 +103,7 @@ public class DBZip {
 	}
     }
 
+    // TODO Método inútil.
     public List<ZipEntry> criarZip(File arquivoZip, File[] arquivos) throws ZipException, IOException {
 	FileOutputStream fos = null;
 	BufferedOutputStream bos = null;
@@ -124,7 +134,8 @@ public class DBZip {
 	}
     }
 
-    public List<ZipEntry> criarZip(OutputStream os, File[] arquivos) throws ZipException, IOException {
+    // TODO Método inútil.
+    private List<ZipEntry> criarZip(OutputStream os, File[] arquivos) throws ZipException, IOException {
 	if (arquivos == null || arquivos.length < 1) {
 	    throw new ZipException("Adicione ao menos um arquivo ou diretório");
 	}
@@ -203,11 +214,12 @@ public class DBZip {
 	return listaEntradasZip;
     }
 
+    // TODO Método inútil.
     public void fecharZip() {
 	setArquivoZipAtual(null);
     }
 
-    public File getArquivoZipAtual() {
+    private File getArquivoZipAtual() {
 	return arquivoZipAtual;
     }
 
@@ -215,6 +227,4 @@ public class DBZip {
 	this.arquivoZipAtual = arquivoZipAtual;
     }
 
-    private File arquivoZipAtual;
-    private static final int TAMANHO_BUFFER = 2048; // 2 Kb
 }

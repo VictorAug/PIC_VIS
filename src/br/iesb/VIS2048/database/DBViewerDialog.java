@@ -15,28 +15,25 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import net.miginfocom.swing.MigLayout;
 import br.iesb.VIS2048.frame.Chart;
 
 /**
- * Class DBViewer.
+ * Classe DBViewer.
  */
-public class DBViewer extends JDialog {
+public class DBViewerDialog extends JDialog {
 
-    /** Constante serialVersionUID. */
+    /** Constante de serialização do objeto. */
     private static final long serialVersionUID = 2654392620198211140L;
 
-    /** Atributo panel. */
     private JPanel panel;
 
     /**
      * Launch the application.
      */
-    public DBViewer() {
+    public DBViewerDialog() {
 	setResizable(false);
 	setBounds(100, 100, 932, 425);
 	{
@@ -55,52 +52,50 @@ public class DBViewer extends JDialog {
 	    JTree tree = new JTree(mutableTreeNode);
 	    DBChartCollection dbCollection = new DBChartCollection();
 
-	    tree.addTreeSelectionListener(new TreeSelectionListener() {
-		public void valueChanged(TreeSelectionEvent arg0) {
-		    String path = "";
-		    BufferedReader br = null;
-		    String sCurrentLine;
-		    DBChartCollection dbBuffer = null;
-		    for (int i = 0; i < tree.getSelectionPath().getPathCount(); i++) {
-			path += tree.getSelectionPath().getPathComponent(i);
-		    }
-		    if (Files.exists(Paths.get(path + "\\index.txt")))
-			try {
-			    br = new BufferedReader(new FileReader(path + "\\" + "index.txt"));
-			    while ((sCurrentLine = br.readLine()) != null) {
-				panel.removeAll();
-				dbBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "\\" + sCurrentLine + ".vis");
-				for (int i = 0; i < dbBuffer.count(); i++) {
-				    dbCollection.addChart(dbBuffer.getChart(i));
-				    int j = 0, k = 0;
-				    for (int l = 0; l < dbCollection.count(); l++) {
-					Chart chart = dbCollection.getChartQueue().get(l);
-					chart.setToolTipText("<html>"
-					// + "<p><b>Nome:</b> " +
-					// chart.getName() +
-					// "</p>"
-						+ "<p><b>Data:</b> " + new Date(chart.getTimestamp().longValue()) + "</p>"
-						// + "<p><b>Resolu��o:</b> " +
-						// chart.getNumberOfSamples() +
-						// "</p>"
-						// + "<p><b>Descri��o:</b> " +
-						// chart.getDescription() +
-						// "</p>"
-						+ "</html>");
-					panel.add(chart, "cell " + j++ + " " + k);
-					panel.updateUI();
-					if (j == 6) {
-					    j = 0;
-					    k++;
-					}
+	    tree.addTreeSelectionListener(arg0 -> {
+		String path = "";
+		BufferedReader br = null;
+		String sCurrentLine;
+		DBChartCollection dbBuffer = null;
+		for (int i1 = 0; i1 < tree.getSelectionPath().getPathCount(); i1++) {
+		    path += tree.getSelectionPath().getPathComponent(i1);
+		}
+		if (Files.exists(Paths.get(path + "\\index.txt")))
+		    try {
+			br = new BufferedReader(new FileReader(path + "\\" + "index.txt"));
+			while ((sCurrentLine = br.readLine()) != null) {
+			    panel.removeAll();
+			    dbBuffer = (DBChartCollection) DBHandler.loadGZipObject(path + "\\" + sCurrentLine + ".vis");
+			    for (int i2 = 0; i2 < dbBuffer.count(); i2++) {
+				dbCollection.addChart(dbBuffer.getChart(i2));
+				int j = 0, k = 0;
+				for (int l = 0; l < dbCollection.count(); l++) {
+				    Chart chart = dbCollection.getChartQueue().get(l);
+				    chart.setToolTipText("<html>"
+				    // + "<p><b>Nome:</b> " +
+				    // chart.getName() +
+				    // "</p>"
+					    + "<p><b>Data:</b> " + new Date(chart.getTimestamp().longValue()) + "</p>"
+					    // + "<p><b>Resolu��o:</b> " +
+					    // chart.getNumberOfSamples() +
+					    // "</p>"
+					    // + "<p><b>Descri��o:</b> " +
+					    // chart.getDescription() +
+					    // "</p>"
+					    + "</html>");
+				    panel.add(chart, "cell " + j++ + " " + k);
+				    panel.updateUI();
+				    if (j == 6) {
+					j = 0;
+					k++;
 				    }
 				}
 			    }
-			} catch (IOException e) {
-			    e.printStackTrace();
 			}
+		    } catch (IOException e) {
+			e.printStackTrace();
+		    }
 
-		}
 	    });
 	    scrollPane.setViewportView(tree);
 	    db.getCollectionList().forEach(a -> mutableTreeNode.add(new DefaultMutableTreeNode(a)));
