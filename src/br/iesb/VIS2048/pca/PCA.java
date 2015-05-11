@@ -1,7 +1,6 @@
 package br.iesb.VIS2048.pca;
 
 import Jama.Matrix;
-import Jama.SingularValueDecomposition;
 
 public class PCA {
     

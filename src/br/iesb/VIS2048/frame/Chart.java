@@ -204,7 +204,7 @@ public class Chart extends JToggleButton implements Serializable {
      */
     public void setName(String nome) {
 	if (nome == null) {
-	    this.nome = null; 
+	    this.nome = null;
 	} else {
 	    this.nome = new String(nome);
 	}
